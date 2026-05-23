@@ -16,10 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    # Endpoint kiểm tra nhanh để xác nhận project đã khởi tạo thành công.
+    # Endpoint kiem tra nhanh de xac nhan project da khoi tao thanh cong.
     path("", lambda request: HttpResponse("Hello World"), name="home"),
+    # Route vao module processing theo cau truc apps.
+    path("processing/", include("apps.processing.urls")),
     path('admin/', admin.site.urls),
 ]
+
+# Chi phuc vu media local khi chay development.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

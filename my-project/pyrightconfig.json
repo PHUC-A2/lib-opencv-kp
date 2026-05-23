@@ -8,7 +8,6 @@
   ],
   "exclude": [
     "**/__pycache__",
-    ".venv",
-    "db.sqlite3"
+    ".venv"
   ]
 }
