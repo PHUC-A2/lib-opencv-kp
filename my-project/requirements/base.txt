@@ -1,0 +1,8 @@
+django
+mysqlclient
+opencv-python
+numpy
+pillow
+python-dotenv
+django-environ
+django-cleanup

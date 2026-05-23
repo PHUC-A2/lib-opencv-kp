@@ -1,0 +1,33 @@
+/docs/
+/uploads/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Django/local runtime
+db.sqlite3
+*.log
+media/
+staticfiles/
+
+# Project-specific nested paths
+my-project/.venv/
+my-project/db.sqlite3
+my-project/media/
+my-project/logs/
