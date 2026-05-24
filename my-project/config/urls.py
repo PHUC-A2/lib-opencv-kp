@@ -16,6 +16,7 @@ urlpatterns = [
     path("", home_redirect, name="home"),
     path("", include("apps.authentication.urls")),
     path("", include("apps.dashboard.urls")),
+    path("images/", include("apps.images.urls")),
     path("processing/", include("apps.processing.urls")),
     path("admin-panel/", include("apps.admin_panel.urls")),
     path("admin/", admin.site.urls),

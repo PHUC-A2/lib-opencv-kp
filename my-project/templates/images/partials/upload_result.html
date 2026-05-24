@@ -1,0 +1,35 @@
+{% if status == 'error' %}
+<div class="alert alert-error rounded-xl shadow-sm upload-result-item">
+    <span>{{ message }}</span>
+</div>
+{% if errors %}
+<ul class="text-sm text-[#EF4444] list-disc list-inside mt-1">
+    {% for err in errors %}
+        <li>{{ err }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% else %}
+<div class="upload-result-item">
+    <div class="alert alert-success rounded-xl shadow-sm mb-4">
+        <span>✅ Upload thành công {{ uploaded_images|length }} ảnh{% if errors %} ({{ errors|length }} lỗi){% endif %}</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {% for image in uploaded_images %}
+            {% include "images/partials/image_card.html" with image=image show_actions=True compact=False %}
+        {% endfor %}
+    </div>
+
+    {% if errors %}
+        <div class="mt-4 p-4 rounded-xl border border-[#FACC15]/30 bg-yellow-50">
+            <p class="font-medium text-sm mb-2">Một số file không upload được:</p>
+            <ul class="text-sm text-[#6B7280] list-disc list-inside">
+                {% for err in errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+{% endif %}

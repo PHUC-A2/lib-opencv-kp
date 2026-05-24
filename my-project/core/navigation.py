@@ -19,13 +19,13 @@ def get_public_menu_items() -> list[dict]:
         {
             "label": "Tải ảnh lên",
             "icon": "📤",
-            "url_name": "dashboard:images_upload",
+            "url_name": "images:upload",
             "active_prefix": "/images/upload",
         },
         {
             "label": "Thư viện ảnh",
             "icon": "🖼️",
-            "url_name": "dashboard:images_gallery",
+            "url_name": "images:gallery",
             "active_prefix": "/images/gallery",
         },
         {

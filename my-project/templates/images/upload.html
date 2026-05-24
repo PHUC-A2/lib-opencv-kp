@@ -1,0 +1,113 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div
+    class="max-w-4xl mx-auto"
+    x-data="{
+        isDragging: false,
+        uploadStatus: 'idle',
+        previewUrls: [],
+        handleFiles(files) {
+            if (!files || files.length === 0) return;
+            this.previewUrls = [];
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    this.previewUrls.push({ name: file.name, url: URL.createObjectURL(file) });
+                }
+            });
+            this.uploadStatus = 'uploading';
+            document.getElementById('upload-form').requestSubmit();
+        },
+        resetPreview() {
+            this.previewUrls.forEach(p => URL.revokeObjectURL(p.url));
+            this.previewUrls = [];
+        }
+    }"
+    @dragover.prevent="isDragging = true"
+    @dragleave.prevent="isDragging = false"
+    @drop.prevent="isDragging = false; handleFiles($event.dataTransfer.files)"
+>
+    <form
+        id="upload-form"
+        hx-post="{% url 'images:upload_process' %}"
+        hx-encoding="multipart/form-data"
+        hx-target="#upload-results"
+        hx-swap="beforeend"
+        @htmx:before-request="uploadStatus = 'uploading'"
+        @htmx:after-request="if ($event.detail.successful) { uploadStatus = 'done'; resetPreview(); $refs.fileInput.value = '' } else { uploadStatus = 'error' }"
+        class="space-y-6"
+    >
+        {% csrf_token %}
+
+        <div
+            class="relative border-2 border-dashed rounded-xl p-10 md:p-16 text-center transition-all duration-200 cursor-pointer
+                {% if False %}{% endif %}"
+            :class="isDragging ? 'border-blue-500 bg-blue-50/50 scale-[1.01]' : 'border-[#E5E7EB] bg-white hover:border-blue-300 hover:bg-[#F9FAFB]'"
+            @click="$refs.fileInput.click()"
+        >
+            <input
+                x-ref="fileInput"
+                type="file"
+                name="file"
+                multiple
+                accept="image/jpeg,image/png,image/webp"
+                class="hidden"
+                @change="handleFiles($event.target.files)"
+            >
+
+            <div x-show="uploadStatus === 'uploading'" class="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center z-10">
+                <span class="loading loading-spinner loading-lg text-blue-500"></span>
+                <p class="mt-3 font-medium text-[#374151]">Đang tải lên...</p>
+                <p class="text-sm text-[#6B7280] mt-1">Vui lòng đợi trong giây lát</p>
+            </div>
+
+            <span class="text-5xl">📤</span>
+            <p class="font-semibold text-lg mt-4">Kéo thả ảnh vào đây</p>
+            <p class="text-[#6B7280] mt-1">hoặc nhấn để chọn file từ máy tính</p>
+            <p class="text-xs text-[#9CA3AF] mt-3">JPG, PNG, WEBP · Tối đa 10MB/ảnh</p>
+        </div>
+
+        <div x-show="previewUrls.length > 0" x-cloak class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <template x-for="preview in previewUrls" :key="preview.url">
+                <div class="card bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+                    <figure class="aspect-square bg-[#F3F4F6]">
+                        <img :src="preview.url" :alt="preview.name" class="w-full h-full object-cover">
+                    </figure>
+                    <div class="p-2">
+                        <p class="text-xs truncate text-[#6B7280]" x-text="preview.name"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </form>
+
+    <div id="upload-results" class="space-y-4 mt-6"></div>
+
+    <div class="flex justify-center gap-3 mt-8">
+        <a href="{% url 'images:gallery' %}" class="btn btn-outline rounded-xl">🖼️ Xem thư viện ảnh</a>
+        <a href="{% url 'processing:home' %}" class="btn btn-primary-gradient rounded-xl">⚙️ Xử lý ảnh</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>[x-cloak] { display: none !important; }</style>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Animation fade-in cho ket qua upload moi.
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target.id === 'upload-results') {
+            const items = event.detail.target.querySelectorAll('.upload-result-item');
+            const lastItem = items[items.length - 1];
+            if (lastItem && typeof gsap !== 'undefined') {
+                gsap.from(lastItem, { opacity: 0, y: 16, duration: 0.3, ease: 'power2.out' });
+            }
+        }
+    });
+</script>
+{% endblock %}

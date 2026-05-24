@@ -1,0 +1,60 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            <form
+                method="get"
+                hx-get="{% url 'images:gallery' %}"
+                hx-target="#gallery-grid"
+                hx-trigger="change from:select, keyup changed delay:400ms from:input[type='search']"
+                hx-push-url="true"
+                class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+            >
+                <div class="md:col-span-2 form-control">
+                    <label class="label" for="id_search">
+                        <span class="label-text font-medium">{{ filter_form.search.label }}</span>
+                    </label>
+                    <input
+                        type="search"
+                        name="search"
+                        id="id_search"
+                        value="{{ search }}"
+                        class="input input-bordered w-full rounded-xl"
+                        placeholder="Tìm theo tên file..."
+                    >
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_sort">
+                        <span class="label-text font-medium">{{ filter_form.sort.label }}</span>
+                    </label>
+                    <select name="sort" id="id_sort" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.sort.choices %}
+                            <option value="{{ value }}" {% if sort == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="gallery-grid">
+        {% include "images/partials/gallery_grid.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Animation khi filter gallery bang HTMX.
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target.id === 'gallery-grid' && typeof gsap !== 'undefined') {
+            gsap.from('#gallery-grid', { opacity: 0, y: 8, duration: 0.2, ease: 'power2.out' });
+        }
+    });
+</script>
+{% endblock %}

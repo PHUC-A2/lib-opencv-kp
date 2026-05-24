@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     # Dang ky module dashboard va admin panel Phase 1.
     'apps.dashboard.apps.DashboardConfig',
     'apps.admin_panel.apps.AdminPanelConfig',
+    # Dang ky module upload va thu vien anh Phase 2.
+    'apps.images.apps.ImagesConfig',
     # Dang ky module xu ly anh theo cau truc apps/.
     'apps.processing.apps.ProcessingConfig',
 ]

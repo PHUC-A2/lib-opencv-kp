@@ -1,0 +1,39 @@
+<div id="image-card-{{ image.id }}" class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden card-hover transition-all duration-200 group">
+    <figure class="aspect-square bg-[#F3F4F6] relative overflow-hidden">
+        <img
+            src="{{ image.media_url }}"
+            alt="{{ image.original_filename }}"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+        >
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200"></div>
+    </figure>
+
+    <div class="card-body p-4 gap-2">
+        <h3 class="font-medium text-sm truncate" title="{{ image.original_filename }}">{{ image.original_filename }}</h3>
+        <div class="flex flex-wrap gap-2 text-xs text-[#6B7280]">
+            <span>{{ image.width }}×{{ image.height }}</span>
+            <span>·</span>
+            <span>{{ image.file_size_display }}</span>
+        </div>
+        <p class="text-xs text-[#9CA3AF]">{{ image.created_at|date:"d/m/Y H:i" }}</p>
+
+        {% if show_actions %}
+        <div class="card-actions justify-end mt-2 gap-2">
+            <a
+                href="{% url 'images:download' image.id %}"
+                class="btn btn-ghost btn-xs rounded-lg"
+                title="Tải về"
+            >⬇️ Tải</a>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs rounded-lg text-[#EF4444] hover:bg-red-50"
+                hx-post="{% url 'images:delete' image.id %}"
+                hx-target="#image-card-{{ image.id }}"
+                hx-swap="outerHTML"
+                hx-confirm="Bạn có chắc muốn xóa ảnh này?"
+            >🗑️ Xóa</button>
+        </div>
+        {% endif %}
+    </div>
+</div>

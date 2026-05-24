@@ -2,12 +2,16 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from apps.images.services.image_service import ImageService
+
 
 @login_required
 def dashboard_home(request: HttpRequest) -> HttpResponse:
     # Trang tong quan hien thi thong ke va hanh dong nhanh.
+    total_images = ImageService.count_user_images(request.user)
+
     stats = {
-        "total_images": 0,
+        "total_images": total_images,
         "processing_jobs": 0,
         "completed_jobs": 0,
         "pending_jobs": 0,
@@ -17,7 +21,7 @@ def dashboard_home(request: HttpRequest) -> HttpResponse:
         {
             "title": "Tải ảnh lên",
             "description": "Upload ảnh để bắt đầu xử lý OpenCV",
-            "url_name": "dashboard:images_upload",
+            "url_name": "images:upload",
             "icon": "📤",
         },
         {
@@ -29,7 +33,7 @@ def dashboard_home(request: HttpRequest) -> HttpResponse:
         {
             "title": "Thư viện ảnh",
             "description": "Xem và quản lý ảnh đã upload",
-            "url_name": "dashboard:images_gallery",
+            "url_name": "images:gallery",
             "icon": "🖼️",
         },
     ]
