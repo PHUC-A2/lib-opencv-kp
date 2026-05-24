@@ -257,7 +257,8 @@
             event.detail.target.id === 'admin-users-table' ||
             event.detail.target.id === 'admin-images-table' ||
             event.detail.target.id === 'admin-algorithms-table' ||
-            event.detail.target.id === 'admin-jobs-table') {
+            event.detail.target.id === 'admin-jobs-table' ||
+            event.detail.target.id === 'admin-logs-table') {
             animateSwapTarget(event.detail.target);
         }
     });

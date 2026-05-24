@@ -2,6 +2,7 @@ from django import forms
 
 from apps.algorithms.models import Algorithm
 from apps.authentication.models import User
+from apps.admin_panel.models import SystemLog
 from apps.processing.models import ProcessingJob
 from services.opencv.registry import get_supported_codes
 
@@ -203,6 +204,50 @@ class AdminJobFilterForm(forms.Form):
 
     def clean(self):
         # Kiem tra khoang ngay hop le.
+        cleaned_data = super().clean()
+        date_from = cleaned_data.get("date_from")
+        date_to = cleaned_data.get("date_to")
+        if date_from and date_to and date_from > date_to:
+            raise forms.ValidationError("Ngày bắt đầu không được lớn hơn ngày kết thúc.")
+        return cleaned_data
+
+
+class AdminLogFilterForm(forms.Form):
+    # Form loc nhat ky he thong admin.
+    search = forms.CharField(
+        label="Tìm kiếm",
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": INPUT_CLASS,
+                "placeholder": "Nội dung log, username, job id...",
+            }
+        ),
+    )
+    level = forms.ChoiceField(
+        label="Mức độ",
+        required=False,
+        choices=[("", "Tất cả mức độ")] + SystemLog.LEVEL_CHOICES,
+        widget=forms.Select(attrs={"class": SELECT_CLASS}),
+    )
+    module = forms.ChoiceField(
+        label="Module",
+        required=False,
+        choices=[("", "Tất cả module")] + SystemLog.MODULE_CHOICES,
+        widget=forms.Select(attrs={"class": SELECT_CLASS}),
+    )
+    date_from = forms.DateField(
+        label="Từ ngày",
+        required=False,
+        widget=forms.DateInput(attrs={"class": INPUT_CLASS, "type": "date"}),
+    )
+    date_to = forms.DateField(
+        label="Đến ngày",
+        required=False,
+        widget=forms.DateInput(attrs={"class": INPUT_CLASS, "type": "date"}),
+    )
+
+    def clean(self):
         cleaned_data = super().clean()
         date_from = cleaned_data.get("date_from")
         date_to = cleaned_data.get("date_to")

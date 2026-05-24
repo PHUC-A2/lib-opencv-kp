@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
@@ -81,7 +82,12 @@ def processing_result_view(request: HttpRequest, pk: int) -> HttpResponse:
     except ProcessingJob.DoesNotExist as exc:
         raise Http404("Không tìm thấy kết quả xử lý.") from exc
 
-    if job.status != ProcessingJob.STATUS_COMPLETED or not hasattr(job, "processed_image"):
+    if job.status != ProcessingJob.STATUS_COMPLETED:
+        return redirect("processing:home")
+
+    try:
+        job.processed_image
+    except ObjectDoesNotExist:
         return redirect("processing:home")
 
     return render(

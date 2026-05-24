@@ -1,0 +1,96 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    {% if slow_logs %}
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl animate-stagger-item">
+        <div class="card-body">
+            <h2 class="text-lg font-semibold mb-3">🐢 Job chậm nhất (theo execution_time)</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="text-[#6B7280] text-xs">
+                            <th>Thời gian</th>
+                            <th>Module</th>
+                            <th>Nội dung</th>
+                            <th>Thời gian xử lý</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in slow_logs %}
+                            <tr>
+                                <td class="text-xs">{{ log.created_at|date:"d/m/Y H:i" }}</td>
+                                <td><span class="badge badge-ghost badge-xs rounded-lg">{{ log.module_label }}</span></td>
+                                <td class="text-sm truncate max-w-[280px]" title="{{ log.message }}">{{ log.message }}</td>
+                                <td class="text-sm font-semibold text-[#EF4444]">{{ log.execution_time_ms }} ms</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            {% if filter_errors %}
+                <div class="alert alert-error rounded-xl mb-4">
+                    {% for error in filter_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form
+                id="admin-logs-filter"
+                method="get"
+                hx-get="{% url 'admin_panel:logs' %}"
+                hx-target="#admin-logs-table"
+                hx-trigger="change from:select, input from:input[type='date'] delay:300ms, keyup changed delay:400ms from:input[type='search'], submit"
+                hx-push-url="true"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-end"
+            >
+                <div class="form-control xl:col-span-2">
+                    <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Nội dung log, username...">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_level"><span class="label-text font-medium">{{ filter_form.level.label }}</span></label>
+                    <select name="level" id="id_level" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.level.choices %}
+                            <option value="{{ value }}" {% if level == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_module"><span class="label-text font-medium">{{ filter_form.module.label }}</span></label>
+                    <select name="module" id="id_module" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.module.choices %}
+                            <option value="{{ value }}" {% if module == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_from"><span class="label-text font-medium">{{ filter_form.date_from.label }}</span></label>
+                    <input type="date" name="date_from" id="id_date_from" value="{% if date_from %}{{ date_from|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_to"><span class="label-text font-medium">{{ filter_form.date_to.label }}</span></label>
+                    <input type="date" name="date_to" id="id_date_to" value="{% if date_to %}{{ date_to|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control flex flex-row gap-2 xl:col-span-6">
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <a href="{% url 'admin_panel:logs' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-logs-table">
+        {% include "admin_panel/partials/logs_table.html" %}
+    </div>
+</div>
+{% endblock %}

@@ -116,6 +116,23 @@ class Phase3ProcessingFlowTests(TestCase):
         response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
         self.assertEqual(response.status_code, 404)
 
+    def test_admin_can_access_other_user_result(self):
+        admin = User.objects.create_user(
+            username="admin_viewer",
+            email="admin_viewer@test.com",
+            password="Test@1234",
+            role="admin",
+        )
+        other = User.objects.create_user(username="other_admin", email="oa@test.com", password="Test@1234")
+        image = ImageService.upload_image(other, create_test_image("admin_view.jpg"))
+        algorithm = Algorithm.objects.get(code="grayscale")
+        job = ProcessingService.run_processing(other, image.id, algorithm.id)
+
+        self.client.login(username="admin_viewer", password="Test@1234")
+        response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Before")
+
     def test_dashboard_shows_job_stats(self):
         image = ImageService.upload_image(self.user, create_test_image("dash.jpg"))
         algorithm = Algorithm.objects.get(code="binary_threshold")

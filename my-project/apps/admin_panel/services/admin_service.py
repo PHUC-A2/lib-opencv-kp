@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from apps.algorithms.models import Algorithm
 from apps.authentication.models import User
+from apps.admin_panel.models import SystemLog
 from apps.images.models import Image
 from apps.processing.models import ProcessedImage, ProcessingJob
 from services.opencv.registry import get_supported_codes
@@ -33,6 +34,8 @@ class AdminService:
             "total_jobs": ProcessingJob.objects.count(),
             "active_jobs": ProcessingJob.objects.filter(status=ProcessingJob.STATUS_PROCESSING).count(),
             "failed_jobs": ProcessingJob.objects.filter(status=ProcessingJob.STATUS_FAILED).count(),
+            "total_logs": SystemLog.objects.count(),
+            "error_logs": SystemLog.objects.filter(level=SystemLog.LEVEL_ERROR).count(),
             "recent_errors": recent_errors,
         }
 

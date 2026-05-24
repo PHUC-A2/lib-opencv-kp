@@ -9,8 +9,10 @@ from apps.admin_panel.forms import (
     AdminAlgorithmForm,
     AdminImageFilterForm,
     AdminJobFilterForm,
+    AdminLogFilterForm,
     AdminUserFilterForm,
 )
+from apps.admin_panel.services.system_log_service import SystemLogService
 from apps.admin_panel.services.admin_service import AdminService, AdminServiceError
 from apps.algorithms.models import Algorithm
 from core.permissions import admin_required
@@ -342,6 +344,58 @@ def admin_jobs_view(request: HttpRequest) -> HttpResponse:
         return render(request, "admin_panel/partials/jobs_table.html", context)
 
     return render(request, "admin_panel/jobs.html", context)
+
+
+@admin_required
+def admin_logs_view(request: HttpRequest) -> HttpResponse:
+    # Trang xem nhat ky he thong voi bo loc.
+    filter_form = AdminLogFilterForm(request.GET or None)
+    search = ""
+    level = ""
+    module = ""
+    date_from = None
+    date_to = None
+    filter_errors = []
+
+    if filter_form.is_valid():
+        filters = _parse_filter_form(filter_form, ["search", "level", "module", "date_from", "date_to"])
+        search = filters["search"]
+        level = filters["level"]
+        module = filters["module"]
+        date_from = filters["date_from"] or None
+        date_to = filters["date_to"] or None
+    elif filter_form.errors:
+        filter_errors = filter_form.non_field_errors()
+        date_from = None
+        date_to = None
+
+    logs = SystemLogService.get_logs(
+        search=search,
+        level=level,
+        module=module,
+        date_from=date_from,
+        date_to=date_to,
+    )
+    slow_logs = SystemLogService.get_slow_processing_logs(limit=5)
+
+    context = {
+        "page_title": "System Logs",
+        "page_subtitle": f"{logs.count()} bản ghi log",
+        "filter_form": filter_form,
+        "logs": logs,
+        "slow_logs": slow_logs,
+        "search": search,
+        "level": level,
+        "module": module,
+        "date_from": date_from,
+        "date_to": date_to,
+        "filter_errors": filter_errors,
+    }
+
+    if request.headers.get("HX-Request"):
+        return render(request, "admin_panel/partials/logs_table.html", context)
+
+    return render(request, "admin_panel/logs.html", context)
 
 
 @admin_required

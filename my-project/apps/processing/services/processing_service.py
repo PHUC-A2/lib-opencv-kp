@@ -8,6 +8,8 @@ from apps.authentication.models import User
 from apps.images.services.image_service import ImageService
 from apps.processing.models import ProcessedImage, ProcessingHistory, ProcessingJob
 from apps.processing.services.history_service import ProcessingHistoryService
+from apps.admin_panel.models import SystemLog
+from apps.admin_panel.services.system_log_service import SystemLogService
 from services.opencv.exceptions import OpenCVProcessingError
 from services.opencv.opencv_service import OpenCVService
 
@@ -25,12 +27,16 @@ class ProcessingService:
 
     @staticmethod
     def get_user_job(user: User, job_id: int) -> ProcessingJob:
-        # Lay job thuoc ve user hien tai.
-        return ProcessingJob.objects.select_related(
+        # Lay job thuoc ve user; admin duoc xem job cua moi nguoi (tu logs/history).
+        queryset = ProcessingJob.objects.select_related(
             "source_image",
             "algorithm",
             "processed_image",
-        ).prefetch_related("parameters", "history_logs", "pipeline_steps__algorithm").get(pk=job_id, user=user)
+        ).prefetch_related("parameters", "history_logs", "pipeline_steps__algorithm")
+
+        if getattr(user, "role", "") == "admin":
+            return queryset.get(pk=job_id)
+        return queryset.get(pk=job_id, user=user)
 
     @staticmethod
     def count_user_jobs(user: User, status: str | None = None) -> int:
@@ -69,6 +75,12 @@ class ProcessingService:
             ProcessingHistory.ACTION_STARTED,
             f"Bắt đầu xử lý ảnh {source_image.original_filename} bằng {algorithm.name}",
         )
+        SystemLogService.info(
+            SystemLog.MODULE_PROCESSING,
+            f"Bắt đầu xử lý ảnh {source_image.original_filename} bằng {algorithm.name}",
+            user=user,
+            job=job,
+        )
 
         started_at = time.perf_counter()
 
@@ -101,6 +113,13 @@ class ProcessingService:
                 ProcessingHistory.ACTION_FINISHED,
                 f"Hoàn thành trong {elapsed_ms} ms",
             )
+            SystemLogService.info(
+                SystemLog.MODULE_PROCESSING,
+                f"Hoàn thành {algorithm.name} · {source_image.original_filename}",
+                user=user,
+                job=job,
+                execution_time_ms=elapsed_ms,
+            )
 
         except (OpenCVProcessingError, ProcessingServiceError) as exc:
             job.status = ProcessingJob.STATUS_FAILED
@@ -108,6 +127,12 @@ class ProcessingService:
             job.completed_at = timezone.now()
             job.save(update_fields=["status", "error_message", "completed_at", "updated_at"])
             ProcessingHistoryService.log(job, ProcessingHistory.ACTION_ERROR, str(exc))
+            SystemLogService.error(
+                SystemLog.MODULE_PROCESSING,
+                str(exc),
+                user=user,
+                job=job,
+            )
             raise ProcessingServiceError(str(exc)) from exc
         except Exception as exc:
             job.status = ProcessingJob.STATUS_FAILED
@@ -115,6 +140,12 @@ class ProcessingService:
             job.completed_at = timezone.now()
             job.save(update_fields=["status", "error_message", "completed_at", "updated_at"])
             ProcessingHistoryService.log(job, ProcessingHistory.ACTION_ERROR, job.error_message)
+            SystemLogService.error(
+                SystemLog.MODULE_PROCESSING,
+                job.error_message,
+                user=user,
+                job=job,
+            )
             raise ProcessingServiceError("Xử lý ảnh thất bại. Vui lòng thử lại.") from exc
 
         return job

@@ -9,6 +9,8 @@ from apps.images.services.image_service import ImageService
 from apps.processing.models import PipelineStep, ProcessedImage, ProcessingHistory, ProcessingJob
 from apps.processing.services.history_service import ProcessingHistoryService
 from apps.processing.services.processing_service import ProcessingServiceError
+from apps.admin_panel.models import SystemLog
+from apps.admin_panel.services.system_log_service import SystemLogService
 from services.opencv.exceptions import OpenCVProcessingError
 from services.opencv.opencv_service import OpenCVService
 from services.opencv.registry import process_image
@@ -48,6 +50,12 @@ class PipelineService:
             job,
             ProcessingHistory.ACTION_STARTED,
             f"Bắt đầu pipeline: {step_labels}",
+        )
+        SystemLogService.info(
+            SystemLog.MODULE_PIPELINE,
+            f"Bắt đầu pipeline: {step_labels}",
+            user=user,
+            job=job,
         )
 
         for order, algorithm in enumerate(algorithms, start=1):
@@ -91,6 +99,13 @@ class PipelineService:
                 ProcessingHistory.ACTION_FINISHED,
                 f"Pipeline hoàn thành trong {elapsed_ms} ms · {step_labels}",
             )
+            SystemLogService.info(
+                SystemLog.MODULE_PIPELINE,
+                f"Pipeline hoàn thành: {step_labels}",
+                user=user,
+                job=job,
+                execution_time_ms=elapsed_ms,
+            )
 
         except (OpenCVProcessingError, ProcessingServiceError) as exc:
             job.status = ProcessingJob.STATUS_FAILED
@@ -98,6 +113,12 @@ class PipelineService:
             job.completed_at = timezone.now()
             job.save(update_fields=["status", "error_message", "completed_at", "updated_at"])
             ProcessingHistoryService.log(job, ProcessingHistory.ACTION_ERROR, str(exc))
+            SystemLogService.error(
+                SystemLog.MODULE_PIPELINE,
+                str(exc),
+                user=user,
+                job=job,
+            )
             raise ProcessingServiceError(str(exc)) from exc
         except Exception as exc:
             job.status = ProcessingJob.STATUS_FAILED
@@ -105,6 +126,12 @@ class PipelineService:
             job.completed_at = timezone.now()
             job.save(update_fields=["status", "error_message", "completed_at", "updated_at"])
             ProcessingHistoryService.log(job, ProcessingHistory.ACTION_ERROR, job.error_message)
+            SystemLogService.error(
+                SystemLog.MODULE_PIPELINE,
+                job.error_message,
+                user=user,
+                job=job,
+            )
             raise ProcessingServiceError("Pipeline xử lý thất bại. Vui lòng thử lại.") from exc
 
         return job

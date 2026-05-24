@@ -15,10 +15,5 @@ urlpatterns = [
     path("algorithms/<int:pk>/edit/", views.admin_algorithm_edit_view, name="algorithm_edit"),
     path("algorithms/<int:pk>/toggle/", views.admin_algorithm_toggle_view, name="algorithm_toggle"),
     path("jobs/", views.admin_jobs_view, name="jobs"),
-    path(
-        "logs/",
-        views.admin_placeholder,
-        {"page_title": "System Logs", "page_description": "Nhật ký hệ thống sẽ được triển khai ở Phase 8."},
-        name="logs",
-    ),
+    path("logs/", views.admin_logs_view, name="logs"),
 ]

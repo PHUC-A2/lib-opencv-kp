@@ -1,0 +1,74 @@
+{% if logs %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="table table-zebra">
+            <thead class="bg-[#F9FAFB]">
+                <tr class="text-[#6B7280] text-sm">
+                    <th>#</th>
+                    <th>Thời gian</th>
+                    <th>Mức độ</th>
+                    <th>Module</th>
+                    <th>Nội dung</th>
+                    <th>User</th>
+                    <th>Job</th>
+                    <th>Thời gian xử lý</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr class="hover:bg-[#F9FAFB]">
+                        <td class="font-medium">{{ log.id }}</td>
+                        <td class="text-sm whitespace-nowrap">{{ log.created_at|date:"d/m/Y H:i:s" }}</td>
+                        <td>
+                            <span class="badge badge-sm rounded-lg {{ log.level_badge_class }}">{{ log.level_label }}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-ghost badge-sm rounded-lg">{{ log.module_label }}</span>
+                        </td>
+                        <td>
+                            <p class="text-sm max-w-[320px] truncate" title="{{ log.message }}">{{ log.message }}</p>
+                        </td>
+                        <td class="text-sm">
+                            {% if log.user %}
+                                {{ log.user.username }}
+                            {% else %}
+                                <span class="text-[#9CA3AF]">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-sm">
+                            {% if log.job and log.job.status == 'completed' %}
+                                <a href="{% url 'processing:result' log.job.id %}" class="link link-primary">#{{ log.job.id }}</a>
+                            {% elif log.job %}
+                                <a href="{% url 'admin_panel:jobs' %}?search={{ log.job.id }}" class="link link-hover">#{{ log.job.id }}</a>
+                            {% else %}
+                                <span class="text-[#9CA3AF]">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if log.execution_time_ms %}
+                                <span class="text-sm font-medium">{{ log.execution_time_ms }} ms</span>
+                            {% else %}
+                                <span class="text-sm text-[#9CA3AF]">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+    <div class="card-body items-center text-center py-12">
+        <span class="text-5xl">📋</span>
+        <p class="font-medium text-lg mt-4">Không có log nào</p>
+        <p class="text-[#6B7280] mt-1">
+            {% if search or level or module or date_from or date_to %}
+                Không tìm thấy log phù hợp với bộ lọc
+            {% else %}
+                Log sẽ được ghi khi xử lý ảnh hoặc pipeline
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endif %}
