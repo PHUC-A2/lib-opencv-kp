@@ -1,69 +1,36 @@
 from django.core.management.base import BaseCommand
 
 from apps.algorithms.models import Algorithm
-
-# Du lieu seed thuat toan — ten hien thi tieng Viet, ten ky thuat tieng Anh trong ngoac.
-DEFAULT_ALGORITHMS = [
-    {
-        "code": "grayscale",
-        "name": "Thang xám (Grayscale)",
-        "description": "Chuyển ảnh màu sang thang xám bằng OpenCV cvtColor",
-        "icon": "⬛",
-    },
-    {
-        "code": "gaussian_blur",
-        "name": "Làm mờ Gaussian (Gaussian Blur)",
-        "description": "Làm mờ ảnh bằng bộ lọc Gaussian",
-        "icon": "🌫️",
-    },
-    {
-        "code": "canny",
-        "name": "Phát hiện cạnh (Canny Edge)",
-        "description": "Phát hiện biên ảnh bằng thuật toán Canny",
-        "icon": "📐",
-    },
-    {
-        "code": "binary_threshold",
-        "name": "Ngưỡng nhị phân (Binary Threshold)",
-        "description": "Chuyển ảnh sang dạng nhị phân đen/trắng",
-        "icon": "🔲",
-    },
-    {
-        "code": "median_blur",
-        "name": "Làm mờ trung vị (Median Blur)",
-        "description": "Làm mờ ảnh bằng bộ lọc Median, giảm nhiễu muối tiêu",
-        "icon": "💧",
-    },
-    {
-        "code": "morphology",
-        "name": "Hình thái học (Morphology)",
-        "description": "Phép toán hình thái học mở (Morphology Open)",
-        "icon": "🔬",
-    },
-    {
-        "code": "histogram_equalization",
-        "name": "Cân bằng histogram (Histogram Equalization)",
-        "description": "Cân bằng histogram để tăng tương phản ảnh",
-        "icon": "📊",
-    },
-]
+from services.opencv.algorithm_catalog import ALGORITHM_CATALOG
+from services.opencv.registry import get_supported_codes
 
 
 class Command(BaseCommand):
-    help = "Seed du lieu thuat toan OpenCV mac dinh"
+    help = "Seed du lieu thuat toan OpenCV mac dinh tu catalog"
 
     def handle(self, *args, **options):
-        # Tao hoac cap nhat thuat toan mac dinh.
+        # Kiem tra catalog dong bo voi registry truoc khi seed.
+        catalog_codes = {item["code"] for item in ALGORITHM_CATALOG}
+        registry_codes = set(get_supported_codes())
+        missing_in_registry = catalog_codes - registry_codes
+        missing_in_catalog = registry_codes - catalog_codes
+        if missing_in_registry:
+            self.stderr.write(self.style.ERROR(f"Catalog thieu handler: {sorted(missing_in_registry)}"))
+            return
+        if missing_in_catalog:
+            self.stderr.write(self.style.ERROR(f"Registry thieu metadata: {sorted(missing_in_catalog)}"))
+            return
+
         created_count = 0
         updated_count = 0
 
-        for item in DEFAULT_ALGORITHMS:
+        for item in ALGORITHM_CATALOG:
             algorithm, created = Algorithm.objects.update_or_create(
                 code=item["code"],
                 defaults={
                     "name": item["name"],
                     "description": item["description"],
-                    "icon": item["icon"],
+                    "icon": item.get("icon", "⚙️"),
                     "is_active": True,
                 },
             )
@@ -74,6 +41,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Seed algorithms xong: {created_count} tao moi, {updated_count} cap nhat."
+                f"Seed algorithms xong: {created_count} tao moi, {updated_count} cap nhat "
+                f"({len(ALGORITHM_CATALOG)} thuat toan)."
             )
         )

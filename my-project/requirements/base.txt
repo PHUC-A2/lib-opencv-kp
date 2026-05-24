@@ -7,3 +7,4 @@ python-dotenv
 django-environ
 django-cleanup
 loguru
+pytesseract

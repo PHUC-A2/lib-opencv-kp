@@ -1,0 +1,448 @@
+# Danh muc thuat toan OpenCV — metadata hien thi tren admin/UI.
+
+ALGORITHM_CATALOG: list[dict[str, str]] = [
+    # === Co ban ===
+    {
+        "code": "grayscale",
+        "name": "Thang xám (Grayscale)",
+        "description": "Chuyển ảnh màu sang thang xám bằng cvtColor",
+        "icon": "⬛",
+    },
+    {
+        "code": "resize",
+        "name": "Thay đổi kích thước (Resize)",
+        "description": "Thu nhỏ ảnh giữ tỷ lệ, cạnh dài tối đa 640px",
+        "icon": "📏",
+    },
+    {
+        "code": "crop",
+        "name": "Cắt ảnh (Crop)",
+        "description": "Cắt vùng trung tâm 75% kích thước ảnh",
+        "icon": "✂️",
+    },
+    {
+        "code": "rotate",
+        "name": "Xoay ảnh (Rotate)",
+        "description": "Xoay ảnh 90° theo chiều kim đồng hồ",
+        "icon": "🔄",
+    },
+    {
+        "code": "flip",
+        "name": "Lật ảnh (Flip)",
+        "description": "Lật ảnh theo trục dọc (trái-phải)",
+        "icon": "↔️",
+    },
+    {
+        "code": "brightness_adjustment",
+        "name": "Điều chỉnh độ sáng (Brightness)",
+        "description": "Tăng độ sáng ảnh bằng hằng số beta",
+        "icon": "☀️",
+    },
+    {
+        "code": "contrast_adjustment",
+        "name": "Điều chỉnh tương phản (Contrast)",
+        "description": "Tăng tương phản bằng hệ số alpha",
+        "icon": "🌓",
+    },
+    {
+        "code": "gamma_correction",
+        "name": "Hiệu chỉnh gamma (Gamma Correction)",
+        "description": "Hiệu chỉnh gamma để làm sáng/vơi vùng tối",
+        "icon": "📈",
+    },
+    {
+        "code": "histogram_equalization",
+        "name": "Cân bằng histogram (Histogram Equalization)",
+        "description": "Cân bằng histogram trên kênh xám",
+        "icon": "📊",
+    },
+    {
+        "code": "clahe",
+        "name": "CLAHE (Adaptive Histogram)",
+        "description": "Cân bằng histogram cục bộ CLAHE",
+        "icon": "🎚️",
+    },
+    # === Loc ===
+    {
+        "code": "gaussian_blur",
+        "name": "Làm mờ Gaussian (Gaussian Blur)",
+        "description": "Làm mờ ảnh bằng bộ lọc Gaussian 15x15",
+        "icon": "🌫️",
+    },
+    {
+        "code": "median_blur",
+        "name": "Làm mờ trung vị (Median Blur)",
+        "description": "Làm mờ bằng bộ lọc Median, giảm nhiễu muối tiêu",
+        "icon": "💧",
+    },
+    {
+        "code": "box_filter",
+        "name": "Bộ lọc hộp (Box Filter)",
+        "description": "Lọc trung bình hộp 9x9 trên ảnh màu",
+        "icon": "📦",
+    },
+    {
+        "code": "bilateral_filter",
+        "name": "Bộ lọc song phương (Bilateral Filter)",
+        "description": "Lọc giữ biên cạnh, làm mượt vùng đồng nhất",
+        "icon": "🪟",
+    },
+    {
+        "code": "mean_filter",
+        "name": "Bộ lọc trung bình (Mean Filter)",
+        "description": "Lọc trung bình trên cửa sổ 9x9",
+        "icon": "➗",
+    },
+    # === Canh ===
+    {
+        "code": "canny",
+        "name": "Phát hiện cạnh (Canny Edge)",
+        "description": "Phát hiện biên ảnh bằng thuật toán Canny",
+        "icon": "📐",
+    },
+    {
+        "code": "sobel_x",
+        "name": "Sobel X",
+        "description": "Gradient Sobel theo trục X (đạo hàm dọc)",
+        "icon": "↕️",
+    },
+    {
+        "code": "sobel_y",
+        "name": "Sobel Y",
+        "description": "Gradient Sobel theo trục Y (đạo hàm ngang)",
+        "icon": "↔️",
+    },
+    {
+        "code": "sobel_combined",
+        "name": "Sobel kết hợp (Sobel Combined)",
+        "description": "Kết hợp độ lớn gradient Sobel X và Y",
+        "icon": "🔀",
+    },
+    {
+        "code": "laplacian",
+        "name": "Laplacian",
+        "description": "Toán tử Laplacian phát hiện biên đa hướng",
+        "icon": "🧮",
+    },
+    {
+        "code": "scharr",
+        "name": "Scharr",
+        "description": "Gradient Scharr chính xác hơn Sobel 3x3",
+        "icon": "📉",
+    },
+    # === Nguong ===
+    {
+        "code": "binary_threshold",
+        "name": "Ngưỡng nhị phân (Binary Threshold)",
+        "description": "Chuyển ảnh sang dạng nhị phân đen/trắng",
+        "icon": "🔲",
+    },
+    {
+        "code": "binary_inverse_threshold",
+        "name": "Ngưỡng nhị phân đảo (Binary Inverse)",
+        "description": "Ngưỡng nhị phân đảo ngược",
+        "icon": "🔳",
+    },
+    {
+        "code": "truncate_threshold",
+        "name": "Ngưỡng cắt (Truncate Threshold)",
+        "description": "Pixel > 127 bị cắt về 127",
+        "icon": "✂️",
+    },
+    {
+        "code": "tozero_threshold",
+        "name": "Ngưỡng To-Zero",
+        "description": "Pixel ≤ 127 được đặt về 0",
+        "icon": "0️⃣",
+    },
+    {
+        "code": "tozero_inverse_threshold",
+        "name": "Ngưỡng To-Zero đảo (To-Zero Inverse)",
+        "description": "Ngưỡng To-Zero đảo ngược",
+        "icon": "🔄",
+    },
+    {
+        "code": "adaptive_mean_threshold",
+        "name": "Ngưỡng thích ứng Mean (Adaptive Mean)",
+        "description": "Ngưỡng thích ứng dùng trung bình cục bộ",
+        "icon": "📊",
+    },
+    {
+        "code": "adaptive_gaussian_threshold",
+        "name": "Ngưỡng thích ứng Gaussian (Adaptive Gaussian)",
+        "description": "Ngưỡng thích ứng dùng Gaussian cục bộ",
+        "icon": "🌫️",
+    },
+    {
+        "code": "otsu_threshold",
+        "name": "Ngưỡng Otsu",
+        "description": "Tự động tìm ngưỡng tối ưu từ histogram",
+        "icon": "🎯",
+    },
+    # === Hinh thai hoc ===
+    {
+        "code": "erosion",
+        "name": "Co (Erosion)",
+        "description": "Ăn mòn vùng sáng, thu nhỏ vật thể",
+        "icon": "➖",
+    },
+    {
+        "code": "dilation",
+        "name": "Giãn (Dilation)",
+        "description": "Giãn nở vùng sáng, lấp lỗ hổng nhỏ",
+        "icon": "➕",
+    },
+    {
+        "code": "opening",
+        "name": "Mở (Opening)",
+        "description": "Erosion rồi Dilation, loại nhiễu nhỏ",
+        "icon": "🔓",
+    },
+    {
+        "code": "closing",
+        "name": "Đóng (Closing)",
+        "description": "Dilation rồi Erosion, lấp lỗ hổng",
+        "icon": "🔒",
+    },
+    {
+        "code": "morphological_gradient",
+        "name": "Gradient hình thái (Morphological Gradient)",
+        "description": "Dilation − Erosion, làm nổi biên vật thể",
+        "icon": "📐",
+    },
+    {
+        "code": "top_hat",
+        "name": "Top-Hat",
+        "description": "Ảnh gốc − Opening, làm nổi chi tiết sáng nhỏ",
+        "icon": "🎩",
+    },
+    {
+        "code": "black_hat",
+        "name": "Black-Hat",
+        "description": "Closing − ảnh gốc, làm nổi chi tiết tối nhỏ",
+        "icon": "🎩",
+    },
+    {
+        "code": "morphology",
+        "name": "Hình thái học (Morphology)",
+        "description": "Alias Opening — tương thích phiên bản cũ",
+        "icon": "🔬",
+    },
+    # === Contour ===
+    {
+        "code": "contour_detection",
+        "name": "Phát hiện contour (Contour Detection)",
+        "description": "Tìm và vẽ contour lên ảnh BGR",
+        "icon": "〰️",
+    },
+    {
+        "code": "contour_approximation",
+        "name": "Xấp xỉ contour (Contour Approximation)",
+        "description": "Xấp xỉ contour thành đa giác đơn giản",
+        "icon": "📐",
+    },
+    {
+        "code": "bounding_box_detection",
+        "name": "Hộp bao (Bounding Box)",
+        "description": "Vẽ hộp chữ nhật bao quanh contour",
+        "icon": "🔲",
+    },
+    {
+        "code": "convex_hull",
+        "name": "Bao lồi (Convex Hull)",
+        "description": "Vẽ bao lồi của từng contour",
+        "icon": "⬡",
+    },
+    {
+        "code": "convexity_defects",
+        "name": "Khuyết lồi (Convexity Defects)",
+        "description": "Phát hiện lỗ hổng lồi trên contour",
+        "icon": "🕳️",
+    },
+    {
+        "code": "shape_detection",
+        "name": "Nhận dạng hình (Shape Detection)",
+        "description": "Phân loại tam giác, vuông, tròn… và gán nhãn",
+        "icon": "🔷",
+    },
+    # === Phat hien ===
+    {
+        "code": "haar_face_detection",
+        "name": "Phát hiện mặt Haar (Haar Face)",
+        "description": "Phát hiện khuôn mặt bằng Haar cascade",
+        "icon": "😀",
+    },
+    {
+        "code": "eye_detection",
+        "name": "Phát hiện mắt (Eye Detection)",
+        "description": "Phát hiện mắt bằng Haar cascade",
+        "icon": "👁️",
+    },
+    {
+        "code": "smile_detection",
+        "name": "Phát hiện nụ cười (Smile Detection)",
+        "description": "Phát hiện nụ cười bằng Haar cascade",
+        "icon": "😊",
+    },
+    {
+        "code": "hog_detection",
+        "name": "Phát hiện người HOG (HOG People)",
+        "description": "Phát hiện người bằng HOG + SVM mặc định",
+        "icon": "🚶",
+    },
+    {
+        "code": "mog2_background_subtraction",
+        "name": "Trừ nền MOG2 (Background Subtraction)",
+        "description": "Mô phỏng trừ nền với 2 frame",
+        "icon": "🎬",
+    },
+    {
+        "code": "frame_difference_detection",
+        "name": "Phát hiện khác biệt khung hình (Frame Difference)",
+        "description": "So sánh ảnh gốc và bản dịch nhẹ",
+        "icon": "🎞️",
+    },
+    # === Mau sac ===
+    {
+        "code": "rgb_split",
+        "name": "Tách kênh RGB (RGB Split)",
+        "description": "Tách R, G, B và ghép ngang để so sánh",
+        "icon": "🎨",
+    },
+    {
+        "code": "hsv_conversion",
+        "name": "Chuyển HSV (HSV Conversion)",
+        "description": "Chuyển BGR sang HSV, hiển thị 3 kênh",
+        "icon": "🌈",
+    },
+    {
+        "code": "lab_conversion",
+        "name": "Chuyển LAB (LAB Conversion)",
+        "description": "Chuyển BGR sang LAB, hiển thị 3 kênh",
+        "icon": "🧪",
+    },
+    {
+        "code": "color_histogram",
+        "name": "Histogram màu (Color Histogram)",
+        "description": "Vẽ biểu đồ histogram màu BGR",
+        "icon": "📊",
+    },
+    {
+        "code": "dominant_color_kmeans",
+        "name": "Màu chủ đạo K-Means (Dominant Color)",
+        "description": "Tìm 5 màu chủ đạo bằng K-Means",
+        "icon": "🎯",
+    },
+    # === Hinh hoc ===
+    {
+        "code": "affine_transform",
+        "name": "Biến đổi affine (Affine Transform)",
+        "description": "Xoay nhẹ + dịch chuyển + scale affine",
+        "icon": "🔀",
+    },
+    {
+        "code": "perspective_transform",
+        "name": "Biến đổi phối cảnh (Perspective Transform)",
+        "description": "Biến đổi 4 điểm từ hình chữ nhật sang tứ giác",
+        "icon": "📐",
+    },
+    {
+        "code": "translation",
+        "name": "Dịch chuyển (Translation)",
+        "description": "Dịch chuyển ảnh theo vector (tx, ty)",
+        "icon": "➡️",
+    },
+    {
+        "code": "scaling",
+        "name": "Phóng to/thu nhỏ (Scaling)",
+        "description": "Phóng to ảnh 1.5× quanh tâm",
+        "icon": "🔍",
+    },
+    {
+        "code": "rotation_matrix",
+        "name": "Ma trận xoay (Rotation Matrix)",
+        "description": "Xoay ảnh 35° quanh tâm bằng ma trận xoay",
+        "icon": "🔄",
+    },
+    # === Nang cao ===
+    {
+        "code": "gaussian_pyramid",
+        "name": "Kim tự tháp Gaussian (Gaussian Pyramid)",
+        "description": "Tạo tháp Gaussian 4 tầng và ghép ngang",
+        "icon": "🔺",
+    },
+    {
+        "code": "template_matching",
+        "name": "Khớp mẫu (Template Matching)",
+        "description": "Tìm vùng khớp mẫu trên chính ảnh đó",
+        "icon": "🧩",
+    },
+    {
+        "code": "orb_feature_matching",
+        "name": "Đặc trưng ORB (ORB Features)",
+        "description": "Trích xuất và vẽ keypoint ORB",
+        "icon": "✨",
+    },
+    {
+        "code": "optical_flow_lk",
+        "name": "Optical Flow Lucas-Kanade",
+        "description": "Tính optical flow giữa ảnh gốc và bản dịch",
+        "icon": "💨",
+    },
+    {
+        "code": "edge_contour_fusion",
+        "name": "Kết hợp cạnh + contour (Edge Contour Fusion)",
+        "description": "Chồng Canny và contour lên ảnh gốc",
+        "icon": "🔗",
+    },
+    # === OCR ===
+    {
+        "code": "text_detection",
+        "name": "Phát hiện chữ (Text Detection)",
+        "description": "Phát hiện vùng chữ — pytesseract hoặc contour fallback",
+        "icon": "🔤",
+    },
+    {
+        "code": "text_recognition",
+        "name": "Nhận dạng chữ (Text Recognition)",
+        "description": "Nhận dạng và hiển thị văn bản trên ảnh",
+        "icon": "📝",
+    },
+    {
+        "code": "image_to_text",
+        "name": "Ảnh sang văn bản (Image to Text)",
+        "description": "Chuyển ảnh thành văn bản hiển thị trên canvas",
+        "icon": "📄",
+    },
+    # === DNN ===
+    {
+        "code": "yolo_detection",
+        "name": "Phát hiện YOLO (YOLO Detection)",
+        "description": "Phát hiện vật thể YOLO tiny — fallback HOG nếu thiếu model",
+        "icon": "🤖",
+    },
+    {
+        "code": "ssd_detection",
+        "name": "Phát hiện SSD (SSD Detection)",
+        "description": "Phát hiện vật thể SSD MobileNet — fallback HOG",
+        "icon": "📦",
+    },
+    {
+        "code": "dnn_classification",
+        "name": "Phân loại DNN (DNN Classification)",
+        "description": "Phân loại ảnh bằng mạng DNN — fallback blob stats",
+        "icon": "🏷️",
+    },
+    {
+        "code": "image_embedding",
+        "name": "Embedding ảnh (Image Embedding)",
+        "description": "Trích xuất vector embedding — fallback blob stats",
+        "icon": "🧬",
+    },
+    {
+        "code": "lbph_face_recognition",
+        "name": "Nhận diện mặt LBPH (LBPH Face Recognition)",
+        "description": "Nhận diện khuôn mặt LBPH — fallback Haar cascade",
+        "icon": "🪪",
+    },
+]

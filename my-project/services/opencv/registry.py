@@ -3,26 +3,10 @@ from collections.abc import Callable
 import numpy as np
 
 from services.opencv.exceptions import OpenCVProcessingError
-from services.opencv.processors import (
-    apply_binary_threshold,
-    apply_canny,
-    apply_gaussian_blur,
-    apply_grayscale,
-    apply_histogram_equalization,
-    apply_median_blur,
-    apply_morphology,
-)
+from services.opencv.processors import ALL_PROCESSORS
 
 # Registry map code thuat toan -> ham xu ly OpenCV.
-ALGORITHM_REGISTRY: dict[str, Callable[[np.ndarray], np.ndarray]] = {
-    "grayscale": apply_grayscale,
-    "gaussian_blur": apply_gaussian_blur,
-    "canny": apply_canny,
-    "binary_threshold": apply_binary_threshold,
-    "median_blur": apply_median_blur,
-    "morphology": apply_morphology,
-    "histogram_equalization": apply_histogram_equalization,
-}
+ALGORITHM_REGISTRY: dict[str, Callable[[np.ndarray], np.ndarray]] = ALL_PROCESSORS
 
 
 def get_supported_codes() -> list[str]:
