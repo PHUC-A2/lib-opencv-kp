@@ -1,0 +1,25 @@
+<header class="sticky top-0 z-20 h-16 bg-white/90 backdrop-blur border-b border-[#E5E7EB] flex items-center justify-between px-4 md:px-6">
+    <div class="flex items-center gap-3">
+        <button
+            type="button"
+            @click="sidebarOpen = !sidebarOpen"
+            class="lg:hidden btn btn-ghost btn-sm btn-square rounded-xl"
+            aria-label="Mở menu"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <div>
+            <h1 class="text-lg font-semibold">{{ page_title|default:"OpenCV" }}</h1>
+            {% if page_subtitle %}
+                <p class="text-xs text-[#6B7280] hidden sm:block">{{ page_subtitle }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+        <a href="{{ guest_register_url }}" class="btn btn-sm btn-outline rounded-xl hidden sm:inline-flex">Đăng ký</a>
+        <a href="{{ guest_login_url }}" class="btn btn-sm btn-primary-gradient rounded-xl">Đăng nhập</a>
+    </div>
+</header>

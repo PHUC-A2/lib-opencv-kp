@@ -1,0 +1,37 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    {% include "partials/guest_preview_banner.html" %}
+
+    <div x-show="guestSection === 'overview'" x-cloak>
+        {% include "landing/sections/overview.html" %}
+    </div>
+
+    <div x-show="guestSection === 'profile'" x-cloak>
+        {% include "landing/sections/profile.html" %}
+    </div>
+
+    <div x-show="guestSection === 'upload'" x-cloak>
+        {% include "landing/sections/upload.html" %}
+    </div>
+
+    <div x-show="guestSection === 'gallery'" x-cloak>
+        {% include "landing/sections/gallery.html" %}
+    </div>
+
+    <div x-show="guestSection === 'processing'" x-cloak>
+        {% include "landing/sections/processing.html" %}
+    </div>
+
+    <div x-show="guestSection === 'history'" x-cloak>
+        {% include "landing/sections/history.html" %}
+    </div>
+
+    <div x-show="guestSection === 'pipeline'" x-cloak>
+        {% include "landing/sections/pipeline.html" %}
+    </div>
+</div>
+{% endblock %}

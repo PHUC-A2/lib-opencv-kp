@@ -1,6 +1,59 @@
 from django.urls import reverse
 
 
+def get_guest_menu_items() -> list[dict]:
+    # Menu sidebar cho khach chua dang nhap — chuyen section tren trang landing.
+    return [
+        {
+            "label": "Tổng quan",
+            "icon": "layout-dashboard",
+            "section": "overview",
+        },
+        {
+            "label": "Hồ sơ",
+            "icon": "user",
+            "section": "profile",
+        },
+        {
+            "label": "Tải ảnh lên",
+            "icon": "upload",
+            "section": "upload",
+        },
+        {
+            "label": "Thư viện ảnh",
+            "icon": "image",
+            "section": "gallery",
+        },
+        {
+            "label": "Xử lý ảnh",
+            "icon": "settings",
+            "section": "processing",
+        },
+        {
+            "label": "Lịch sử xử lý",
+            "icon": "history",
+            "section": "history",
+        },
+        {
+            "label": "Luồng xử lý đa bước",
+            "icon": "link",
+            "section": "pipeline",
+        },
+    ]
+
+
+def build_guest_menu() -> dict:
+    # Tao menu guest cho trang landing — khong co link that, chi doi section.
+    public_items = []
+    for item in get_guest_menu_items():
+        public_items.append({**item, "is_active": False})
+
+    return {
+        "public_menu_items": public_items,
+        "admin_menu_items": [],
+    }
+
+
 def get_public_menu_items() -> list[dict]:
     # Menu dieu huong chinh cho khu vuc public (user da dang nhap).
     return [

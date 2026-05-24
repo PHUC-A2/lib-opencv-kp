@@ -1,0 +1,62 @@
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 pointer-events-none select-none opacity-95">
+    <div class="xl:col-span-2 space-y-4">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">1. Chọn ảnh nguồn</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto">
+                    {% for image in demo_images %}
+                        <div class="relative rounded-xl overflow-hidden border-2 {% if forloop.first %}border-blue-500 ring-2 ring-blue-200{% else %}border-[#E5E7EB]{% endif %}">
+                            <div class="aspect-square bg-[#F3F4F6]">
+                                <img src="{{ image.url }}" alt="{{ image.label }}" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                            <p class="text-xs p-2 truncate">{{ image.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">2. Thứ tự pipeline</h2>
+                <p class="text-sm text-[#6B7280] mb-4">Chọn thuật toán bên phải, sắp xếp thứ tự bằng nút lên / xuống</p>
+                <div class="space-y-2">
+                    {% for step in demo_pipeline_steps %}
+                        <div class="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB]">
+                            <span class="badge badge-primary badge-sm rounded-lg">{{ step.order }}</span>
+                            {% include "partials/icon.html" with name="settings" size="md" %}
+                            <span class="flex-1 text-sm font-medium">{{ step.name }}</span>
+                            <div class="flex gap-1">
+                                <button type="button" class="btn btn-ghost btn-xs btn-square rounded-lg" disabled aria-label="Di chuyển lên">↑</button>
+                                <button type="button" class="btn btn-ghost btn-xs btn-square rounded-lg" disabled aria-label="Di chuyển xuống">↓</button>
+                                <button type="button" class="btn btn-ghost btn-xs btn-square rounded-lg text-[#EF4444]" disabled aria-label="Xóa bước">×</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">3. Thêm thuật toán</h2>
+                <div class="space-y-2 max-h-[420px] overflow-y-auto">
+                    {% for algorithm in algorithms|slice:":8" %}
+                        <div class="w-full p-3 rounded-xl border border-[#E5E7EB] bg-white text-left">
+                            <div class="flex items-start gap-2">
+                                {% include "partials/algorithm_icon.html" with algorithm=algorithm size="md" %}
+                                <div>
+                                    <p class="font-medium text-sm">{{ algorithm.name }}</p>
+                                    <p class="text-xs text-[#6B7280]">{{ algorithm.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary-gradient w-full rounded-xl" disabled>Chạy luồng xử lý</button>
+    </div>
+</div>

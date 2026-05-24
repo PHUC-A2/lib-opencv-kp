@@ -10,10 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}?v=5">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
+        [x-cloak] { display: none !important; }
         .btn-primary-gradient {
             background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
             border: none;
@@ -33,7 +34,8 @@
         </div>
     </div>
 
-    <script src="{% static 'js/app.js' %}"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="{% static 'js/app.js' %}?v=6"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

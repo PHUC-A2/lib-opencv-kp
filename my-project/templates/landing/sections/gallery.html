@@ -1,0 +1,31 @@
+<div class="space-y-4 pointer-events-none select-none opacity-95">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h2 class="text-lg font-semibold">Thư viện ảnh</h2>
+            <p class="text-sm text-[#6B7280]">{{ demo_images|length }} ảnh mẫu (xem trước)</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline rounded-xl" disabled>Tìm kiếm / Sắp xếp</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for image in demo_images %}
+            <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden">
+                <figure class="aspect-square bg-[#F3F4F6]">
+                    <img src="{{ image.url }}" alt="{{ image.label }}" class="w-full h-full object-cover" loading="lazy">
+                </figure>
+                <div class="card-body p-4 gap-2">
+                    <h3 class="font-medium text-sm truncate">{{ image.label }}</h3>
+                    <div class="flex flex-wrap gap-2 text-xs text-[#6B7280]">
+                        <span>{{ image.width }}×{{ image.height }}</span>
+                        <span>·</span>
+                        <span>{{ image.size_label }}</span>
+                    </div>
+                    <div class="card-actions justify-end mt-2 gap-2">
+                        <button type="button" class="btn btn-ghost btn-xs rounded-lg" disabled>Tải</button>
+                        <button type="button" class="btn btn-ghost btn-xs rounded-lg text-[#EF4444]" disabled>Xóa</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

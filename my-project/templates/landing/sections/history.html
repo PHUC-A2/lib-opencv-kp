@@ -1,0 +1,44 @@
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden pointer-events-none select-none opacity-95">
+    <div class="overflow-x-auto">
+        <table class="table table-zebra">
+            <thead class="bg-[#F9FAFB]">
+                <tr class="text-[#6B7280] text-sm">
+                    <th class="align-middle">#</th>
+                    <th class="align-middle">Thời gian</th>
+                    <th class="align-middle">Ảnh nguồn</th>
+                    <th class="align-middle">Thuật toán</th>
+                    <th class="align-middle w-[8.5rem]">Trạng thái</th>
+                    <th class="align-middle">Thời gian xử lý</th>
+                    <th class="align-middle text-right">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in demo_history_jobs %}
+                    <tr class="hover:bg-[#F9FAFB]">
+                        <td class="font-medium align-middle">{{ job.id }}</td>
+                        <td class="align-middle"><p class="text-sm">{{ job.created_at }}</p></td>
+                        <td class="align-middle">
+                            <div class="flex items-center gap-2 min-w-[160px]">
+                                <img src="{{ job.source_url }}" alt="" class="w-10 h-10 rounded-lg object-cover border border-[#E5E7EB]">
+                                <span class="text-sm truncate max-w-[140px]">{{ job.source_name }}</span>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            {% if job.is_pipeline %}
+                                <span class="badge badge-primary badge-sm rounded-lg inline-flex items-center justify-center min-w-[5.5rem] h-7 whitespace-nowrap mb-1">Luồng xử lý</span>
+                            {% endif %}
+                            <span class="text-sm">{{ job.algorithm }}</span>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge badge-success badge-sm rounded-lg inline-flex items-center justify-center min-w-[7.5rem] h-7 whitespace-nowrap">{{ job.status_label }}</span>
+                        </td>
+                        <td class="align-middle"><span class="text-sm">{{ job.execution_time_ms }} ms</span></td>
+                        <td class="text-right align-middle">
+                            <button type="button" class="btn btn-ghost btn-xs rounded-lg" disabled>Xem kết quả</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

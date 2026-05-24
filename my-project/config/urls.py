@@ -4,16 +4,16 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from apps.dashboard import views as dashboard_views
 
-def home_redirect(request):
-    # Chuyen huong trang chu theo trang thai dang nhap.
-    if request.user.is_authenticated:
-        return redirect("dashboard:home")
-    return redirect("authentication:login")
+
+def home_entry_view(request):
+    # Trang "/" — guest xem truoc UI, user da dang nhap vao dashboard.
+    return dashboard_views.public_landing_view(request)
 
 
 urlpatterns = [
-    path("", home_redirect, name="home"),
+    path("", home_entry_view, name="home"),
     path("", include("apps.authentication.urls")),
     path("", include("apps.dashboard.urls")),
     path("images/", include("apps.images.urls")),

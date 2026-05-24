@@ -56,10 +56,10 @@ def login_view(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def logout_view(request: HttpRequest) -> HttpResponse:
-    # Dang xuat va quay ve trang dang nhap.
+    # Dang xuat va quay ve trang chu guest.
     AuthenticationService.logout_user(request)
     messages.info(request, "Bạn đã đăng xuất thành công.")
-    return redirect("authentication:login")
+    return redirect("home")
 
 
 @login_required

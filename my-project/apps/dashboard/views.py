@@ -1,10 +1,37 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from apps.images.services.image_service import ImageService
 from apps.processing.models import ProcessingJob
 from apps.processing.services.processing_service import ProcessingService
+from core.guest_preview import (
+    get_guest_algorithms,
+    get_guest_demo_images,
+    get_guest_history_jobs,
+    get_guest_pipeline_steps,
+    get_guest_stats,
+)
+
+
+def public_landing_view(request: HttpRequest) -> HttpResponse:
+    # Trang chu cho khach — xem truoc UI giong luc da dang nhap, khong thao tac duoc.
+    if request.user.is_authenticated:
+        return redirect("dashboard:home")
+
+    return render(
+        request,
+        "landing/index.html",
+        {
+            "page_title": "OpenCV AI",
+            "page_subtitle": "Xem trước hệ thống xử lý ảnh thông minh",
+            "stats": get_guest_stats(),
+            "demo_images": get_guest_demo_images(),
+            "algorithms": get_guest_algorithms(),
+            "demo_history_jobs": get_guest_history_jobs(),
+            "demo_pipeline_steps": get_guest_pipeline_steps(),
+        },
+    )
 
 
 @login_required

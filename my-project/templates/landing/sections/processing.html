@@ -1,0 +1,57 @@
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 pointer-events-none select-none opacity-95">
+    <div class="xl:col-span-2 space-y-4">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">1. Chọn ảnh nguồn</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {% for image in demo_images %}
+                        <div class="relative rounded-xl overflow-hidden border-2 border-blue-500 ring-2 ring-blue-200">
+                            <div class="aspect-square bg-[#F3F4F6]">
+                                <img src="{{ image.url }}" alt="{{ image.label }}" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                            <div class="p-2 bg-white">
+                                <p class="text-xs truncate font-medium">{{ image.name }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <p class="text-sm font-medium text-[#059669] inline-flex items-center gap-2">
+                    {% include "partials/icon.html" with name="check-circle" size="sm" %}
+                    Kết quả mẫu · 86 ms
+                </p>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <img src="{{ demo_images.0.url }}" alt="Trước" class="rounded-xl border border-[#E5E7EB] aspect-video object-cover">
+                    <img src="{{ demo_images.0.url }}" alt="Sau" class="rounded-xl border border-[#E5E7EB] aspect-video object-cover grayscale">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4 xl:sticky xl:top-[5.5rem] xl:self-start">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body flex flex-col min-h-0 pb-4">
+                <h2 class="text-lg font-semibold mb-4 shrink-0">2. Chọn thuật toán</h2>
+                <div class="space-y-3 max-h-[min(28rem,calc(100dvh-20rem))] overflow-y-auto overscroll-contain pr-1 -mr-1">
+                    {% for algorithm in algorithms %}
+                        <div class="w-full p-4 rounded-xl border text-left {% if forloop.first %}border-blue-500 bg-blue-50/50 shadow-sm{% else %}border-[#E5E7EB] bg-[#F9FAFB]{% endif %}">
+                            <div class="flex items-start gap-3">
+                                {% include "partials/algorithm_icon.html" with algorithm=algorithm size="lg" %}
+                                <div>
+                                    <p class="font-medium text-sm">{{ algorithm.name }}</p>
+                                    <p class="text-xs text-[#6B7280] mt-1">{{ algorithm.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary-gradient w-full rounded-xl" disabled>Xử lý ảnh</button>
+        <button type="button" class="btn btn-outline w-full rounded-xl" disabled>Xem thư viện ảnh</button>
+    </div>
+</div>

@@ -268,6 +268,55 @@ a:focus:not(:focus-visible) {
     height: 48px;
 }
 
+/* Nut hien/an mat khau — auth forms */
+.password-field-input {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.625rem;
+    color: #6B7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.password-toggle-btn:hover {
+    color: #3B82F6;
+    background-color: #F3F4F6;
+}
+
+.password-toggle-btn:active {
+    transform: translateY(-50%) scale(0.94);
+}
+
+.password-toggle-btn:focus-visible {
+    outline: 2px solid #3B82F6;
+    outline-offset: 2px;
+}
+
+.password-toggle-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+}
+
+.password-toggle-icon .icon-inline {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 /* Responsive — mobile sidebar overlay */
 @media (max-width: 1023px) {
     #toast-container {

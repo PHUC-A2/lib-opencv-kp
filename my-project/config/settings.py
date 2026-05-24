@@ -164,7 +164,7 @@ LOGIN_URL = "/auth/dang-nhap/"
 # Chuyen huong sau khi dang nhap thanh cong.
 LOGIN_REDIRECT_URL = "/dashboard/"
 # Chuyen huong sau khi dang xuat.
-LOGOUT_REDIRECT_URL = "/auth/dang-nhap/"
+LOGOUT_REDIRECT_URL = "/"
 
 # Cau hinh CSRF cho moi truong dev local.
 CSRF_TRUSTED_ORIGINS = [

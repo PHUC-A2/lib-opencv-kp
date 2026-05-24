@@ -1,0 +1,100 @@
+<div class="mb-2">
+    <p class="text-[#6B7280]">Xin chào, <span class="font-medium text-[#111827]">Khách truy cập</span> {% include "partials/icon.html" with name="hand" size="sm" class="inline-block" %}</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Tổng ảnh</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.total_images }}</p>
+                </div>
+                {% include "partials/icon.html" with name="image" size="lg" %}
+            </div>
+        </div>
+    </div>
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Tác vụ xử lý</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.processing_jobs }}</p>
+                </div>
+                {% include "partials/icon.html" with name="settings" size="lg" %}
+            </div>
+        </div>
+    </div>
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Hoàn thành</p>
+                    <p class="text-2xl font-bold mt-1 text-[#22C55E]">{{ stats.completed_jobs }}</p>
+                </div>
+                {% include "partials/icon.html" with name="check-circle" size="lg" %}
+            </div>
+        </div>
+    </div>
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Đang chờ</p>
+                    <p class="text-2xl font-bold mt-1 text-[#FACC15]">{{ stats.pending_jobs }}</p>
+                </div>
+                {% include "partials/icon.html" with name="loader" size="lg" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Hành động nhanh</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button type="button" @click="guestSection = 'upload'" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200 text-left">
+                        {% include "partials/icon.html" with name="upload" size="lg" %}
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Tải ảnh lên</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Tải ảnh lên để bắt đầu xử lý OpenCV</p>
+                    </button>
+                    <button type="button" @click="guestSection = 'processing'" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200 text-left">
+                        {% include "partials/icon.html" with name="settings" size="lg" %}
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Xử lý ảnh</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Chọn thuật toán và xử lý ngay</p>
+                    </button>
+                    <button type="button" @click="guestSection = 'gallery'" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200 text-left">
+                        {% include "partials/icon.html" with name="image" size="lg" %}
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Thư viện ảnh</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Xem và quản lý ảnh đã tải lên</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl pointer-events-none select-none opacity-95">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Thông tin tài khoản</h2>
+                <dl class="space-y-3 text-sm">
+                    <div>
+                        <dt class="text-[#6B7280]">Tên đăng nhập</dt>
+                        <dd class="font-medium">demo_user</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[#6B7280]">Địa chỉ email</dt>
+                        <dd class="font-medium">demo@opencv.ai</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[#6B7280]">Vai trò</dt>
+                        <dd><span class="badge badge-sm badge-ghost rounded-lg">Người dùng</span></dd>
+                    </div>
+                </dl>
+                <button type="button" class="btn btn-sm btn-outline rounded-xl w-full mt-4" disabled>Chỉnh sửa hồ sơ</button>
+            </div>
+        </div>
+    </div>
+</div>
