@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpRequest, HttpResponse
+from django.core.files.storage import default_storage
+from django.http import FileResponse, Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
@@ -102,6 +103,35 @@ def processing_result_view(request: HttpRequest, pk: int) -> HttpResponse:
             "job": job,
         },
     )
+
+
+@login_required
+def processing_download_view(request: HttpRequest, pk: int) -> HttpResponse:
+    # Tai anh ket qua xu ly ve may client.
+    try:
+        job = ProcessingService.get_user_job(request.user, pk)
+    except ProcessingJob.DoesNotExist as exc:
+        raise Http404("Không tìm thấy kết quả xử lý.") from exc
+
+    if job.status != ProcessingJob.STATUS_COMPLETED:
+        raise Http404("Job chưa hoàn thành, không thể tải ảnh.")
+
+    try:
+        processed_image = job.processed_image
+    except ObjectDoesNotExist as exc:
+        raise Http404("Không tìm thấy ảnh kết quả.") from exc
+
+    if not default_storage.exists(processed_image.file_path):
+        raise Http404("File ảnh kết quả không tồn tại.")
+
+    file_path = default_storage.path(processed_image.file_path)
+    response = FileResponse(
+        open(file_path, "rb"),
+        as_attachment=True,
+        filename=processed_image.download_filename,
+    )
+    response["Content-Type"] = processed_image.mime_type
+    return response
 
 
 @login_required

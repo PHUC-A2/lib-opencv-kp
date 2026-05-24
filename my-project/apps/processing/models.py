@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -138,6 +140,24 @@ class ProcessedImage(models.Model):
     @property
     def media_url(self) -> str:
         return f"/media/{self.file_path}"
+
+    @property
+    def download_filename(self) -> str:
+        # Ten file khi tai ve — giu ten anh goc + ma thuat toan de de nhan biet.
+        source_name = self.job.source_image.original_filename
+        base_name = os.path.splitext(source_name)[0] or "image"
+        if self.job.is_pipeline:
+            label = "pipeline"
+        elif self.job.algorithm:
+            label = self.job.algorithm.code
+        else:
+            label = "result"
+        extension = ".jpg"
+        if self.mime_type == "image/png":
+            extension = ".png"
+        elif self.mime_type == "image/webp":
+            extension = ".webp"
+        return f"{base_name}_processed_{label}{extension}"
 
 
 class ProcessingParameter(models.Model):

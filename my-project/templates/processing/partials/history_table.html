@@ -4,55 +4,58 @@
         <table class="table table-zebra">
             <thead class="bg-[#F9FAFB]">
                 <tr class="text-[#6B7280] text-sm">
-                    <th>#</th>
-                    <th>Thời gian</th>
-                    <th>Ảnh nguồn</th>
-                    <th>Thuật toán</th>
-                    <th>Trạng thái</th>
-                    <th>Thời gian xử lý</th>
-                    <th class="text-right">Hành động</th>
+                    <th class="align-middle">#</th>
+                    <th class="align-middle">Thời gian</th>
+                    <th class="align-middle">Ảnh nguồn</th>
+                    <th class="align-middle">Thuật toán</th>
+                    <th class="align-middle w-[8.5rem]">Trạng thái</th>
+                    <th class="align-middle">Thời gian xử lý</th>
+                    <th class="align-middle text-right">Hành động</th>
                 </tr>
             </thead>
             <tbody>
                 {% for job in jobs %}
                     <tr class="hover:bg-[#F9FAFB]">
-                        <td class="font-medium">{{ job.id }}</td>
-                        <td>
+                        <td class="font-medium align-middle">{{ job.id }}</td>
+                        <td class="align-middle">
                             <p class="text-sm">{{ job.created_at|date:"d/m/Y H:i" }}</p>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <div class="flex items-center gap-2 min-w-[160px]">
                                 <img src="{{ job.source_image.media_url }}" alt="" class="w-10 h-10 rounded-lg object-cover border border-[#E5E7EB]">
                                 <span class="text-sm truncate max-w-[140px]" title="{{ job.source_image.original_filename }}">{{ job.source_image.original_filename }}</span>
                             </div>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             {% if job.is_pipeline %}
-                                <span class="badge badge-primary badge-xs rounded-lg mb-1">Luồng xử lý</span>
+                                <span class="badge badge-primary badge-sm rounded-lg inline-flex items-center justify-center min-w-[5.5rem] h-7 whitespace-nowrap mb-1">Luồng xử lý</span>
                             {% endif %}
                             <span class="text-sm">{{ job.get_display_algorithms }}</span>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             {% if job.status == 'completed' %}
-                                <span class="badge badge-success badge-sm rounded-lg">Hoàn thành</span>
+                                <span class="badge badge-success badge-sm rounded-lg inline-flex items-center justify-center min-w-[7.5rem] h-7 whitespace-nowrap">Hoàn thành</span>
                             {% elif job.status == 'failed' %}
-                                <span class="badge badge-error badge-sm rounded-lg">Thất bại</span>
+                                <span class="badge badge-error badge-sm rounded-lg inline-flex items-center justify-center min-w-[7.5rem] h-7 whitespace-nowrap" title="{{ job.error_message }}">Thất bại</span>
                             {% elif job.status == 'processing' %}
-                                <span class="badge badge-warning badge-sm rounded-lg">Đang xử lý</span>
+                                <span class="badge badge-warning badge-sm rounded-lg inline-flex items-center justify-center min-w-[7.5rem] h-7 whitespace-nowrap">Đang xử lý</span>
                             {% else %}
-                                <span class="badge badge-ghost badge-sm rounded-lg">{{ job.get_status_display }}</span>
+                                <span class="badge badge-ghost badge-sm rounded-lg inline-flex items-center justify-center min-w-[7.5rem] h-7 whitespace-nowrap">{{ job.get_status_display }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="align-middle">
                             {% if job.execution_time_ms %}
                                 <span class="text-sm">{{ job.execution_time_ms }} ms</span>
                             {% else %}
                                 <span class="text-sm text-[#9CA3AF]">—</span>
                             {% endif %}
                         </td>
-                        <td class="text-right">
+                        <td class="text-right align-middle">
                             {% if job.status == 'completed' and job.processed_image %}
-                                <a href="{% url 'processing:result' job.id %}" class="btn btn-ghost btn-xs rounded-lg">{% include "partials/icon_label.html" with icon="search" label="Xem kết quả" size="sm" %}</a>
+                                <div class="flex flex-wrap items-center justify-end gap-1">
+                                    <a href="{% url 'processing:result' job.id %}" class="btn btn-ghost btn-xs rounded-lg">{% include "partials/icon_label.html" with icon="search" label="Xem kết quả" size="sm" %}</a>
+                                    <a href="{% url 'processing:download' job.id %}" class="btn btn-ghost btn-xs rounded-lg" title="Tải ảnh kết quả">{% include "partials/icon_label.html" with icon="download" label="Tải về" size="sm" %}</a>
+                                </div>
                             {% elif job.status == 'failed' %}
                                 <span class="text-xs text-[#EF4444]" title="{{ job.error_message }}">Lỗi</span>
                             {% else %}

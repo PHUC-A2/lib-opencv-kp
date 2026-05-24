@@ -89,6 +89,29 @@ class Phase3ProcessingFlowTests(TestCase):
         self.assertContains(response, "Trước")
         self.assertContains(response, "Sau")
         self.assertContains(response, job.processed_image.media_url)
+        self.assertContains(response, reverse("processing:download", kwargs={"pk": job.id}))
+
+    def test_download_processed_image(self):
+        image = ImageService.upload_image(self.user, create_test_image("download_test.jpg"))
+        algorithm = Algorithm.objects.get(code="grayscale")
+        job = ProcessingService.run_processing(self.user, image.id, algorithm.id)
+
+        response = self.client.get(reverse("processing:download", kwargs={"pk": job.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "image/jpeg")
+        self.assertIn("attachment", response.get("Content-Disposition", ""))
+        self.assertIn("download_test_processed_grayscale.jpg", response.get("Content-Disposition", ""))
+        file_data = b"".join(response.streaming_content)
+        self.assertGreater(len(file_data), 0)
+
+    def test_cannot_download_other_user_processed_image(self):
+        other = User.objects.create_user(username="other_dl", email="odl@test.com", password="Test@1234")
+        image = ImageService.upload_image(other, create_test_image("private_dl.jpg"))
+        algorithm = Algorithm.objects.get(code="grayscale")
+        job = ProcessingService.run_processing(other, image.id, algorithm.id)
+
+        response = self.client.get(reverse("processing:download", kwargs={"pk": job.id}))
+        self.assertEqual(response.status_code, 404)
 
     def test_all_algorithms_process_sample_image(self):
         if not SAMPLE_IMAGE_PATH.exists():

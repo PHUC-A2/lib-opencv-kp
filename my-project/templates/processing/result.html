@@ -22,7 +22,8 @@
                         <p class="text-xs text-[#6B7280] mt-1">{{ job.get_display_algorithms }}</p>
                     {% endif %}
                 </div>
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
+                    {% include "processing/partials/download_result_button.html" with job=job btn_style="primary" btn_size="sm" %}
                     {% if job.is_pipeline %}
                         <a href="{% url 'processing:pipeline' %}" class="btn btn-outline btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="arrow-left" label="Luồng xử lý" size="sm" %}</a>
                     {% else %}
@@ -44,7 +45,10 @@
         </div>
         <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl animate-stagger-item">
             <div class="card-body">
-                <p class="text-sm font-medium mb-2">Ảnh kết quả</p>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <p class="text-sm font-medium">Ảnh kết quả</p>
+                    {% include "processing/partials/download_result_button.html" with job=job btn_style="outline" btn_size="sm" %}
+                </div>
                 <img src="{{ job.processed_image.media_url }}" alt="Ảnh kết quả" class="rounded-xl w-full object-contain max-h-72 bg-[#F3F4F6]">
             </div>
         </div>

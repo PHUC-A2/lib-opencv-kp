@@ -12,6 +12,7 @@
 
         <div class="flex flex-wrap gap-2">
             <a href="{% url 'processing:result' job.id %}" class="btn btn-primary-gradient rounded-xl">{% include "partials/icon_label.html" with icon="search" label="So sánh trước & sau" %}</a>
+            {% include "processing/partials/download_result_button.html" with job=job btn_style="outline" %}
             <a href="{% url 'processing:history' %}" class="btn btn-ghost rounded-xl">{% include "partials/icon_label.html" with icon="history" label="Xem lịch sử" %}</a>
         </div>
     </div>

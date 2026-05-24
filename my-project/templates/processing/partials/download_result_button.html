@@ -1,0 +1,5 @@
+<a
+    href="{% url 'processing:download' job.id %}"
+    class="btn {% if btn_style == 'primary' %}btn-primary-gradient{% else %}btn-outline{% endif %} {% if btn_size == 'sm' %}btn-sm{% endif %} rounded-xl"
+    title="Tải ảnh kết quả về máy"
+>{% include "partials/icon_label.html" with icon="download" label="Tải ảnh kết quả" size=btn_size|default:"md" %}</a>
