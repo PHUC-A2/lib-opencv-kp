@@ -1,0 +1,23 @@
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden">
+    <div class="card-body">
+        <div class="alert alert-success rounded-xl mb-4">
+            <span>✅ Xử lý thành công · {{ job.execution_time_ms }} ms</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-xs text-[#6B7280] mb-2">Ảnh gốc (Before)</p>
+                <img src="{{ job.source_image.media_url }}" alt="Before" class="rounded-xl border border-[#E5E7EB] w-full object-contain max-h-64 bg-[#F3F4F6]">
+            </div>
+            <div>
+                <p class="text-xs text-[#6B7280] mb-2">Kết quả (After)</p>
+                <img src="{{ job.processed_image.media_url }}" alt="After" class="rounded-xl border border-[#E5E7EB] w-full object-contain max-h-64 bg-[#F3F4F6]">
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-4">
+            <a href="{% url 'processing:result' job.id %}" class="btn btn-primary-gradient rounded-xl">🔍 Xem Before/After</a>
+            <a href="{% url 'processing:home' %}" class="btn btn-ghost rounded-xl">Xử lý ảnh khác</a>
+        </div>
+    </div>
+</div>

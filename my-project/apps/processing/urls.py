@@ -1,10 +1,12 @@
 from django.urls import path
 
-from apps.processing.views import processing_home
+from apps.processing import views
 
 app_name = "processing"
 
 urlpatterns = [
-    # Route gốc của module processing.
-    path("", processing_home, name="home"),
+    path("", views.processing_home, name="home"),
+    path("run/", views.processing_run_view, name="run"),
+    path("result/<int:pk>/", views.processing_result_view, name="result"),
+    path("history/", views.processing_history_view, name="history"),
 ]

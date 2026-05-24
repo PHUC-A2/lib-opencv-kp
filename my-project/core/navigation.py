@@ -33,12 +33,12 @@ def get_public_menu_items() -> list[dict]:
             "icon": "⚙️",
             "url_name": "processing:home",
             "active_prefix": "/processing",
-            "exclude_prefixes": ["/processing/history", "/processing/pipeline"],
+            "exclude_prefixes": ["/processing/history", "/processing/pipeline", "/processing/result"],
         },
         {
             "label": "Lịch sử xử lý",
             "icon": "📜",
-            "url_name": "dashboard:processing_history",
+            "url_name": "processing:history",
             "active_prefix": "/processing/history",
         },
         {

@@ -1,0 +1,76 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            {% if filter_errors %}
+                <div class="alert alert-error rounded-xl mb-4">
+                    {% for error in filter_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form
+                id="history-filter-form"
+                method="get"
+                hx-get="{% url 'processing:history' %}"
+                hx-target="#history-table"
+                hx-trigger="change from:select, input from:input[type='date'] delay:300ms, keyup changed delay:400ms from:input[type='search'], submit"
+                hx-push-url="true"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-end"
+            >
+                <div class="form-control xl:col-span-2">
+                    <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Tên file ảnh...">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_algorithm_id"><span class="label-text font-medium">{{ filter_form.algorithm_id.label }}</span></label>
+                    {{ filter_form.algorithm_id }}
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_status"><span class="label-text font-medium">{{ filter_form.status.label }}</span></label>
+                    <select name="status" id="id_status" class="select select-bordered w-full rounded-xl">
+                        <option value="">Tất cả trạng thái</option>
+                        {% for value, label in filter_form.fields.status.choices %}
+                            {% if value %}
+                                <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_from"><span class="label-text font-medium">{{ filter_form.date_from.label }}</span></label>
+                    <input type="date" name="date_from" id="id_date_from" value="{% if date_from %}{{ date_from|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_to"><span class="label-text font-medium">{{ filter_form.date_to.label }}</span></label>
+                    <input type="date" name="date_to" id="id_date_to" value="{% if date_to %}{{ date_to|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control flex flex-row gap-2 xl:col-span-6">
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <a href="{% url 'processing:history' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="history-table">
+        {% include "processing/partials/history_table.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target.id === 'history-table' && typeof gsap !== 'undefined') {
+            gsap.from('#history-table', { opacity: 0, y: 8, duration: 0.2, ease: 'power2.out' });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-6">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div>
+                    <h2 class="text-lg font-semibold">{{ job.algorithm.icon }} {{ job.algorithm.name }}</h2>
+                    <p class="text-sm text-[#6B7280]">{{ job.source_image.original_filename }} · {{ job.execution_time_ms }} ms</p>
+                </div>
+                <a href="{% url 'processing:home' %}" class="btn btn-outline btn-sm rounded-xl">← Quay lại xử lý</a>
+            </div>
+
+            <div
+                x-data="{ position: 50 }"
+                class="relative select-none"
+            >
+                <p class="text-sm text-[#6B7280] mb-3">Kéo thanh trượt để so sánh Before / After</p>
+
+                <div class="relative rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#F3F4F6] aspect-video max-h-[520px]">
+                    <img
+                        src="{{ job.processed_image.media_url }}"
+                        alt="After"
+                        class="absolute inset-0 w-full h-full object-contain"
+                    >
+                    <div
+                        class="absolute inset-0 overflow-hidden"
+                        :style="`clip-path: inset(0 ${100 - position}% 0 0)`"
+                    >
+                        <img
+                            src="{{ job.source_image.media_url }}"
+                            alt="Before"
+                            class="absolute inset-0 w-full h-full object-contain"
+                        >
+                    </div>
+
+                    <div
+                        class="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg pointer-events-none"
+                        :style="`left: ${position}%`"
+                    ></div>
+
+                    <div class="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">Before</div>
+                    <div class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">After</div>
+                </div>
+
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    x-model="position"
+                    class="range range-primary w-full mt-4"
+                    aria-label="So sánh before after"
+                >
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <p class="text-sm font-medium mb-2">Ảnh gốc</p>
+                <img src="{{ job.source_image.media_url }}" alt="Before full" class="rounded-xl w-full object-contain max-h-72 bg-[#F3F4F6]">
+            </div>
+        </div>
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <p class="text-sm font-medium mb-2">Ảnh kết quả</p>
+                <img src="{{ job.processed_image.media_url }}" alt="After full" class="rounded-xl w-full object-contain max-h-72 bg-[#F3F4F6]">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Animation nhe khi vao trang ket qua.
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof gsap !== 'undefined') {
+            gsap.from('.card', { opacity: 0, y: 10, duration: 0.3, stagger: 0.08, ease: 'power2.out' });
+        }
+    });
+</script>
+{% endblock %}

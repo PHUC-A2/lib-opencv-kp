@@ -3,18 +3,23 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from apps.images.services.image_service import ImageService
+from apps.processing.models import ProcessingJob
+from apps.processing.services.processing_service import ProcessingService
 
 
 @login_required
 def dashboard_home(request: HttpRequest) -> HttpResponse:
     # Trang tong quan hien thi thong ke va hanh dong nhanh.
     total_images = ImageService.count_user_images(request.user)
+    processing_jobs = ProcessingService.count_user_jobs(request.user)
+    completed_jobs = ProcessingService.count_user_jobs(request.user, ProcessingJob.STATUS_COMPLETED)
+    pending_jobs = ProcessingService.count_user_jobs(request.user, ProcessingJob.STATUS_PROCESSING)
 
     stats = {
         "total_images": total_images,
-        "processing_jobs": 0,
-        "completed_jobs": 0,
-        "pending_jobs": 0,
+        "processing_jobs": processing_jobs,
+        "completed_jobs": completed_jobs,
+        "pending_jobs": pending_jobs,
     }
 
     quick_actions = [

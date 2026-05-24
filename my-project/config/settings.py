@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'apps.admin_panel.apps.AdminPanelConfig',
     # Dang ky module upload va thu vien anh Phase 2.
     'apps.images.apps.ImagesConfig',
+    # Dang ky module thuat toan OpenCV Phase 3.
+    'apps.algorithms.apps.AlgorithmsConfig',
     # Dang ky module xu ly anh theo cau truc apps/.
     'apps.processing.apps.ProcessingConfig',
 ]
