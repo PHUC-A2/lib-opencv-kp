@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
-from apps.authentication.forms import LoginForm, RegisterForm
+from apps.authentication.forms import LoginForm, ProfileForm, RegisterForm
 from apps.authentication.services.authentication_service import AuthenticationService
 
 
@@ -14,7 +14,7 @@ from apps.authentication.services.authentication_service import AuthenticationSe
 def register_view(request: HttpRequest) -> HttpResponse:
     # Chuyen huong neu da dang nhap.
     if request.user.is_authenticated:
-        return redirect("processing:home")
+        return redirect("dashboard:home")
 
     form = RegisterForm(request.POST or None)
 
@@ -36,7 +36,7 @@ def register_view(request: HttpRequest) -> HttpResponse:
 def login_view(request: HttpRequest) -> HttpResponse:
     # Chuyen huong neu da dang nhap.
     if request.user.is_authenticated:
-        return redirect("processing:home")
+        return redirect("dashboard:home")
 
     form = LoginForm(request.POST or None, request=request)
 
@@ -44,7 +44,7 @@ def login_view(request: HttpRequest) -> HttpResponse:
         # Goi service de dang nhap va quan ly session.
         AuthenticationService.login_user(request, form)
         messages.success(request, f"Xin chào, {form.get_user().username}!")
-        next_url = request.GET.get("next") or reverse("processing:home")
+        next_url = request.GET.get("next") or reverse("dashboard:home")
         return redirect(next_url)
 
     return render(
@@ -60,3 +60,36 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     AuthenticationService.logout_user(request)
     messages.info(request, "Bạn đã đăng xuất thành công.")
     return redirect("authentication:login")
+
+
+@login_required
+@ensure_csrf_cookie
+@csrf_protect
+def profile_view(request: HttpRequest) -> HttpResponse:
+    # Trang xem va cap nhat ho so nguoi dung.
+    form = ProfileForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=request.user,
+        current_user=request.user,
+    )
+
+    if request.method == "POST" and form.is_valid():
+        AuthenticationService.update_profile(request.user, form)
+        messages.success(request, "Cập nhật hồ sơ thành công.")
+        return redirect("authentication:profile")
+
+    avatar_display_url = None
+    if request.user.avatar_url:
+        avatar_display_url = request.user.avatar_url
+
+    return render(
+        request,
+        "authentication/profile.html",
+        {
+            "page_title": "Hồ sơ",
+            "page_subtitle": "Quản lý thông tin cá nhân",
+            "form": form,
+            "avatar_display_url": avatar_display_url,
+        },
+    )

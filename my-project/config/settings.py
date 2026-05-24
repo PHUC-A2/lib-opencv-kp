@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Dang ky module xac thuc nguoi dung.
     'apps.authentication.apps.AuthenticationConfig',
+    # Dang ky module dashboard va admin panel Phase 1.
+    'apps.dashboard.apps.DashboardConfig',
+    'apps.admin_panel.apps.AdminPanelConfig',
     # Dang ky module xu ly anh theo cau truc apps/.
     'apps.processing.apps.ProcessingConfig',
 ]
@@ -73,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.csrf',
+                'core.context_processors.navigation_menu',
             ],
         },
     },
@@ -154,7 +158,7 @@ AUTH_USER_MODEL = "authentication.User"
 # URL dang nhap mac dinh khi truy cap trang can auth.
 LOGIN_URL = "/auth/dang-nhap/"
 # Chuyen huong sau khi dang nhap thanh cong.
-LOGIN_REDIRECT_URL = "/processing/"
+LOGIN_REDIRECT_URL = "/dashboard/"
 # Chuyen huong sau khi dang xuat.
 LOGOUT_REDIRECT_URL = "/auth/dang-nhap/"
 

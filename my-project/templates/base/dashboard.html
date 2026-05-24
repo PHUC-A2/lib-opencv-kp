@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title|default:"OpenCV Image Processing" }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script>
+        // Cau hinh mau sac theo design system rul-uiux.md.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surface: '#FFFFFF',
+                        elevated: '#F3F4F6',
+                        border: '#E5E7EB',
+                        muted: '#9CA3AF',
+                        secondary: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .sidebar-link-active {
+            background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            color: #FFFFFF;
+        }
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            border: none;
+            color: #FFFFFF;
+        }
+        .btn-primary-gradient:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-[#F9FAFB] text-[#111827]" x-data="{ sidebarOpen: false }">
+    <div class="flex min-h-screen">
+        {% include "partials/sidebar.html" %}
+
+        <div class="flex-1 flex flex-col min-w-0 lg:ml-64">
+            {% include "partials/topbar.html" %}
+
+            <main class="flex-1 p-4 md:p-6 lg:p-8">
+                {% include "partials/messages.html" %}
+
+                <div id="page-content" class="max-w-7xl mx-auto">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% block extra_js %}
+    <script>
+        // Animation fade-in nhe cho noi dung trang theo rul-uiux.md.
+        document.addEventListener('DOMContentLoaded', function () {
+            const pageContent = document.getElementById('page-content');
+            if (pageContent && typeof gsap !== 'undefined') {
+                gsap.from(pageContent, { opacity: 0, y: 12, duration: 0.25, ease: 'power2.out' });
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

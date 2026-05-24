@@ -1,0 +1,66 @@
+<header class="sticky top-0 z-20 h-16 bg-white/90 backdrop-blur border-b border-[#E5E7EB] flex items-center justify-between px-4 md:px-6">
+    <div class="flex items-center gap-3">
+        <button
+            type="button"
+            @click="sidebarOpen = !sidebarOpen"
+            class="lg:hidden btn btn-ghost btn-sm btn-square rounded-xl"
+            aria-label="Mở menu"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <div>
+            <h1 class="text-lg font-semibold">{{ page_title|default:"OpenCV" }}</h1>
+            {% if page_subtitle %}
+                <p class="text-xs text-[#6B7280] hidden sm:block">{{ page_subtitle }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2" x-data="{ userMenuOpen: false }">
+        <a href="{% url 'dashboard:images_upload' %}" class="btn btn-sm btn-primary-gradient rounded-xl hidden sm:flex">
+            📤 Tải ảnh
+        </a>
+
+        <div class="relative">
+            <button
+                type="button"
+                @click="userMenuOpen = !userMenuOpen"
+                @click.outside="userMenuOpen = false"
+                class="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-[#F3F4F6] transition-colors"
+            >
+                <div class="avatar placeholder">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl w-8 h-8 flex items-center justify-center text-xs font-semibold overflow-hidden">
+                        {% if user.avatar_url %}
+                            <img src="/media/{{ user.avatar_url }}" alt="Avatar" class="w-full h-full object-cover">
+                        {% elif user.full_name %}
+                            {{ user.full_name|first|upper }}
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#6B7280]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div
+                x-show="userMenuOpen"
+                x-transition
+                class="absolute right-0 mt-2 w-52 bg-white rounded-xl border border-[#E5E7EB] shadow-lg py-1 z-50"
+            >
+                <div class="px-4 py-2 border-b border-[#E5E7EB]">
+                    <p class="text-sm font-medium truncate">{{ user.full_name|default:user.username }}</p>
+                    <p class="text-xs text-[#6B7280] truncate">{{ user.email }}</p>
+                </div>
+                <a href="{% url 'authentication:profile' %}" class="block px-4 py-2 text-sm hover:bg-[#F3F4F6]">👤 Hồ sơ</a>
+                <a href="{% url 'dashboard:home' %}" class="block px-4 py-2 text-sm hover:bg-[#F3F4F6]">📊 Tổng quan</a>
+                <div class="border-t border-[#E5E7EB] mt-1 pt-1">
+                    <a href="{% url 'authentication:logout' %}" class="block px-4 py-2 text-sm text-[#EF4444] hover:bg-red-50">🚪 Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

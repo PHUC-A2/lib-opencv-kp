@@ -1,0 +1,16 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[50vh] text-center">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl max-w-lg w-full">
+        <div class="card-body items-center py-12">
+            <span class="text-5xl mb-4">🛡️</span>
+            <h2 class="text-xl font-semibold">{{ page_title }}</h2>
+            <p class="text-[#6B7280] mt-2">{{ page_description }}</p>
+            <a href="{% url 'admin_panel:home' %}" class="btn btn-outline rounded-xl mt-6">← Về Admin Tổng quan</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

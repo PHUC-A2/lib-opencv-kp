@@ -223,3 +223,95 @@ class LoginForm(forms.Form):
     def get_user(self) -> User | None:
         # Tra user da xac thuc thanh cong.
         return self.user_cache
+
+
+class ProfileForm(forms.ModelForm):
+    # Form cap nhat ho so nguoi dung da dang nhap.
+    avatar = forms.ImageField(
+        label="Ảnh đại diện",
+        required=False,
+        error_messages={
+            "invalid_image": "File ảnh không hợp lệ.",
+        },
+        widget=forms.FileInput(
+            attrs={
+                "class": "file-input file-input-bordered w-full rounded-xl",
+                "accept": "image/png,image/jpeg,image/webp",
+            }
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = ["full_name", "email"]
+        widgets = {
+            "full_name": forms.TextInput(
+                attrs={
+                    "class": "input input-bordered w-full rounded-xl",
+                    "placeholder": "Họ và tên",
+                    "autocomplete": "name",
+                }
+            ),
+            "email": forms.EmailInput(
+                attrs={
+                    "class": "input input-bordered w-full rounded-xl",
+                    "placeholder": "Email",
+                    "autocomplete": "email",
+                }
+            ),
+        }
+        labels = {
+            "full_name": "Họ và tên",
+            "email": "Email",
+        }
+        error_messages = {
+            "full_name": {
+                "max_length": "Họ và tên không được vượt quá 100 ký tự.",
+            },
+            "email": {
+                "required": "Vui lòng nhập email.",
+                "invalid": "Email không hợp lệ.",
+            },
+        }
+
+    def __init__(self, *args, **kwargs):
+        # Luu user hien tai de kiem tra email trung lap.
+        self.current_user = kwargs.pop("current_user", None)
+        super().__init__(*args, **kwargs)
+
+    def clean_email(self) -> str:
+        # Kiem tra email hop le va khong trung user khac.
+        email = self.cleaned_data.get("email", "").strip().lower()
+        if not email:
+            raise ValidationError("Vui lòng nhập email.")
+
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_pattern, email):
+            raise ValidationError("Email không hợp lệ.")
+
+        if self.current_user and User.objects.filter(email__iexact=email).exclude(pk=self.current_user.pk).exists():
+            raise ValidationError("Email đã được sử dụng.")
+
+        return email
+
+    def clean_full_name(self) -> str:
+        # Kiem tra do dai ho ten.
+        full_name = self.cleaned_data.get("full_name", "").strip()
+        if full_name and len(full_name) > 100:
+            raise ValidationError("Họ và tên không được vượt quá 100 ký tự.")
+        return full_name
+
+    def clean_avatar(self):
+        # Gioi han kich thuoc va dinh dang avatar upload.
+        avatar = self.cleaned_data.get("avatar")
+        if not avatar:
+            return avatar
+
+        if avatar.size > 2 * 1024 * 1024:
+            raise ValidationError("Ảnh đại diện không được vượt quá 2MB.")
+
+        allowed_types = {"image/jpeg", "image/png", "image/webp"}
+        if avatar.content_type not in allowed_types:
+            raise ValidationError("Chỉ chấp nhận file JPG, PNG hoặc WEBP.")
+
+        return avatar

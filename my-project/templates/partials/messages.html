@@ -1,0 +1,12 @@
+{% if messages %}
+    <div class="mb-4 space-y-2 max-w-7xl mx-auto">
+        {% for message in messages %}
+            <div class="alert shadow-sm rounded-xl border
+                {% if message.tags == 'error' %}alert-error border-[#EF4444]/20
+                {% elif message.tags == 'success' %}alert-success border-[#22C55E]/20
+                {% else %}alert-info border-[#3B82F6]/20{% endif %}">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

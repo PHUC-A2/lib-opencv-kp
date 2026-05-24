@@ -1,8 +1,9 @@
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
+from django.core.files.storage import default_storage
 from django.http import HttpRequest
 
-from apps.authentication.forms import LoginForm, RegisterForm
+from apps.authentication.forms import LoginForm, ProfileForm, RegisterForm
 from apps.authentication.models import User
 
 
@@ -40,3 +41,22 @@ class AuthenticationService:
     def logout_user(request: HttpRequest) -> None:
         # Dang xuat va xoa session hien tai.
         django_logout(request)
+
+    @staticmethod
+    def update_profile(user: User, form: ProfileForm) -> User:
+        # Cap nhat thong tin ho so va avatar neu co.
+        user.full_name = form.cleaned_data.get("full_name", "")
+        user.email = form.cleaned_data.get("email", "")
+
+        avatar_file = form.cleaned_data.get("avatar")
+        if avatar_file:
+            # Luu avatar vao thu muc media/avatars/.
+            extension = avatar_file.name.rsplit(".", 1)[-1].lower()
+            avatar_path = f"avatars/user_{user.pk}.{extension}"
+            if user.avatar_url and default_storage.exists(user.avatar_url):
+                default_storage.delete(user.avatar_url)
+            saved_path = default_storage.save(avatar_path, avatar_file)
+            user.avatar_url = saved_path
+
+        user.save()
+        return user

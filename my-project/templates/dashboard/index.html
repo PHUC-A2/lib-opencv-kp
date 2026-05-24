@@ -1,0 +1,105 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <p class="text-[#6B7280]">Xin chào, <span class="font-medium text-[#111827]">{{ user.full_name|default:user.username }}</span> 👋</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Tổng ảnh</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.total_images }}</p>
+                </div>
+                <span class="text-2xl">🖼️</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Job xử lý</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.processing_jobs }}</p>
+                </div>
+                <span class="text-2xl">⚙️</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Hoàn thành</p>
+                    <p class="text-2xl font-bold mt-1 text-[#22C55E]">{{ stats.completed_jobs }}</p>
+                </div>
+                <span class="text-2xl">✅</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
+        <div class="card-body p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Đang chờ</p>
+                    <p class="text-2xl font-bold mt-1 text-[#FACC15]">{{ stats.pending_jobs }}</p>
+                </div>
+                <span class="text-2xl">⏳</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Hành động nhanh</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% for action in quick_actions %}
+                        <a href="{% url action.url_name %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
+                            <span class="text-2xl">{{ action.icon }}</span>
+                            <p class="font-medium mt-2 group-hover:text-blue-600">{{ action.title }}</p>
+                            <p class="text-xs text-[#6B7280] mt-1">{{ action.description }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Thông tin tài khoản</h2>
+                <dl class="space-y-3 text-sm">
+                    <div>
+                        <dt class="text-[#6B7280]">Tên đăng nhập</dt>
+                        <dd class="font-medium">{{ user.username }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[#6B7280]">Email</dt>
+                        <dd class="font-medium">{{ user.email }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[#6B7280]">Vai trò</dt>
+                        <dd>
+                            <span class="badge badge-sm {% if user.role == 'admin' %}badge-primary{% else %}badge-ghost{% endif %} rounded-lg">
+                                {% if user.role == 'admin' %}Quản trị viên{% else %}Người dùng{% endif %}
+                            </span>
+                        </dd>
+                    </div>
+                </dl>
+                <a href="{% url 'authentication:profile' %}" class="btn btn-sm btn-outline rounded-xl w-full mt-4">Chỉnh sửa hồ sơ</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

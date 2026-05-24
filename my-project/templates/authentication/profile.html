@@ -1,0 +1,84 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            <div class="flex flex-col sm:flex-row items-center gap-6 mb-6 pb-6 border-b border-[#E5E7EB]">
+                <div class="avatar placeholder">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl w-20 h-20 flex items-center justify-center text-2xl font-bold">
+                        {% if avatar_display_url %}
+                            <img src="/media/{{ avatar_display_url }}" alt="Avatar" class="rounded-xl w-full h-full object-cover">
+                        {% elif user.full_name %}
+                            {{ user.full_name|first|upper }}
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h2 class="text-xl font-semibold">{{ user.full_name|default:user.username }}</h2>
+                    <p class="text-[#6B7280]">{{ user.email }}</p>
+                    <span class="badge badge-sm {% if user.role == 'admin' %}badge-primary{% else %}badge-ghost{% endif %} rounded-lg mt-2">
+                        {% if user.role == 'admin' %}Quản trị viên{% else %}Người dùng{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" novalidate class="space-y-4" x-data="{ previewUrl: null }">
+                {% csrf_token %}
+
+                <div class="form-control w-full">
+                    <label class="label" for="{{ form.full_name.id_for_label }}">
+                        <span class="label-text font-medium">{{ form.full_name.label }}</span>
+                    </label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}
+                        <p class="text-error text-sm mt-1">{{ form.full_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label" for="{{ form.email.id_for_label }}">
+                        <span class="label-text font-medium">{{ form.email.label }}</span>
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="text-error text-sm mt-1">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-medium">Tên đăng nhập</span>
+                    </label>
+                    <input type="text" value="{{ user.username }}" class="input input-bordered w-full rounded-xl bg-[#F3F4F6]" disabled>
+                    <label class="label">
+                        <span class="label-text-alt text-[#9CA3AF]">Tên đăng nhập không thể thay đổi</span>
+                    </label>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label" for="{{ form.avatar.id_for_label }}">
+                        <span class="label-text font-medium">{{ form.avatar.label }}</span>
+                    </label>
+                    {{ form.avatar }}
+                    {% if form.avatar.errors %}
+                        <p class="text-error text-sm mt-1">{{ form.avatar.errors.0 }}</p>
+                    {% endif %}
+                    <label class="label">
+                        <span class="label-text-alt text-[#9CA3AF]">JPG, PNG hoặc WEBP. Tối đa 2MB.</span>
+                    </label>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="btn btn-primary-gradient rounded-xl">Lưu thay đổi</button>
+                    <a href="{% url 'dashboard:home' %}" class="btn btn-ghost rounded-xl">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
