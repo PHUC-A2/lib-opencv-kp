@@ -1,4 +1,5 @@
 from django import forms
+import re
 
 from apps.algorithms.models import Algorithm
 from apps.authentication.models import User
@@ -44,6 +45,155 @@ class AdminUserFilterForm(forms.Form):
         ],
         widget=forms.Select(attrs={"class": SELECT_CLASS}),
     )
+
+
+class AdminUserForm(forms.ModelForm):
+    # Form tao/sua tai khoan nguoi dung trong admin panel.
+    password = forms.CharField(
+        label="Mật khẩu",
+        required=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": INPUT_CLASS,
+                "placeholder": "Nhập mật khẩu",
+                "autocomplete": "new-password",
+            }
+        ),
+    )
+    password_confirm = forms.CharField(
+        label="Xác nhận mật khẩu",
+        required=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": INPUT_CLASS,
+                "placeholder": "Nhập lại mật khẩu",
+                "autocomplete": "new-password",
+            }
+        ),
+    )
+    role = forms.ChoiceField(
+        label="Vai trò",
+        choices=[
+            ("user", "Người dùng"),
+            ("admin", "Quản trị viên"),
+        ],
+        widget=forms.Select(attrs={"class": SELECT_CLASS}),
+    )
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "full_name", "is_active"]
+        labels = {
+            "username": "Tên đăng nhập",
+            "email": "Địa chỉ email",
+            "full_name": "Họ và tên",
+            "is_active": "Đang hoạt động",
+        }
+        widgets = {
+            "username": forms.TextInput(
+                attrs={
+                    "class": INPUT_CLASS,
+                    "placeholder": "Tên đăng nhập",
+                    "autocomplete": "username",
+                }
+            ),
+            "email": forms.EmailInput(
+                attrs={
+                    "class": INPUT_CLASS,
+                    "placeholder": "Địa chỉ email",
+                    "autocomplete": "email",
+                }
+            ),
+            "full_name": forms.TextInput(
+                attrs={
+                    "class": INPUT_CLASS,
+                    "placeholder": "Họ và tên",
+                    "autocomplete": "name",
+                }
+            ),
+            "is_active": forms.CheckboxInput(attrs={"class": "checkbox checkbox-primary"}),
+        }
+
+    def __init__(self, *args, is_edit: bool = False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.is_edit = is_edit
+        if is_edit:
+            # Khong cho doi username/email sau khi tao tai khoan.
+            self.fields["username"].disabled = True
+            del self.fields["email"]
+            self.fields["password"].help_text = "Để trống nếu không đổi mật khẩu"
+            if self.instance.pk:
+                self.fields["role"].initial = self.instance.role
+        else:
+            self.fields["password"].required = True
+            self.fields["password_confirm"].required = True
+
+    def clean_username(self) -> str:
+        username = self.cleaned_data.get("username", "").strip()
+        if not username:
+            raise forms.ValidationError("Vui lòng nhập tên đăng nhập.")
+        if len(username) < 3:
+            raise forms.ValidationError("Tên đăng nhập phải có ít nhất 3 ký tự.")
+        if len(username) > 50:
+            raise forms.ValidationError("Tên đăng nhập không được vượt quá 50 ký tự.")
+        if not re.match(r"^[a-zA-Z0-9_]+$", username):
+            raise forms.ValidationError("Tên đăng nhập chỉ được chứa chữ, số và dấu gạch dưới.")
+        if not self.is_edit and User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("Tên đăng nhập đã tồn tại.")
+        return username
+
+    def clean_email(self) -> str:
+        email = self.cleaned_data.get("email", "").strip().lower()
+        if not email:
+            raise forms.ValidationError("Vui lòng nhập email.")
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_pattern, email):
+            raise forms.ValidationError("Email không hợp lệ.")
+
+        queryset = User.objects.filter(email__iexact=email)
+        if self.is_edit and self.instance.pk:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            raise forms.ValidationError("Email đã được sử dụng.")
+        return email
+
+    def clean_full_name(self) -> str:
+        full_name = self.cleaned_data.get("full_name", "").strip()
+        if full_name and len(full_name) > 100:
+            raise forms.ValidationError("Họ và tên không được vượt quá 100 ký tự.")
+        return full_name
+
+    def clean_password(self) -> str:
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError as DjangoValidationError
+
+        password = self.cleaned_data.get("password", "")
+        if self.is_edit and not password:
+            return password
+        if not password:
+            raise forms.ValidationError("Vui lòng nhập mật khẩu.")
+
+        user = self.instance if self.is_edit and self.instance.pk else User(
+            username=self.cleaned_data.get("username", ""),
+            email=self.cleaned_data.get("email", ""),
+            full_name=self.cleaned_data.get("full_name", ""),
+        )
+        try:
+            validate_password(password, user=user)
+        except DjangoValidationError as exc:
+            raise forms.ValidationError(list(exc.messages)) from exc
+        return password
+
+    def clean(self) -> dict:
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password", "")
+        password_confirm = cleaned_data.get("password_confirm", "")
+        if password or password_confirm:
+            if password != password_confirm:
+                self.add_error("password_confirm", "Mật khẩu xác nhận không khớp.")
+        elif not self.is_edit:
+            self.add_error("password", "Vui lòng nhập mật khẩu.")
+        return cleaned_data
 
 
 class AdminImageFilterForm(forms.Form):

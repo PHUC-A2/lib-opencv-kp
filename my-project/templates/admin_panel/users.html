@@ -4,6 +4,11 @@
 
 {% block content %}
 <div class="space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <p class="text-[#6B7280]">{{ page_subtitle }}</p>
+        <a href="{% url 'admin_panel:user_create' %}" class="btn btn-primary-gradient btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="plus" label="Thêm người dùng" size="sm" %}</a>
+    </div>
+
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
         <div class="card-body">
             <form

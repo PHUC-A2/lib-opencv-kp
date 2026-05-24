@@ -44,9 +44,8 @@ class AuthenticationService:
 
     @staticmethod
     def update_profile(user: User, form: ProfileForm) -> User:
-        # Cap nhat thong tin ho so va avatar neu co.
+        # Cap nhat ho so va avatar; email giu nguyen sau khi dang ky.
         user.full_name = form.cleaned_data.get("full_name", "")
-        user.email = form.cleaned_data.get("email", "")
 
         avatar_file = form.cleaned_data.get("avatar")
         if avatar_file:

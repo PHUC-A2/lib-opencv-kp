@@ -226,7 +226,7 @@ class LoginForm(forms.Form):
 
 
 class ProfileForm(forms.ModelForm):
-    # Form cap nhat ho so nguoi dung da dang nhap.
+    # Form cap nhat ho so nguoi dung da dang nhap (khong doi email).
     avatar = forms.ImageField(
         label="Ảnh đại diện",
         required=False,
@@ -243,7 +243,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["full_name", "email"]
+        fields = ["full_name"]
         widgets = {
             "full_name": forms.TextInput(
                 attrs={
@@ -252,47 +252,20 @@ class ProfileForm(forms.ModelForm):
                     "autocomplete": "name",
                 }
             ),
-            "email": forms.EmailInput(
-                attrs={
-                    "class": "input input-bordered w-full rounded-xl",
-                    "placeholder": "Địa chỉ email",
-                    "autocomplete": "email",
-                }
-            ),
         }
         labels = {
             "full_name": "Họ và tên",
-            "email": "Địa chỉ email",
         }
         error_messages = {
             "full_name": {
                 "max_length": "Họ và tên không được vượt quá 100 ký tự.",
             },
-            "email": {
-                "required": "Vui lòng nhập email.",
-                "invalid": "Email không hợp lệ.",
-            },
         }
 
     def __init__(self, *args, **kwargs):
-        # Luu user hien tai de kiem tra email trung lap.
+        # Giu tham so current_user de tuong thich voi view hien tai.
         self.current_user = kwargs.pop("current_user", None)
         super().__init__(*args, **kwargs)
-
-    def clean_email(self) -> str:
-        # Kiem tra email hop le va khong trung user khac.
-        email = self.cleaned_data.get("email", "").strip().lower()
-        if not email:
-            raise ValidationError("Vui lòng nhập email.")
-
-        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        if not re.match(email_pattern, email):
-            raise ValidationError("Email không hợp lệ.")
-
-        if self.current_user and User.objects.filter(email__iexact=email).exclude(pk=self.current_user.pk).exists():
-            raise ValidationError("Email đã được sử dụng.")
-
-        return email
 
     def clean_full_name(self) -> str:
         # Kiem tra do dai ho ten.

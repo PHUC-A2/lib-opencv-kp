@@ -1,44 +1,59 @@
 <tr id="user-row-{{ user_item.id }}" class="hover:bg-[#F9FAFB]">
-    <td class="font-medium">{{ user_item.id }}</td>
-    <td>
+    <td class="font-medium align-middle">{{ user_item.id }}</td>
+    <td class="align-middle">
         <p class="font-medium text-sm">{{ user_item.username }}</p>
         {% if user_item.full_name %}
             <p class="text-xs text-[#6B7280]">{{ user_item.full_name }}</p>
         {% endif %}
     </td>
-    <td class="text-sm">{{ user_item.email }}</td>
-    <td>
-        <span class="badge badge-sm {% if user_item.role == 'admin' %}badge-primary{% else %}badge-ghost{% endif %} rounded-lg">
+    <td class="text-sm align-middle">{{ user_item.email }}</td>
+    <td class="align-middle">
+        <span class="badge badge-sm {% if user_item.role == 'admin' %}badge-primary{% else %}badge-ghost{% endif %} rounded-lg inline-flex items-center justify-center min-w-[5.5rem] h-7 whitespace-nowrap">
             {% if user_item.role == 'admin' %}Quản trị{% else %}Người dùng{% endif %}
         </span>
     </td>
-    <td class="text-sm text-[#6B7280]">{{ user_item.image_count }} / {{ user_item.job_count }}</td>
-    <td>
+    <td class="text-sm text-[#6B7280] align-middle">{{ user_item.image_count }} / {{ user_item.job_count }}</td>
+    <td class="align-middle">
         {% if user_item.is_active %}
-            <span class="badge badge-success badge-sm rounded-lg">Hoạt động</span>
+            <span class="badge badge-success badge-sm rounded-lg inline-flex items-center justify-center min-w-[7rem] h-7 whitespace-nowrap">Hoạt động</span>
         {% else %}
-            <span class="badge badge-error badge-sm rounded-lg">Đã khóa</span>
+            <span class="badge badge-error badge-sm rounded-lg inline-flex items-center justify-center min-w-[7rem] h-7 whitespace-nowrap">Đã khóa</span>
         {% endif %}
     </td>
-    <td class="text-sm">{{ user_item.created_at|date:"d/m/Y" }}</td>
-    <td class="text-right">
-        {% if user_item.id != user.id %}
-            <button
-                type="button"
-                class="btn btn-ghost btn-xs rounded-lg {% if user_item.is_active %}text-[#EF4444]{% else %}text-[#22C55E]{% endif %}"
-                hx-post="{% url 'admin_panel:user_toggle' user_item.id %}"
-                hx-target="#user-row-{{ user_item.id }}"
-                hx-swap="outerHTML"
-                hx-confirm="{% if user_item.is_active %}Khóa tài khoản {{ user_item.username }}?{% else %}Mở khóa tài khoản {{ user_item.username }}?{% endif %}"
-            >
-                {% if user_item.is_active %}
-                    {% include "partials/icon_label.html" with icon="lock" label="Khóa" size="sm" %}
-                {% else %}
-                    {% include "partials/icon_label.html" with icon="lock-open" label="Mở khóa" size="sm" %}
-                {% endif %}
-            </button>
-        {% else %}
-            <span class="text-xs text-[#9CA3AF]">Tài khoản của bạn</span>
-        {% endif %}
+    <td class="text-sm align-middle">{{ user_item.created_at|date:"d/m/Y" }}</td>
+    <td class="text-right align-middle">
+        <div class="flex justify-end gap-1 flex-wrap">
+            <a href="{% url 'admin_panel:user_edit' user_item.id %}" class="btn btn-ghost btn-xs rounded-lg">
+                {% include "partials/icon_label.html" with icon="pencil" label="Sửa" size="sm" %}
+            </a>
+            {% if user_item.id != user.id %}
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-xs rounded-lg {% if user_item.is_active %}text-[#EF4444]{% else %}text-[#22C55E]{% endif %}"
+                    hx-post="{% url 'admin_panel:user_toggle' user_item.id %}"
+                    hx-target="#user-row-{{ user_item.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="{% if user_item.is_active %}Khóa tài khoản {{ user_item.username }}?{% else %}Mở khóa tài khoản {{ user_item.username }}?{% endif %}"
+                >
+                    {% if user_item.is_active %}
+                        {% include "partials/icon_label.html" with icon="lock" label="Khóa" size="sm" %}
+                    {% else %}
+                        {% include "partials/icon_label.html" with icon="lock-open" label="Mở khóa" size="sm" %}
+                    {% endif %}
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-xs rounded-lg text-[#EF4444] hover:bg-red-50"
+                    hx-post="{% url 'admin_panel:user_delete' user_item.id %}"
+                    hx-target="#user-row-{{ user_item.id }}"
+                    hx-swap="delete"
+                    hx-confirm="Xóa tài khoản {{ user_item.username }}? Toàn bộ ảnh và tác vụ xử lý của người dùng này cũng sẽ bị xóa."
+                >
+                    {% include "partials/icon_label.html" with icon="trash-2" label="Xóa" size="sm" %}
+                </button>
+            {% else %}
+                <span class="text-xs text-[#9CA3AF] self-center px-1">Tài khoản của bạn</span>
+            {% endif %}
+        </div>
     </td>
 </tr>

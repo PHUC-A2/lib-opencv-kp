@@ -330,6 +330,9 @@
         if (trigger && trigger.indexOf('adminImageDeleted') !== -1 && event.detail.successful) {
             showToast('Đã xóa ảnh khỏi hệ thống.', 'success');
         }
+        if (trigger && trigger.indexOf('adminUserDeleted') !== -1 && event.detail.successful) {
+            showToast('Đã xóa tài khoản người dùng.', 'success');
+        }
     });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {

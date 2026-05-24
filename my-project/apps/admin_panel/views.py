@@ -11,10 +11,12 @@ from apps.admin_panel.forms import (
     AdminJobFilterForm,
     AdminLogFilterForm,
     AdminUserFilterForm,
+    AdminUserForm,
 )
 from apps.admin_panel.services.system_log_service import SystemLogService
 from apps.admin_panel.services.admin_service import AdminService, AdminServiceError
 from apps.algorithms.models import Algorithm
+from apps.authentication.models import User
 from core.permissions import admin_required
 
 
@@ -107,6 +109,111 @@ def admin_user_toggle_view(request: HttpRequest, pk: int) -> HttpResponse:
             {"user_item": user},
         )
 
+    return redirect("admin_panel:users")
+
+
+@admin_required
+@csrf_protect
+def admin_user_create_view(request: HttpRequest) -> HttpResponse:
+    # Tao tai khoan nguoi dung moi.
+    form = AdminUserForm(request.POST or None, is_edit=False)
+
+    if request.method == "POST" and form.is_valid():
+        try:
+            AdminService.create_user(
+                {
+                    "username": form.cleaned_data["username"],
+                    "email": form.cleaned_data["email"],
+                    "full_name": form.cleaned_data.get("full_name", ""),
+                    "role": form.cleaned_data["role"],
+                    "is_active": form.cleaned_data.get("is_active", True),
+                    "password": form.cleaned_data["password"],
+                }
+            )
+        except AdminServiceError as exc:
+            form.add_error(None, str(exc))
+        else:
+            messages.success(request, "Đã tạo tài khoản người dùng mới.")
+            return redirect("admin_panel:users")
+
+    return render(
+        request,
+        "admin_panel/user_form.html",
+        {
+            "page_title": "Thêm người dùng",
+            "page_subtitle": "Tạo tài khoản mới trong hệ thống",
+            "form": form,
+            "is_edit": False,
+        },
+    )
+
+
+@admin_required
+@csrf_protect
+def admin_user_edit_view(request: HttpRequest, pk: int) -> HttpResponse:
+    # Cap nhat thong tin tai khoan nguoi dung.
+    target_user = get_object_or_404(User, pk=pk)
+    form = AdminUserForm(
+        request.POST or None,
+        instance=target_user,
+        is_edit=True,
+    )
+
+    if request.method == "POST" and form.is_valid():
+        try:
+            AdminService.update_user(
+                request.user,
+                target_user.pk,
+                {
+                    "full_name": form.cleaned_data.get("full_name", ""),
+                    "role": form.cleaned_data["role"],
+                    "is_active": form.cleaned_data.get("is_active", True),
+                    "password": form.cleaned_data.get("password", ""),
+                },
+            )
+        except AdminServiceError as exc:
+            form.add_error(None, str(exc))
+        else:
+            messages.success(request, f"Đã cập nhật tài khoản {target_user.username}.")
+            return redirect("admin_panel:users")
+
+    return render(
+        request,
+        "admin_panel/user_form.html",
+        {
+            "page_title": "Sửa người dùng",
+            "page_subtitle": target_user.username,
+            "form": form,
+            "is_edit": True,
+            "target_user": target_user,
+        },
+    )
+
+
+@admin_required
+@csrf_protect
+@require_POST
+def admin_user_delete_view(request: HttpRequest, pk: int) -> HttpResponse:
+    # Xoa tai khoan nguoi dung khoi he thong.
+    try:
+        AdminService.delete_user(request.user, pk)
+    except AdminServiceError as exc:
+        if request.headers.get("HX-Request"):
+            return render(
+                request,
+                "admin_panel/partials/action_error.html",
+                {"message": str(exc)},
+                status=400,
+            )
+        messages.error(request, str(exc))
+        return redirect("admin_panel:users")
+
+    if request.headers.get("HX-Request"):
+        response = HttpResponse("")
+        response["HX-Trigger"] = '{"adminUserDeleted": true}'
+        return response
+
+    messages.success(request, "Đã xóa tài khoản người dùng.")
     return redirect("admin_panel:users")
 
 

@@ -69,6 +69,69 @@ class Phase6AdminPanelTests(TestCase):
         self.assertContains(response, "Người dùng")
         self.assertContains(response, "Quản lý nhanh")
 
+    def test_admin_users_crud(self):
+        self.client.login(username="admin_phase6", password="Test@1234")
+
+        response = self.client.get(reverse("admin_panel:user_create"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("admin_panel:user_create"),
+            {
+                "username": "new_user_phase6",
+                "email": "new_user_phase6@test.com",
+                "full_name": "Người dùng mới",
+                "role": "user",
+                "is_active": "on",
+                "password": "Test@1234",
+                "password_confirm": "Test@1234",
+            },
+        )
+        self.assertRedirects(response, reverse("admin_panel:users"))
+        created = User.objects.get(username="new_user_phase6")
+        self.assertEqual(created.full_name, "Người dùng mới")
+
+        original_email = created.email
+        response = self.client.post(
+            reverse("admin_panel:user_edit", kwargs={"pk": created.pk}),
+            {
+                "username": created.username,
+                "email": "updated_user_phase6@test.com",
+                "full_name": "Đã cập nhật",
+                "role": "user",
+                "is_active": "on",
+                "password": "",
+                "password_confirm": "",
+            },
+        )
+        self.assertRedirects(response, reverse("admin_panel:users"))
+        created.refresh_from_db()
+        self.assertEqual(created.full_name, "Đã cập nhật")
+        self.assertEqual(created.email, original_email)
+
+        response = self.client.post(
+            reverse("admin_panel:user_delete", kwargs={"pk": created.pk}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(pk=created.pk).exists())
+
+    def test_profile_cannot_change_email(self):
+        self.client.login(username="user_phase6", password="Test@1234")
+        original_email = self.user.email
+
+        response = self.client.post(
+            reverse("authentication:profile"),
+            {
+                "full_name": "Tên mới",
+                "email": "hacked_email@test.com",
+            },
+        )
+        self.assertRedirects(response, reverse("authentication:profile"))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.full_name, "Tên mới")
+        self.assertEqual(self.user.email, original_email)
+
     def test_admin_users_list_and_toggle(self):
         self.client.login(username="admin_phase6", password="Test@1234")
         response = self.client.get(reverse("admin_panel:users"))
@@ -148,6 +211,7 @@ class Phase6AdminPanelTests(TestCase):
     def test_admin_urls_resolve(self):
         self.assertEqual(reverse("admin_panel:home"), "/admin-panel/")
         self.assertEqual(reverse("admin_panel:users"), "/admin-panel/users/")
+        self.assertEqual(reverse("admin_panel:user_create"), "/admin-panel/users/create/")
         self.assertEqual(reverse("admin_panel:images"), "/admin-panel/images/")
         self.assertEqual(reverse("admin_panel:algorithms"), "/admin-panel/algorithms/")
         self.assertEqual(reverse("admin_panel:jobs"), "/admin-panel/jobs/")

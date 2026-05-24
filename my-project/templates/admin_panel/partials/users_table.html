@@ -27,7 +27,8 @@
     <div class="card-body items-center text-center py-12">
         {% include "partials/icon.html" with name="users" size="xl" %}
         <p class="font-medium text-lg mt-4">Không tìm thấy người dùng</p>
-        <p class="text-[#6B7280] mt-1">Thử thay đổi bộ lọc tìm kiếm</p>
+        <p class="text-[#6B7280] mt-1">Thử thay đổi bộ lọc tìm kiếm hoặc tạo tài khoản mới</p>
+        <a href="{% url 'admin_panel:user_create' %}" class="btn btn-primary-gradient rounded-xl mt-4">{% include "partials/icon_label.html" with icon="plus" label="Thêm người dùng" %}</a>
     </div>
 </div>
 {% endif %}

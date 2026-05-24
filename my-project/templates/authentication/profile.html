@@ -41,13 +41,13 @@
                 </div>
 
                 <div class="form-control w-full">
-                    <label class="label" for="{{ form.email.id_for_label }}">
-                        <span class="label-text font-medium">{{ form.email.label }}</span>
+                    <label class="label">
+                        <span class="label-text font-medium">Địa chỉ email</span>
                     </label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <p class="text-error text-sm mt-1">{{ form.email.errors.0 }}</p>
-                    {% endif %}
+                    <input type="text" value="{{ user.email }}" class="input input-bordered w-full rounded-xl bg-[#F3F4F6]" disabled>
+                    <label class="label">
+                        <span class="label-text-alt text-[#9CA3AF]">Email không thể thay đổi</span>
+                    </label>
                 </div>
 
                 <div class="form-control w-full">

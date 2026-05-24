@@ -1,5 +1,7 @@
 from datetime import datetime, time
 
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.files.storage import default_storage
 from django.db.models import Count, Q, QuerySet
 from django.utils import timezone
@@ -79,6 +81,103 @@ class AdminService:
         target_user.is_active = not target_user.is_active
         target_user.save(update_fields=["is_active", "updated_at"])
         return target_user
+
+    @staticmethod
+    def _validate_user_password(password: str, user: User) -> None:
+        # Kiem tra mat khau theo rule Django truoc khi luu.
+        try:
+            validate_password(password, user=user)
+        except DjangoValidationError as exc:
+            raise AdminServiceError(" ".join(exc.messages)) from exc
+
+    @staticmethod
+    def create_user(data: dict) -> User:
+        # Tao tai khoan moi tu admin panel.
+        username = data["username"].strip()
+        email = data["email"].strip().lower()
+        full_name = data.get("full_name", "").strip()
+        role = data.get("role", "user")
+        is_active = data.get("is_active", True)
+        password = data.get("password", "")
+
+        if User.objects.filter(username__iexact=username).exists():
+            raise AdminServiceError("Tên đăng nhập đã tồn tại.")
+        if User.objects.filter(email__iexact=email).exists():
+            raise AdminServiceError("Email đã được sử dụng.")
+        if role not in {"admin", "user"}:
+            raise AdminServiceError("Vai trò không hợp lệ.")
+        if not password:
+            raise AdminServiceError("Vui lòng nhập mật khẩu.")
+
+        user = User(
+            username=username,
+            email=email,
+            full_name=full_name,
+            role=role,
+            is_active=is_active,
+        )
+        AdminService._validate_user_password(password, user)
+        user.set_password(password)
+        user.save()
+        return user
+
+    @staticmethod
+    def update_user(actor: User, user_id: int, data: dict) -> User:
+        # Cap nhat thong tin tai khoan nguoi dung (khong doi email).
+        try:
+            target_user = User.objects.get(pk=user_id)
+        except User.DoesNotExist as exc:
+            raise AdminServiceError("Không tìm thấy người dùng.") from exc
+
+        full_name = data.get("full_name", "").strip()
+        role = data.get("role", target_user.role)
+        is_active = data.get("is_active", target_user.is_active)
+        password = data.get("password", "").strip()
+
+        if role not in {"admin", "user"}:
+            raise AdminServiceError("Vai trò không hợp lệ.")
+
+        if actor.pk == user_id:
+            if role != "admin":
+                raise AdminServiceError("Không thể hạ quyền tài khoản của chính bạn.")
+            if not is_active:
+                raise AdminServiceError("Không thể khóa tài khoản của chính bạn.")
+
+        if target_user.role == "admin" and role != "admin":
+            remaining_admins = User.objects.filter(role="admin").exclude(pk=user_id).count()
+            if remaining_admins == 0:
+                raise AdminServiceError("Hệ thống cần ít nhất một quản trị viên.")
+
+        target_user.full_name = full_name
+        target_user.role = role
+        target_user.is_active = is_active
+
+        if password:
+            AdminService._validate_user_password(password, target_user)
+            target_user.set_password(password)
+            target_user.save()
+        else:
+            target_user.save(update_fields=["full_name", "role", "is_active", "updated_at"])
+
+        return target_user
+
+    @staticmethod
+    def delete_user(actor: User, user_id: int) -> None:
+        # Xoa tai khoan khoi he thong (kem du lieu lien quan CASCADE).
+        if actor.pk == user_id:
+            raise AdminServiceError("Không thể xóa tài khoản của chính bạn.")
+
+        try:
+            target_user = User.objects.get(pk=user_id)
+        except User.DoesNotExist as exc:
+            raise AdminServiceError("Không tìm thấy người dùng.") from exc
+
+        if target_user.role == "admin":
+            remaining_admins = User.objects.filter(role="admin").exclude(pk=user_id).count()
+            if remaining_admins == 0:
+                raise AdminServiceError("Không thể xóa quản trị viên cuối cùng.")
+
+        target_user.delete()
 
     @staticmethod
     def get_images(search: str = "", user_id: int | None = None) -> QuerySet[Image]:
