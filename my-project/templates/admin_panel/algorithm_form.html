@@ -52,7 +52,11 @@
 
                 <div class="flex flex-wrap gap-3 pt-2">
                     <button type="submit" class="btn btn-primary-gradient rounded-xl">
-                        {% if is_edit %}💾 Lưu thay đổi{% else %}➕ Tạo thuật toán{% endif %}
+                        {% if is_edit %}
+                            {% include "partials/icon_label.html" with icon="save" label="Lưu thay đổi" %}
+                        {% else %}
+                            {% include "partials/icon_label.html" with icon="plus" label="Tạo thuật toán" %}
+                        {% endif %}
                     </button>
                     <a href="{% url 'admin_panel:algorithms' %}" class="btn btn-ghost rounded-xl">Hủy</a>
                 </div>

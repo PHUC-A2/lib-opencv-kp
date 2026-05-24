@@ -6,44 +6,44 @@ def get_public_menu_items() -> list[dict]:
     return [
         {
             "label": "Tổng quan",
-            "icon": "📊",
+            "icon": "layout-dashboard",
             "url_name": "dashboard:home",
             "active_prefix": "/dashboard",
         },
         {
             "label": "Hồ sơ",
-            "icon": "👤",
+            "icon": "user",
             "url_name": "authentication:profile",
             "active_prefix": "/profile",
         },
         {
             "label": "Tải ảnh lên",
-            "icon": "📤",
+            "icon": "upload",
             "url_name": "images:upload",
             "active_prefix": "/images/upload",
         },
         {
             "label": "Thư viện ảnh",
-            "icon": "🖼️",
+            "icon": "image",
             "url_name": "images:gallery",
             "active_prefix": "/images/gallery",
         },
         {
             "label": "Xử lý ảnh",
-            "icon": "⚙️",
+            "icon": "settings",
             "url_name": "processing:home",
             "active_prefix": "/processing",
             "exclude_prefixes": ["/processing/history", "/processing/pipeline", "/processing/result"],
         },
         {
             "label": "Lịch sử xử lý",
-            "icon": "📜",
+            "icon": "history",
             "url_name": "processing:history",
             "active_prefix": "/processing/history",
         },
         {
             "label": "Luồng xử lý đa bước",
-            "icon": "🔗",
+            "icon": "link",
             "url_name": "processing:pipeline",
             "active_prefix": "/processing/pipeline",
         },
@@ -55,7 +55,7 @@ def get_admin_menu_items() -> list[dict]:
     return [
         {
             "label": "Tổng quan quản trị",
-            "icon": "🛡️",
+            "icon": "shield",
             "url_name": "admin_panel:home",
             "active_prefix": "/admin-panel",
             "exclude_prefixes": [
@@ -68,31 +68,31 @@ def get_admin_menu_items() -> list[dict]:
         },
         {
             "label": "Người dùng",
-            "icon": "👥",
+            "icon": "users",
             "url_name": "admin_panel:users",
             "active_prefix": "/admin-panel/users",
         },
         {
             "label": "Ảnh hệ thống",
-            "icon": "🗂️",
+            "icon": "folder-open",
             "url_name": "admin_panel:images",
             "active_prefix": "/admin-panel/images",
         },
         {
             "label": "Thuật toán",
-            "icon": "🧠",
+            "icon": "brain",
             "url_name": "admin_panel:algorithms",
             "active_prefix": "/admin-panel/algorithms",
         },
         {
             "label": "Tác vụ xử lý",
-            "icon": "⏱️",
+            "icon": "timer",
             "url_name": "admin_panel:jobs",
             "active_prefix": "/admin-panel/jobs",
         },
         {
             "label": "Nhật ký hệ thống",
-            "icon": "📋",
+            "icon": "clipboard-list",
             "url_name": "admin_panel:logs",
             "active_prefix": "/admin-panel/logs",
         },

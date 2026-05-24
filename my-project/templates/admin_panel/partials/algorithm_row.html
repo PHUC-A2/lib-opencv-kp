@@ -2,7 +2,7 @@
     <td class="font-medium">{{ algorithm.id }}</td>
     <td>
         <div class="flex items-center gap-2">
-            <span class="text-xl">{{ algorithm.icon }}</span>
+            {% include "partials/algorithm_icon.html" with algorithm=algorithm size="md" %}
             <div>
                 <p class="font-medium text-sm">{{ algorithm.name }}</p>
                 <p class="text-xs text-[#6B7280] truncate max-w-[220px]" title="{{ algorithm.description }}">{{ algorithm.description|default:"—" }}</p>
@@ -20,7 +20,7 @@
     </td>
     <td class="text-right">
         <div class="flex justify-end gap-1">
-            <a href="{% url 'admin_panel:algorithm_edit' algorithm.id %}" class="btn btn-ghost btn-xs rounded-lg">✏️ Sửa</a>
+            <a href="{% url 'admin_panel:algorithm_edit' algorithm.id %}" class="btn btn-ghost btn-xs rounded-lg">{% include "partials/icon_label.html" with icon="pencil" label="Sửa" size="sm" %}</a>
             <button
                 type="button"
                 class="btn btn-ghost btn-xs rounded-lg"
@@ -29,7 +29,11 @@
                 hx-swap="outerHTML"
                 hx-confirm="{% if algorithm.is_active %}Tắt thuật toán {{ algorithm.name }}?{% else %}Bật thuật toán {{ algorithm.name }}?{% endif %}"
             >
-                {% if algorithm.is_active %}⏸️ Tắt{% else %}▶️ Bật{% endif %}
+                {% if algorithm.is_active %}
+                    {% include "partials/icon_label.html" with icon="pause" label="Tắt" size="sm" %}
+                {% else %}
+                    {% include "partials/icon_label.html" with icon="play" label="Bật" size="sm" %}
+                {% endif %}
             </button>
         </div>
     </td>

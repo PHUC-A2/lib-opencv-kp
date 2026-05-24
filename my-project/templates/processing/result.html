@@ -8,8 +8,14 @@
         <div class="card-body">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                    <h2 class="text-lg font-semibold">
-                        {% if job.is_pipeline %}🔗 Luồng xử lý đa bước{% else %}{{ job.algorithm.icon }} {{ job.algorithm.name }}{% endif %}
+                    <h2 class="text-lg font-semibold inline-flex items-center gap-2">
+                        {% if job.is_pipeline %}
+                            {% include "partials/icon.html" with name="link" size="md" %}
+                            Luồng xử lý đa bước
+                        {% else %}
+                            {% include "partials/algorithm_icon.html" with algorithm=job.algorithm size="md" %}
+                            {{ job.algorithm.name }}
+                        {% endif %}
                     </h2>
                     <p class="text-sm text-[#6B7280]">{{ job.source_image.original_filename }} · {{ job.execution_time_ms }} ms</p>
                     {% if job.is_pipeline %}
@@ -18,9 +24,9 @@
                 </div>
                 <div class="flex gap-2">
                     {% if job.is_pipeline %}
-                        <a href="{% url 'processing:pipeline' %}" class="btn btn-outline btn-sm rounded-xl">← Luồng xử lý</a>
+                        <a href="{% url 'processing:pipeline' %}" class="btn btn-outline btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="arrow-left" label="Luồng xử lý" size="sm" %}</a>
                     {% else %}
-                        <a href="{% url 'processing:home' %}" class="btn btn-outline btn-sm rounded-xl">← Xử lý ảnh</a>
+                        <a href="{% url 'processing:home' %}" class="btn btn-outline btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="arrow-left" label="Xử lý ảnh" size="sm" %}</a>
                     {% endif %}
                 </div>
             </div>

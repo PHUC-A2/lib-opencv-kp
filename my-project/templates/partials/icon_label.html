@@ -1,0 +1,5 @@
+{# Icon + nhan van ban — dung cho nut, menu, lien ket #}
+<span class="inline-flex items-center gap-2{% if class %} {{ class }}{% endif %}">
+    {% include "partials/icon.html" with name=icon size=size|default:"sm" %}
+    <span>{{ label }}</span>
+</span>

@@ -2,14 +2,17 @@
     <span hidden data-toast-success="Luồng xử lý hoàn thành · {{ job.execution_time_ms }} ms"></span>
     <div class="card-body">
         <div class="flex items-center justify-between gap-4 mb-4">
-            <span class="text-sm font-medium text-[#059669]">✅ Luồng xử lý hoàn thành · {{ job.execution_time_ms }} ms</span>
+            <span class="inline-flex items-center gap-2 text-sm font-medium text-[#059669]">
+                {% include "partials/icon.html" with name="check-circle" size="sm" %}
+                Luồng xử lý hoàn thành · {{ job.execution_time_ms }} ms
+            </span>
         </div>
 
         {% include "processing/partials/result_preview_images.html" %}
 
         <div class="flex flex-wrap gap-2">
-            <a href="{% url 'processing:result' job.id %}" class="btn btn-primary-gradient rounded-xl">🔍 So sánh trước & sau</a>
-            <a href="{% url 'processing:history' %}" class="btn btn-ghost rounded-xl">📜 Xem lịch sử</a>
+            <a href="{% url 'processing:result' job.id %}" class="btn btn-primary-gradient rounded-xl">{% include "partials/icon_label.html" with icon="search" label="So sánh trước & sau" %}</a>
+            <a href="{% url 'processing:history' %}" class="btn btn-ghost rounded-xl">{% include "partials/icon_label.html" with icon="history" label="Xem lịch sử" %}</a>
         </div>
     </div>
 </div>

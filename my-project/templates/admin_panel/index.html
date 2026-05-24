@@ -11,7 +11,7 @@
                     <p class="text-sm text-[#6B7280]">Người dùng</p>
                     <p class="text-2xl font-bold mt-1">{{ stats.total_users }}</p>
                 </div>
-                <span class="text-2xl">👥</span>
+                {% include "partials/icon.html" with name="users" size="lg" %}
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
                     <p class="text-sm text-[#6B7280]">Ảnh hệ thống</p>
                     <p class="text-2xl font-bold mt-1">{{ stats.total_images }}</p>
                 </div>
-                <span class="text-2xl">🖼️</span>
+                {% include "partials/icon.html" with name="image" size="lg" %}
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
                     <p class="text-sm text-[#6B7280]">Đang xử lý</p>
                     <p class="text-2xl font-bold mt-1 text-[#FACC15]">{{ stats.active_jobs }}</p>
                 </div>
-                <span class="text-2xl">⏳</span>
+                {% include "partials/icon.html" with name="loader" size="lg" %}
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
                         <p class="text-xs text-[#EF4444] mt-1">{{ stats.error_logs }} lỗi</p>
                     {% endif %}
                 </div>
-                <span class="text-2xl">📋</span>
+                {% include "partials/icon.html" with name="clipboard-list" size="lg" %}
             </div>
         </div>
     </div>
@@ -60,27 +60,27 @@
                 <h2 class="text-lg font-semibold mb-4">Quản lý nhanh</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <a href="{% url 'admin_panel:users' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
-                        <span class="text-2xl">👥</span>
+                        {% include "partials/icon.html" with name="users" size="lg" %}
                         <p class="font-medium mt-2 group-hover:text-blue-600">Người dùng</p>
                         <p class="text-xs text-[#6B7280] mt-1">Khóa/mở tài khoản, xem thống kê</p>
                     </a>
                     <a href="{% url 'admin_panel:images' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
-                        <span class="text-2xl">🗂️</span>
+                        {% include "partials/icon.html" with name="folder-open" size="lg" %}
                         <p class="font-medium mt-2 group-hover:text-blue-600">Ảnh hệ thống</p>
                         <p class="text-xs text-[#6B7280] mt-1">Xem và xóa ảnh toàn hệ thống</p>
                     </a>
                     <a href="{% url 'admin_panel:algorithms' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
-                        <span class="text-2xl">🧠</span>
+                        {% include "partials/icon.html" with name="brain" size="lg" %}
                         <p class="font-medium mt-2 group-hover:text-blue-600">Thuật toán</p>
                         <p class="text-xs text-[#6B7280] mt-1">Thêm, sửa, xóa và bật/tắt thuật toán</p>
                     </a>
                     <a href="{% url 'admin_panel:jobs' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
-                        <span class="text-2xl">⏱️</span>
+                        {% include "partials/icon.html" with name="timer" size="lg" %}
                         <p class="font-medium mt-2 group-hover:text-blue-600">Tác vụ xử lý</p>
                         <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_jobs }} tác vụ · {{ stats.failed_jobs }} thất bại</p>
                     </a>
                     <a href="{% url 'admin_panel:logs' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
-                        <span class="text-2xl">📋</span>
+                        {% include "partials/icon.html" with name="clipboard-list" size="lg" %}
                         <p class="font-medium mt-2 group-hover:text-blue-600">Nhật ký hệ thống</p>
                         <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_logs }} bản ghi · đồng bộ cơ sở dữ liệu</p>
                     </a>
@@ -105,7 +105,10 @@
                     </ul>
                     <a href="{% url 'admin_panel:jobs' %}?status=failed" class="btn btn-ghost btn-sm rounded-xl w-full mt-4">Xem tất cả tác vụ lỗi</a>
                 {% else %}
-                    <p class="text-sm text-[#6B7280]">Không có tác vụ thất bại gần đây ✅</p>
+                    <p class="text-sm text-[#6B7280] inline-flex items-center gap-2">
+                        {% include "partials/icon.html" with name="check-circle" size="sm" %}
+                        Không có tác vụ thất bại gần đây
+                    </p>
                 {% endif %}
             </div>
         </div>

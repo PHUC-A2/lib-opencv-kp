@@ -12,7 +12,10 @@
 {% else %}
 <div class="upload-result-item">
     <div class="alert alert-success rounded-xl shadow-sm mb-4">
-        <span>✅ Tải lên thành công {{ uploaded_images|length }} ảnh{% if errors %} ({{ errors|length }} lỗi){% endif %}</span>
+        <span class="inline-flex items-center gap-2">
+            {% include "partials/icon.html" with name="check-circle" size="sm" %}
+            Tải lên thành công {{ uploaded_images|length }} ảnh{% if errors %} ({{ errors|length }} lỗi){% endif %}
+        </span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

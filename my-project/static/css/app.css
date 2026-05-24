@@ -236,6 +236,38 @@ a:focus:not(:focus-visible) {
     object-fit: contain;
 }
 
+/* Lucide icon — kich thuoc dong bo UI */
+.icon-inline {
+    display: inline-block;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+.icon-inline.icon-sm,
+.icon-sm.icon-inline {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-inline.icon-md,
+.icon-md.icon-inline {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-inline.icon-lg,
+.icon-lg.icon-inline {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-inline.icon-xl,
+.icon-xl.icon-inline {
+    width: 48px;
+    height: 48px;
+}
+
 /* Responsive — mobile sidebar overlay */
 @media (max-width: 1023px) {
     #toast-container {

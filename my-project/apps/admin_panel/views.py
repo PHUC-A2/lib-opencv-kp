@@ -158,7 +158,9 @@ def admin_image_delete_view(request: HttpRequest, pk: int) -> HttpResponse:
         return redirect("admin_panel:images")
 
     if request.headers.get("HX-Request"):
-        return HttpResponse("")
+        response = HttpResponse("")
+        response["HX-Trigger"] = '{"adminImageDeleted": true}'
+        return response
 
     messages.success(request, "Đã xóa ảnh khỏi hệ thống.")
     return redirect("admin_panel:images")

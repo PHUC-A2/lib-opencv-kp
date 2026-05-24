@@ -7,7 +7,10 @@
     {% if slow_logs %}
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl animate-stagger-item">
         <div class="card-body">
-            <h2 class="text-lg font-semibold mb-3">🐢 Tác vụ chậm nhất (theo thời gian thực thi)</h2>
+            <h2 class="text-lg font-semibold mb-3 inline-flex items-center gap-2">
+                {% include "partials/icon.html" with name="gauge" size="md" %}
+                Tác vụ chậm nhất (theo thời gian thực thi)
+            </h2>
             <div class="overflow-x-auto">
                 <table class="table table-sm">
                     <thead>
@@ -82,7 +85,7 @@
                     <input type="date" name="date_to" id="id_date_to" value="{% if date_to %}{{ date_to|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
                 </div>
                 <div class="form-control flex flex-row gap-2 xl:col-span-6">
-                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="search" label="Áp dụng lọc" size="sm" %}</button>
                     <a href="{% url 'admin_panel:logs' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
                 </div>
             </form>

@@ -60,7 +60,7 @@
 {% else %}
 <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
     <div class="card-body items-center text-center py-12">
-        <span class="text-5xl">📋</span>
+        {% include "partials/icon.html" with name="clipboard-list" size="xl" %}
         <p class="font-medium text-lg mt-4">Không có log nào</p>
         <p class="text-[#6B7280] mt-1">
             {% if search or level or module or date_from or date_to %}

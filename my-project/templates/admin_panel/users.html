@@ -36,7 +36,7 @@
                     </select>
                 </div>
                 <div class="form-control flex flex-row gap-2 xl:col-span-4">
-                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="search" label="Áp dụng lọc" size="sm" %}</button>
                     <a href="{% url 'admin_panel:users' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
                 </div>
             </form>

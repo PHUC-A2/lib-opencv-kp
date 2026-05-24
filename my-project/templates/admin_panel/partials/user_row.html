@@ -31,7 +31,11 @@
                 hx-swap="outerHTML"
                 hx-confirm="{% if user_item.is_active %}Khóa tài khoản {{ user_item.username }}?{% else %}Mở khóa tài khoản {{ user_item.username }}?{% endif %}"
             >
-                {% if user_item.is_active %}🔒 Khóa{% else %}🔓 Mở khóa{% endif %}
+                {% if user_item.is_active %}
+                    {% include "partials/icon_label.html" with icon="lock" label="Khóa" size="sm" %}
+                {% else %}
+                    {% include "partials/icon_label.html" with icon="lock-open" label="Mở khóa" size="sm" %}
+                {% endif %}
             </button>
         {% else %}
             <span class="text-xs text-[#9CA3AF]">Tài khoản của bạn</span>

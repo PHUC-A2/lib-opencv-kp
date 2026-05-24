@@ -20,7 +20,7 @@
 
     <div class="flex items-center gap-2" x-data="{ userMenuOpen: false }">
         <a href="{% url 'images:upload' %}" class="btn btn-sm btn-primary-gradient rounded-xl hidden sm:flex">
-            📤 Tải ảnh
+            {% include "partials/icon_label.html" with icon="upload" label="Tải ảnh" size="sm" %}
         </a>
 
         <div class="relative">
@@ -55,10 +55,19 @@
                     <p class="text-sm font-medium truncate">{{ user.full_name|default:user.username }}</p>
                     <p class="text-xs text-[#6B7280] truncate">{{ user.email }}</p>
                 </div>
-                <a href="{% url 'authentication:profile' %}" class="block px-4 py-2 text-sm hover:bg-[#F3F4F6]">👤 Hồ sơ</a>
-                <a href="{% url 'dashboard:home' %}" class="block px-4 py-2 text-sm hover:bg-[#F3F4F6]">📊 Tổng quan</a>
+                <a href="{% url 'authentication:profile' %}" class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-[#F3F4F6]">
+                    {% include "partials/icon.html" with name="user" size="sm" %}
+                    <span>Hồ sơ</span>
+                </a>
+                <a href="{% url 'dashboard:home' %}" class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-[#F3F4F6]">
+                    {% include "partials/icon.html" with name="layout-dashboard" size="sm" %}
+                    <span>Tổng quan</span>
+                </a>
                 <div class="border-t border-[#E5E7EB] mt-1 pt-1">
-                    <a href="{% url 'authentication:logout' %}" class="block px-4 py-2 text-sm text-[#EF4444] hover:bg-red-50">🚪 Đăng xuất</a>
+                    <a href="{% url 'authentication:logout' %}" class="flex items-center gap-2 px-4 py-2 text-sm text-[#EF4444] hover:bg-red-50">
+                        {% include "partials/icon.html" with name="log-out" size="sm" %}
+                        <span>Đăng xuất</span>
+                    </a>
                 </div>
             </div>
         </div>

@@ -37,9 +37,9 @@
                                 class="btn btn-ghost btn-xs rounded-lg text-[#EF4444] hover:bg-red-50"
                                 hx-post="{% url 'admin_panel:image_delete' image.id %}"
                                 hx-target="#image-row-{{ image.id }}"
-                                hx-swap="outerHTML swap:0.3s"
+                                hx-swap="delete"
                                 hx-confirm="Xóa ảnh {{ image.original_filename }} khỏi hệ thống?"
-                            >🗑️ Xóa</button>
+                            >{% include "partials/icon_label.html" with icon="trash-2" label="Xóa" size="sm" %}</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -50,7 +50,7 @@
 {% else %}
 <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
     <div class="card-body items-center text-center py-12">
-        <span class="text-5xl">🗂️</span>
+        {% include "partials/icon.html" with name="folder-open" size="xl" %}
         <p class="font-medium text-lg mt-4">Không có ảnh nào</p>
         <p class="text-[#6B7280] mt-1">Thử thay đổi bộ lọc tìm kiếm</p>
     </div>

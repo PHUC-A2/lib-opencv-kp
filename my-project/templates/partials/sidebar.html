@@ -4,7 +4,7 @@
 >
     <div class="h-16 flex items-center px-6 border-b border-[#E5E7EB]">
         <a href="{% url 'dashboard:home' %}" class="flex items-center gap-2">
-            <span class="text-2xl">🎨</span>
+            {% include "partials/icon.html" with name="sparkles" size="lg" %}
             <div>
                 <p class="font-bold text-sm leading-tight">OpenCV AI</p>
                 <p class="text-xs text-[#6B7280]">Xử lý ảnh</p>
@@ -22,7 +22,7 @@
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
                     {% if item.is_active %}sidebar-link-active shadow-sm{% else %}text-[#374151] hover:bg-[#F3F4F6]{% endif %}"
             >
-                <span class="text-base">{{ item.icon }}</span>
+                {% include "partials/icon.html" with name=item.icon size="md" %}
                 <span>{{ item.label }}</span>
             </a>
         {% endfor %}
@@ -37,7 +37,7 @@
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150
                             {% if item.is_active %}sidebar-link-active shadow-sm{% else %}text-[#374151] hover:bg-[#F3F4F6]{% endif %}"
                     >
-                        <span class="text-base">{{ item.icon }}</span>
+                        {% include "partials/icon.html" with name=item.icon size="md" %}
                         <span>{{ item.label }}</span>
                     </a>
                 {% endfor %}

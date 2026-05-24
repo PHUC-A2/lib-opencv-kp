@@ -24,15 +24,15 @@
                 href="{% url 'images:download' image.id %}"
                 class="btn btn-ghost btn-xs rounded-lg"
                 title="Tải về"
-            >⬇️ Tải</a>
+            >{% include "partials/icon_label.html" with icon="download" label="Tải" size="sm" %}</a>
             <button
                 type="button"
                 class="btn btn-ghost btn-xs rounded-lg text-[#EF4444] hover:bg-red-50"
                 hx-post="{% url 'images:delete' image.id %}"
                 hx-target="#image-card-{{ image.id }}"
-                hx-swap="outerHTML"
+                hx-swap="delete"
                 hx-confirm="Bạn có chắc muốn xóa ảnh này?"
-            >🗑️ Xóa</button>
+            >{% include "partials/icon_label.html" with icon="trash-2" label="Xóa" size="sm" %}</button>
         </div>
         {% endif %}
     </div>

@@ -1,0 +1,18 @@
+{# Map code thuat toan sang ten icon Lucide (khong phu thuoc emoji trong DB) #}
+{% if algorithm.code == "grayscale" %}
+    {% include "partials/icon.html" with name="contrast" size=size|default:"lg" %}
+{% elif algorithm.code == "gaussian_blur" %}
+    {% include "partials/icon.html" with name="cloud" size=size|default:"lg" %}
+{% elif algorithm.code == "canny" %}
+    {% include "partials/icon.html" with name="ruler" size=size|default:"lg" %}
+{% elif algorithm.code == "binary_threshold" %}
+    {% include "partials/icon.html" with name="square" size=size|default:"lg" %}
+{% elif algorithm.code == "median_blur" %}
+    {% include "partials/icon.html" with name="droplets" size=size|default:"lg" %}
+{% elif algorithm.code == "morphology" %}
+    {% include "partials/icon.html" with name="scan-search" size=size|default:"lg" %}
+{% elif algorithm.code == "histogram_equalization" %}
+    {% include "partials/icon.html" with name="bar-chart-2" size=size|default:"lg" %}
+{% else %}
+    {% include "partials/icon.html" with name="settings" size=size|default:"lg" %}
+{% endif %}

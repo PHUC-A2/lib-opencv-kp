@@ -17,7 +17,7 @@
     {% if not user_images %}
         <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
             <div class="card-body items-center text-center py-12">
-                <span class="text-5xl">📤</span>
+                {% include "partials/icon.html" with name="upload" size="xl" %}
                 <h2 class="text-lg font-semibold mt-4">Chưa có ảnh để xử lý</h2>
                 <p class="text-[#6B7280] mt-2">Hãy tải ảnh lên trước khi chạy thuật toán OpenCV.</p>
                 <a href="{% url 'images:upload' %}" class="btn btn-primary-gradient rounded-xl mt-4">Tải ảnh lên</a>
@@ -59,8 +59,8 @@
                                     </div>
                                     <div
                                         x-show="selectedImageId === {{ image.id }}"
-                                        class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-lg"
-                                    >✓</div>
+                                        class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-lg inline-flex items-center"
+                                    >{% include "partials/icon.html" with name="check" size="sm" %}</div>
                                 </button>
                             {% endfor %}
                         </div>
@@ -85,7 +85,7 @@
                                     :class="selectedAlgorithmId === {{ algorithm.id }} ? 'border-blue-500 bg-blue-50/50 shadow-sm' : 'border-[#E5E7EB] bg-[#F9FAFB] hover:bg-white'"
                                 >
                                     <div class="flex items-start gap-3">
-                                        <span class="text-2xl">{{ algorithm.icon }}</span>
+                                        {% include "partials/algorithm_icon.html" with algorithm=algorithm size="lg" %}
                                         <div>
                                             <p class="font-medium text-sm">{{ algorithm.name }}</p>
                                             <p class="text-xs text-[#6B7280] mt-1">{{ algorithm.description }}</p>
@@ -105,14 +105,17 @@
                     :disabled="!canProcess()"
                     :class="{ 'opacity-60 cursor-not-allowed': !canProcess() }"
                 >
-                    <span x-show="!processing">⚙️ Xử lý ảnh</span>
+                    <span x-show="!processing" class="inline-flex items-center gap-2">
+                        {% include "partials/icon.html" with name="settings" size="sm" %}
+                        Xử lý ảnh
+                    </span>
                     <span x-show="processing" class="flex items-center gap-2">
                         <span class="loading loading-spinner loading-sm"></span>
                         Đang xử lý...
                     </span>
                 </button>
 
-                <a href="{% url 'images:gallery' %}" class="btn btn-outline w-full rounded-xl">🖼️ Xem thư viện ảnh</a>
+                <a href="{% url 'images:gallery' %}" class="btn btn-outline w-full rounded-xl">{% include "partials/icon_label.html" with icon="image" label="Xem thư viện ảnh" %}</a>
             </div>
         </form>
 

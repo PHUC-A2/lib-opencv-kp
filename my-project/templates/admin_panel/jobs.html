@@ -61,7 +61,7 @@
                     <input type="date" name="date_to" id="id_date_to" value="{% if date_to %}{{ date_to|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
                 </div>
                 <div class="form-control flex flex-row gap-2 xl:col-span-6">
-                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">{% include "partials/icon_label.html" with icon="search" label="Áp dụng lọc" size="sm" %}</button>
                     <a href="{% url 'admin_panel:jobs' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
                 </div>
             </form>

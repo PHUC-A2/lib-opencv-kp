@@ -21,10 +21,20 @@
     }
 
     function toastIcon(type) {
-        if (type === 'success') return '✅';
-        if (type === 'error') return '❌';
-        return 'ℹ️';
+        if (type === 'success') return '<i data-lucide="check-circle" class="icon-inline icon-md"></i>';
+        if (type === 'error') return '<i data-lucide="x-circle" class="icon-inline icon-md"></i>';
+        return '<i data-lucide="info" class="icon-inline icon-md"></i>';
     }
+
+    // Khoi tao / cap nhat icon Lucide sau render DOM hoac HTMX swap.
+    window.refreshLucideIcons = function (root) {
+        if (typeof lucide === 'undefined' || !lucide.createIcons) return;
+        var options = { attrs: { 'aria-hidden': 'true' } };
+        if (root) {
+            options.root = root;
+        }
+        lucide.createIcons(options);
+    };
 
     window.showToast = function (message, type) {
         type = type || 'info';
@@ -46,6 +56,7 @@
         });
 
         container.appendChild(item);
+        refreshLucideIcons(item);
 
         if (!prefersReducedMotion && typeof gsap !== 'undefined') {
             gsap.from(item, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.out' });
@@ -279,10 +290,28 @@
         });
     }
 
+    // Lay CSRF token tu meta tag hoac cookie de HTMX POST hoat dong voi Django.
+    function getCsrfToken() {
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta && meta.content) {
+            return meta.content;
+        }
+        var match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    document.body.addEventListener('htmx:configRequest', function (event) {
+        var token = getCsrfToken();
+        if (token) {
+            event.detail.headers['X-CSRFToken'] = token;
+        }
+    });
+
     // --- Khoi tao su kien ---
     document.addEventListener('DOMContentLoaded', function () {
         migrateDjangoMessages();
         animatePageEntrance();
+        refreshLucideIcons();
     });
 
     document.body.addEventListener('htmx:beforeRequest', function (event) {
@@ -293,8 +322,14 @@
         }
     });
 
-    document.body.addEventListener('htmx:afterRequest', function () {
+    document.body.addEventListener('htmx:afterRequest', function (event) {
         finishProgress();
+
+        // Thong bao khi xoa anh admin thanh cong.
+        var trigger = event.detail.xhr && event.detail.xhr.getResponseHeader('HX-Trigger');
+        if (trigger && trigger.indexOf('adminImageDeleted') !== -1 && event.detail.successful) {
+            showToast('Đã xóa ảnh khỏi hệ thống.', 'success');
+        }
     });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {
@@ -304,6 +339,7 @@
         );
         animateStaggerIn(target);
         detectHtmxToast(target);
+        refreshLucideIcons(target);
 
         if (target.id === 'history-table' ||
             target.id === 'admin-users-table' ||

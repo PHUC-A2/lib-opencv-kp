@@ -63,7 +63,7 @@
                 <p class="text-sm text-[#6B7280] mt-1">Vui lòng đợi trong giây lát</p>
             </div>
 
-            <span class="text-5xl">📤</span>
+            {% include "partials/icon.html" with name="upload" size="xl" %}
             <p class="font-semibold text-lg mt-4">Kéo thả ảnh vào đây</p>
             <p class="text-[#6B7280] mt-1">hoặc nhấn để chọn file từ máy tính</p>
             <p class="text-xs text-[#9CA3AF] mt-3">JPG, PNG, WEBP · Tối đa 10MB/ảnh</p>
@@ -86,8 +86,8 @@
     <div id="upload-results" class="space-y-4 mt-6"></div>
 
     <div class="flex justify-center gap-3 mt-8">
-        <a href="{% url 'images:gallery' %}" class="btn btn-outline rounded-xl">🖼️ Xem thư viện ảnh</a>
-        <a href="{% url 'processing:home' %}" class="btn btn-primary-gradient rounded-xl">⚙️ Xử lý ảnh</a>
+        <a href="{% url 'images:gallery' %}" class="btn btn-outline rounded-xl">{% include "partials/icon_label.html" with icon="image" label="Xem thư viện ảnh" %}</a>
+        <a href="{% url 'processing:home' %}" class="btn btn-primary-gradient rounded-xl">{% include "partials/icon_label.html" with icon="settings" label="Xử lý ảnh" %}</a>
     </div>
 </div>
 {% endblock %}
