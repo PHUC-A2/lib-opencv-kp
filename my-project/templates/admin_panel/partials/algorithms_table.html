@@ -1,0 +1,31 @@
+{% if algorithms %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="table table-zebra">
+            <thead class="bg-[#F9FAFB]">
+                <tr class="text-[#6B7280] text-sm">
+                    <th>#</th>
+                    <th>Thuật toán</th>
+                    <th>Mã code</th>
+                    <th>Job đã dùng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-right">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for algorithm in algorithms %}
+                    {% include "admin_panel/partials/algorithm_row.html" %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+    <div class="card-body items-center text-center py-12">
+        <span class="text-5xl">🧠</span>
+        <p class="font-medium text-lg mt-4">Không có thuật toán</p>
+        <a href="{% url 'admin_panel:algorithm_create' %}" class="btn btn-primary-gradient rounded-xl mt-4">➕ Thêm thuật toán</a>
+    </div>
+</div>
+{% endif %}

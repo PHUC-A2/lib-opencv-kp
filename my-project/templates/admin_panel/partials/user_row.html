@@ -1,0 +1,40 @@
+<tr id="user-row-{{ user_item.id }}" class="hover:bg-[#F9FAFB]">
+    <td class="font-medium">{{ user_item.id }}</td>
+    <td>
+        <p class="font-medium text-sm">{{ user_item.username }}</p>
+        {% if user_item.full_name %}
+            <p class="text-xs text-[#6B7280]">{{ user_item.full_name }}</p>
+        {% endif %}
+    </td>
+    <td class="text-sm">{{ user_item.email }}</td>
+    <td>
+        <span class="badge badge-sm {% if user_item.role == 'admin' %}badge-primary{% else %}badge-ghost{% endif %} rounded-lg">
+            {% if user_item.role == 'admin' %}Quản trị{% else %}Người dùng{% endif %}
+        </span>
+    </td>
+    <td class="text-sm text-[#6B7280]">{{ user_item.image_count }} / {{ user_item.job_count }}</td>
+    <td>
+        {% if user_item.is_active %}
+            <span class="badge badge-success badge-sm rounded-lg">Hoạt động</span>
+        {% else %}
+            <span class="badge badge-error badge-sm rounded-lg">Đã khóa</span>
+        {% endif %}
+    </td>
+    <td class="text-sm">{{ user_item.created_at|date:"d/m/Y" }}</td>
+    <td class="text-right">
+        {% if user_item.id != user.id %}
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs rounded-lg {% if user_item.is_active %}text-[#EF4444]{% else %}text-[#22C55E]{% endif %}"
+                hx-post="{% url 'admin_panel:user_toggle' user_item.id %}"
+                hx-target="#user-row-{{ user_item.id }}"
+                hx-swap="outerHTML"
+                hx-confirm="{% if user_item.is_active %}Khóa tài khoản {{ user_item.username }}?{% else %}Mở khóa tài khoản {{ user_item.username }}?{% endif %}"
+            >
+                {% if user_item.is_active %}🔒 Khóa{% else %}🔓 Mở khóa{% endif %}
+            </button>
+        {% else %}
+            <span class="text-xs text-[#9CA3AF]">Tài khoản của bạn</span>
+        {% endif %}
+    </td>
+</tr>

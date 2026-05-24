@@ -1,0 +1,75 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            {% if filter_errors %}
+                <div class="alert alert-error rounded-xl mb-4">
+                    {% for error in filter_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form
+                id="admin-jobs-filter"
+                method="get"
+                hx-get="{% url 'admin_panel:jobs' %}"
+                hx-target="#admin-jobs-table"
+                hx-trigger="change from:select, input from:input[type='date'] delay:300ms, keyup changed delay:400ms from:input[type='search'], submit"
+                hx-push-url="true"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-end"
+            >
+                <div class="form-control xl:col-span-2">
+                    <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Tên ảnh, username...">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_user_id"><span class="label-text font-medium">{{ filter_form.user_id.label }}</span></label>
+                    <select name="user_id" id="id_user_id" class="select select-bordered w-full rounded-xl">
+                        <option value="">Tất cả người dùng</option>
+                        {% for u in filter_form.fields.user_id.queryset %}
+                            <option value="{{ u.pk }}" {% if user_id == u.pk %}selected{% endif %}>{{ u.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_status"><span class="label-text font-medium">{{ filter_form.status.label }}</span></label>
+                    <select name="status" id="id_status" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.status.choices %}
+                            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_job_type"><span class="label-text font-medium">{{ filter_form.job_type.label }}</span></label>
+                    <select name="job_type" id="id_job_type" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.job_type.choices %}
+                            <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_from"><span class="label-text font-medium">{{ filter_form.date_from.label }}</span></label>
+                    <input type="date" name="date_from" id="id_date_from" value="{% if date_from %}{{ date_from|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_date_to"><span class="label-text font-medium">{{ filter_form.date_to.label }}</span></label>
+                    <input type="date" name="date_to" id="id_date_to" value="{% if date_to %}{{ date_to|date:'Y-m-d' }}{% endif %}" class="input input-bordered w-full rounded-xl">
+                </div>
+                <div class="form-control flex flex-row gap-2 xl:col-span-6">
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <a href="{% url 'admin_panel:jobs' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-jobs-table">
+        {% include "admin_panel/partials/jobs_table.html" %}
+    </div>
+</div>
+{% endblock %}

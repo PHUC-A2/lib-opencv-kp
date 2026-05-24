@@ -1,0 +1,50 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+        <div class="card-body">
+            <form
+                id="admin-users-filter"
+                method="get"
+                hx-get="{% url 'admin_panel:users' %}"
+                hx-target="#admin-users-table"
+                hx-trigger="change from:select, keyup changed delay:400ms from:input[type='search'], submit"
+                hx-push-url="true"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-end"
+            >
+                <div class="form-control xl:col-span-2">
+                    <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Username, email, họ tên...">
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_role"><span class="label-text font-medium">{{ filter_form.role.label }}</span></label>
+                    <select name="role" id="id_role" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.role.choices %}
+                            <option value="{{ value }}" {% if role == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label" for="id_status"><span class="label-text font-medium">{{ filter_form.status.label }}</span></label>
+                    <select name="status" id="id_status" class="select select-bordered w-full rounded-xl">
+                        {% for value, label in filter_form.fields.status.choices %}
+                            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control flex flex-row gap-2 xl:col-span-4">
+                    <button type="submit" class="btn btn-primary-gradient btn-sm rounded-xl">🔍 Áp dụng lọc</button>
+                    <a href="{% url 'admin_panel:users' %}" class="btn btn-ghost btn-sm rounded-xl">Xóa lọc</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-users-table">
+        {% include "admin_panel/partials/users_table.html" %}
+    </div>
+</div>
+{% endblock %}

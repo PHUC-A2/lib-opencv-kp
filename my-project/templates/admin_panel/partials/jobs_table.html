@@ -1,0 +1,74 @@
+{% if jobs %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="table table-zebra">
+            <thead class="bg-[#F9FAFB]">
+                <tr class="text-[#6B7280] text-sm">
+                    <th>#</th>
+                    <th>Thời gian</th>
+                    <th>Người dùng</th>
+                    <th>Ảnh nguồn</th>
+                    <th>Thuật toán</th>
+                    <th>Loại</th>
+                    <th>Trạng thái</th>
+                    <th>Thời gian xử lý</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr class="hover:bg-[#F9FAFB]">
+                        <td class="font-medium">{{ job.id }}</td>
+                        <td class="text-sm">{{ job.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <p class="text-sm font-medium">{{ job.user.username }}</p>
+                            <p class="text-xs text-[#6B7280]">{{ job.user.email }}</p>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2 min-w-[140px]">
+                                <img src="{{ job.source_image.media_url }}" alt="" class="w-10 h-10 rounded-lg object-cover border border-[#E5E7EB]">
+                                <span class="text-sm truncate max-w-[120px]" title="{{ job.source_image.original_filename }}">{{ job.source_image.original_filename }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-sm">{{ job.get_display_algorithms }}</span>
+                        </td>
+                        <td>
+                            {% if job.is_pipeline %}
+                                <span class="badge badge-primary badge-xs rounded-lg">Pipeline</span>
+                            {% else %}
+                                <span class="badge badge-ghost badge-xs rounded-lg">Đơn</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if job.status == 'completed' %}
+                                <span class="badge badge-success badge-sm rounded-lg">Hoàn thành</span>
+                            {% elif job.status == 'failed' %}
+                                <span class="badge badge-error badge-sm rounded-lg" title="{{ job.error_message }}">Thất bại</span>
+                            {% elif job.status == 'processing' %}
+                                <span class="badge badge-warning badge-sm rounded-lg">Đang xử lý</span>
+                            {% else %}
+                                <span class="badge badge-ghost badge-sm rounded-lg">{{ job.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if job.execution_time_ms %}
+                                <span class="text-sm font-medium">{{ job.execution_time_ms }} ms</span>
+                            {% else %}
+                                <span class="text-sm text-[#9CA3AF]">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+    <div class="card-body items-center text-center py-12">
+        <span class="text-5xl">⏱️</span>
+        <p class="font-medium text-lg mt-4">Không có job nào</p>
+        <p class="text-[#6B7280] mt-1">Thử thay đổi bộ lọc tìm kiếm</p>
+    </div>
+</div>
+{% endif %}

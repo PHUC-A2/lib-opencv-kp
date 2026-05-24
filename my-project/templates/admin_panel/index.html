@@ -6,34 +6,101 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
         <div class="card-body p-5">
-            <p class="text-sm text-[#6B7280]">Người dùng</p>
-            <p class="text-2xl font-bold mt-1">{{ stats.total_users }}</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Người dùng</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.total_users }}</p>
+                </div>
+                <span class="text-2xl">👥</span>
+            </div>
         </div>
     </div>
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
         <div class="card-body p-5">
-            <p class="text-sm text-[#6B7280]">Ảnh hệ thống</p>
-            <p class="text-2xl font-bold mt-1">{{ stats.total_images }}</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Ảnh hệ thống</p>
+                    <p class="text-2xl font-bold mt-1">{{ stats.total_images }}</p>
+                </div>
+                <span class="text-2xl">🖼️</span>
+            </div>
         </div>
     </div>
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
         <div class="card-body p-5">
-            <p class="text-sm text-[#6B7280]">Job đang chạy</p>
-            <p class="text-2xl font-bold mt-1">{{ stats.active_jobs }}</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Job đang chạy</p>
+                    <p class="text-2xl font-bold mt-1 text-[#FACC15]">{{ stats.active_jobs }}</p>
+                </div>
+                <span class="text-2xl">⏳</span>
+            </div>
         </div>
     </div>
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl card-hover transition-all duration-200">
         <div class="card-body p-5">
-            <p class="text-sm text-[#6B7280]">System Logs</p>
-            <p class="text-2xl font-bold mt-1">{{ stats.system_logs }}</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#6B7280]">Job thất bại</p>
+                    <p class="text-2xl font-bold mt-1 text-[#EF4444]">{{ stats.failed_jobs }}</p>
+                </div>
+                <span class="text-2xl">⚠️</span>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
-    <div class="card-body">
-        <h2 class="text-lg font-semibold mb-2">🛡️ Admin Panel</h2>
-        <p class="text-[#6B7280]">Khu vực quản trị hệ thống. Các module quản lý sẽ được triển khai ở Phase 5.</p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Quản lý nhanh</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="{% url 'admin_panel:users' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
+                        <span class="text-2xl">👥</span>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Người dùng</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Khóa/mở tài khoản, xem thống kê</p>
+                    </a>
+                    <a href="{% url 'admin_panel:images' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
+                        <span class="text-2xl">🗂️</span>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Ảnh hệ thống</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Xem và xóa ảnh toàn hệ thống</p>
+                    </a>
+                    <a href="{% url 'admin_panel:algorithms' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
+                        <span class="text-2xl">🧠</span>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Thuật toán</p>
+                        <p class="text-xs text-[#6B7280] mt-1">CRUD và bật/tắt thuật toán</p>
+                    </a>
+                    <a href="{% url 'admin_panel:jobs' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
+                        <span class="text-2xl">⏱️</span>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Processing Jobs</p>
+                        <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_jobs }} job · theo dõi thời gian xử lý</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body">
+                <h2 class="text-lg font-semibold mb-4">Lỗi gần đây</h2>
+                {% if stats.recent_errors %}
+                    <ul class="space-y-3">
+                        {% for job in stats.recent_errors %}
+                            <li class="p-3 rounded-xl bg-red-50 border border-red-100">
+                                <p class="text-sm font-medium">Job #{{ job.id }}</p>
+                                <p class="text-xs text-[#6B7280] mt-1">{{ job.user.username }} · {{ job.get_display_algorithms }}</p>
+                                <p class="text-xs text-[#EF4444] mt-1 truncate" title="{{ job.error_message }}">{{ job.error_message|default:"Lỗi không xác định" }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'admin_panel:jobs' %}?status=failed" class="btn btn-ghost btn-sm rounded-xl w-full mt-4">Xem tất cả job lỗi</a>
+                {% else %}
+                    <p class="text-sm text-[#6B7280]">Không có job thất bại gần đây ✅</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,36 @@
+<tr id="algorithm-row-{{ algorithm.id }}" class="hover:bg-[#F9FAFB]">
+    <td class="font-medium">{{ algorithm.id }}</td>
+    <td>
+        <div class="flex items-center gap-2">
+            <span class="text-xl">{{ algorithm.icon }}</span>
+            <div>
+                <p class="font-medium text-sm">{{ algorithm.name }}</p>
+                <p class="text-xs text-[#6B7280] truncate max-w-[220px]" title="{{ algorithm.description }}">{{ algorithm.description|default:"—" }}</p>
+            </div>
+        </div>
+    </td>
+    <td><code class="text-xs bg-[#F3F4F6] px-2 py-1 rounded-lg">{{ algorithm.code }}</code></td>
+    <td class="text-sm">{{ algorithm.job_count }}</td>
+    <td>
+        {% if algorithm.is_active %}
+            <span class="badge badge-success badge-sm rounded-lg">Đang bật</span>
+        {% else %}
+            <span class="badge badge-ghost badge-sm rounded-lg">Đã tắt</span>
+        {% endif %}
+    </td>
+    <td class="text-right">
+        <div class="flex justify-end gap-1">
+            <a href="{% url 'admin_panel:algorithm_edit' algorithm.id %}" class="btn btn-ghost btn-xs rounded-lg">✏️ Sửa</a>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs rounded-lg"
+                hx-post="{% url 'admin_panel:algorithm_toggle' algorithm.id %}"
+                hx-target="#algorithm-row-{{ algorithm.id }}"
+                hx-swap="outerHTML"
+                hx-confirm="{% if algorithm.is_active %}Tắt thuật toán {{ algorithm.name }}?{% else %}Bật thuật toán {{ algorithm.name }}?{% endif %}"
+            >
+                {% if algorithm.is_active %}⏸️ Tắt{% else %}▶️ Bật{% endif %}
+            </button>
+        </div>
+    </td>
+</tr>
