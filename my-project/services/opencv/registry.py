@@ -8,6 +8,9 @@ from services.opencv.processors import (
     apply_canny,
     apply_gaussian_blur,
     apply_grayscale,
+    apply_histogram_equalization,
+    apply_median_blur,
+    apply_morphology,
 )
 
 # Registry map code thuat toan -> ham xu ly OpenCV.
@@ -16,6 +19,9 @@ ALGORITHM_REGISTRY: dict[str, Callable[[np.ndarray], np.ndarray]] = {
     "gaussian_blur": apply_gaussian_blur,
     "canny": apply_canny,
     "binary_threshold": apply_binary_threshold,
+    "median_blur": apply_median_blur,
+    "morphology": apply_morphology,
+    "histogram_equalization": apply_histogram_equalization,
 }
 
 

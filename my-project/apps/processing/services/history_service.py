@@ -1,5 +1,6 @@
 from datetime import datetime, time
 
+from django.db.models import Q
 from django.utils import timezone
 
 from apps.processing.models import ProcessingHistory, ProcessingJob, ProcessingParameter
@@ -10,6 +11,9 @@ DEFAULT_ALGORITHM_PARAMS: dict[str, dict[str, str]] = {
     "gaussian_blur": {"kernel_size": "15"},
     "canny": {"threshold1": "100", "threshold2": "200"},
     "binary_threshold": {"threshold": "127"},
+    "median_blur": {"kernel_size": "15"},
+    "morphology": {"kernel_size": "5", "operation": "MORPH_OPEN"},
+    "histogram_equalization": {},
 }
 
 
@@ -20,13 +24,18 @@ class ProcessingHistoryService:
         return DEFAULT_ALGORITHM_PARAMS.get(algorithm_code, {}).copy()
 
     @staticmethod
-    def save_parameters(job: ProcessingJob, algorithm_code: str) -> None:
+    def save_parameters(job: ProcessingJob, algorithm_code: str, step_order: int | None = None) -> None:
         # Luu tham so xu ly vao bang processing_parameters.
         params = ProcessingHistoryService.get_default_params(algorithm_code)
         for key, value in params.items():
+            # Pipeline nhieu buoc co the trung ten tham so -> them prefix theo thu tu buoc.
+            if job.is_pipeline and step_order is not None:
+                param_key = f"step{step_order}.{key}"
+            else:
+                param_key = key
             ProcessingParameter.objects.create(
                 job=job,
-                param_key=key,
+                param_key=param_key,
                 param_value=str(value),
             )
 
@@ -52,11 +61,13 @@ class ProcessingHistoryService:
         queryset = (
             ProcessingJob.objects.filter(user=user)
             .select_related("algorithm", "source_image")
-            .prefetch_related("processed_image", "history_logs")
+            .prefetch_related("processed_image", "history_logs", "pipeline_steps__algorithm")
         )
 
         if algorithm_id:
-            queryset = queryset.filter(algorithm_id=algorithm_id)
+            queryset = queryset.filter(
+                Q(algorithm_id=algorithm_id) | Q(pipeline_steps__algorithm_id=algorithm_id)
+            ).distinct()
 
         if status:
             queryset = queryset.filter(status=status)

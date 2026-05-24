@@ -44,7 +44,7 @@ def get_public_menu_items() -> list[dict]:
         {
             "label": "Pipeline",
             "icon": "🔗",
-            "url_name": "dashboard:processing_pipeline",
+            "url_name": "processing:pipeline",
             "active_prefix": "/processing/pipeline",
         },
     ]

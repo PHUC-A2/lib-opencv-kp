@@ -8,10 +8,21 @@
         <div class="card-body">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div>
-                    <h2 class="text-lg font-semibold">{{ job.algorithm.icon }} {{ job.algorithm.name }}</h2>
+                    <h2 class="text-lg font-semibold">
+                        {% if job.is_pipeline %}🔗 Pipeline{% else %}{{ job.algorithm.icon }} {{ job.algorithm.name }}{% endif %}
+                    </h2>
                     <p class="text-sm text-[#6B7280]">{{ job.source_image.original_filename }} · {{ job.execution_time_ms }} ms</p>
+                    {% if job.is_pipeline %}
+                        <p class="text-xs text-[#6B7280] mt-1">{{ job.get_display_algorithms }}</p>
+                    {% endif %}
                 </div>
-                <a href="{% url 'processing:home' %}" class="btn btn-outline btn-sm rounded-xl">← Quay lại xử lý</a>
+                <div class="flex gap-2">
+                    {% if job.is_pipeline %}
+                        <a href="{% url 'processing:pipeline' %}" class="btn btn-outline btn-sm rounded-xl">← Pipeline</a>
+                    {% else %}
+                        <a href="{% url 'processing:home' %}" class="btn btn-outline btn-sm rounded-xl">← Xử lý ảnh</a>
+                    {% endif %}
+                </div>
             </div>
 
             <div

@@ -5,9 +5,10 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
 from apps.images.services.image_service import ImageService
-from apps.processing.forms import HistoryFilterForm, ProcessingRunForm
+from apps.processing.forms import HistoryFilterForm, PipelineRunForm, ProcessingRunForm
 from apps.processing.models import ProcessingJob
 from apps.processing.services.history_service import ProcessingHistoryService
+from apps.processing.services.pipeline_service import PipelineService
 from apps.processing.services.processing_service import ProcessingService, ProcessingServiceError
 
 
@@ -88,7 +89,7 @@ def processing_result_view(request: HttpRequest, pk: int) -> HttpResponse:
         "processing/result.html",
         {
             "page_title": "Kết quả xử lý",
-            "page_subtitle": f"{job.algorithm.name} · {job.source_image.original_filename}",
+            "page_subtitle": f"{job.get_display_algorithms()} · {job.source_image.original_filename}",
             "job": job,
         },
     )
@@ -141,3 +142,58 @@ def processing_history_view(request: HttpRequest) -> HttpResponse:
         return render(request, "processing/partials/history_table.html", context)
 
     return render(request, "processing/history.html", context)
+
+
+@login_required
+def processing_pipeline_view(request: HttpRequest) -> HttpResponse:
+    # Trang cau hinh pipeline nhieu buoc.
+    user_images = ImageService.get_user_images(request.user)
+    algorithms = ProcessingService.get_active_algorithms()
+
+    return render(
+        request,
+        "processing/pipeline.html",
+        {
+            "page_title": "Pipeline xử lý",
+            "page_subtitle": "Chọn nhiều thuật toán và chạy theo chuỗi",
+            "user_images": user_images,
+            "algorithms": algorithms,
+        },
+    )
+
+
+@login_required
+@csrf_protect
+@require_POST
+def processing_pipeline_run_view(request: HttpRequest) -> HttpResponse:
+    # Thuc thi pipeline qua HTMX.
+    form = PipelineRunForm(request.POST)
+
+    if not form.is_valid():
+        first_error = next(iter(form.errors.values()))[0]
+        return render(
+            request,
+            "processing/partials/pipeline_error.html",
+            {"message": first_error},
+            status=400,
+        )
+
+    try:
+        job = PipelineService.run_pipeline(
+            request.user,
+            form.cleaned_data["image_id"],
+            form.cleaned_data["algorithm_ids"],
+        )
+    except ProcessingServiceError as exc:
+        return render(
+            request,
+            "processing/partials/pipeline_error.html",
+            {"message": str(exc)},
+            status=400,
+        )
+
+    return render(
+        request,
+        "processing/partials/pipeline_result.html",
+        {"job": job},
+    )

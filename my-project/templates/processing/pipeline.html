@@ -1,0 +1,169 @@
+{% extends "base/dashboard.html" %}
+
+{% block title %}{{ page_title }} - OpenCV{% endblock %}
+
+{% block content %}
+<div
+    x-data="{
+        selectedImageId: null,
+        selectedSteps: [],
+        processing: false,
+        selectImage(id) { this.selectedImageId = id; },
+        addStep(algo) {
+            if (!this.selectedSteps.find(s => s.id === algo.id)) {
+                this.selectedSteps.push({...algo});
+            }
+        },
+        removeStep(index) { this.selectedSteps.splice(index, 1); },
+        moveUp(index) {
+            if (index > 0) {
+                const item = this.selectedSteps.splice(index, 1)[0];
+                this.selectedSteps.splice(index - 1, 0, item);
+            }
+        },
+        moveDown(index) {
+            if (index < this.selectedSteps.length - 1) {
+                const item = this.selectedSteps.splice(index, 1)[0];
+                this.selectedSteps.splice(index + 1, 0, item);
+            }
+        },
+        get algorithmIds() {
+            return this.selectedSteps.map(s => s.id).join(',');
+        },
+        canRun() {
+            return this.selectedImageId && this.selectedSteps.length >= 2 && !this.processing;
+        }
+    }"
+    class="space-y-6"
+>
+    {% if not user_images %}
+        <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+            <div class="card-body items-center text-center py-12">
+                <span class="text-5xl">📤</span>
+                <h2 class="text-lg font-semibold mt-4">Chưa có ảnh cho pipeline</h2>
+                <a href="{% url 'images:upload' %}" class="btn btn-primary-gradient rounded-xl mt-4">Tải ảnh lên</a>
+            </div>
+        </div>
+    {% else %}
+        <form
+            hx-post="{% url 'processing:pipeline_run' %}"
+            hx-target="#pipeline-result"
+            hx-swap="innerHTML"
+            @htmx:before-request="processing = true"
+            @htmx:after-request="processing = false"
+            class="grid grid-cols-1 xl:grid-cols-3 gap-6"
+        >
+            {% csrf_token %}
+            <input type="hidden" name="image_id" :value="selectedImageId">
+            <input type="hidden" name="algorithm_ids" :value="algorithmIds">
+
+            <div class="xl:col-span-2 space-y-4">
+                <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+                    <div class="card-body">
+                        <h2 class="text-lg font-semibold mb-4">1. Chọn ảnh nguồn</h2>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto">
+                            {% for image in user_images %}
+                                <button
+                                    type="button"
+                                    @click="selectImage({{ image.id }})"
+                                    class="relative rounded-xl overflow-hidden border-2 transition-all"
+                                    :class="selectedImageId === {{ image.id }} ? 'border-blue-500 ring-2 ring-blue-200' : 'border-[#E5E7EB] hover:border-blue-300'"
+                                >
+                                    <div class="aspect-square bg-[#F3F4F6]">
+                                        <img src="{{ image.media_url }}" alt="{{ image.original_filename }}" class="w-full h-full object-cover" loading="lazy">
+                                    </div>
+                                    <p class="text-xs p-2 truncate">{{ image.original_filename }}</p>
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+                    <div class="card-body">
+                        <h2 class="text-lg font-semibold mb-4">2. Thứ tự pipeline</h2>
+                        <p class="text-sm text-[#6B7280] mb-4">Chọn thuật toán bên phải, sắp xếp thứ tự bằng nút ↑ ↓</p>
+
+                        <template x-if="selectedSteps.length === 0">
+                            <div class="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center text-[#9CA3AF]">
+                                Chưa có bước nào · cần ít nhất 2 thuật toán
+                            </div>
+                        </template>
+
+                        <div class="space-y-2">
+                            <template x-for="(step, index) in selectedSteps" :key="step.id + '-' + index">
+                                <div class="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB]">
+                                    <span class="badge badge-primary badge-sm rounded-lg" x-text="index + 1"></span>
+                                    <span class="text-lg" x-text="step.icon"></span>
+                                    <span class="flex-1 text-sm font-medium" x-text="step.name"></span>
+                                    <div class="flex gap-1">
+                                        <button type="button" @click="moveUp(index)" class="btn btn-ghost btn-xs btn-square rounded-lg" :disabled="index === 0">↑</button>
+                                        <button type="button" @click="moveDown(index)" class="btn btn-ghost btn-xs btn-square rounded-lg" :disabled="index === selectedSteps.length - 1">↓</button>
+                                        <button type="button" @click="removeStep(index)" class="btn btn-ghost btn-xs rounded-lg text-[#EF4444]">✕</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pipeline-result"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
+                    <div class="card-body">
+                        <h2 class="text-lg font-semibold mb-4">3. Thêm thuật toán</h2>
+                        <div class="space-y-2 max-h-[420px] overflow-y-auto">
+                            {% for algorithm in algorithms %}
+                                <button
+                                    type="button"
+                                    @click="addStep({ id: {{ algorithm.id }}, name: '{{ algorithm.name|escapejs }}', icon: '{{ algorithm.icon|escapejs }}' })"
+                                    class="w-full p-3 rounded-xl border border-[#E5E7EB] bg-white hover:border-blue-300 hover:bg-blue-50/30 text-left transition-all card-hover"
+                                >
+                                    <div class="flex items-start gap-2">
+                                        <span class="text-xl">{{ algorithm.icon }}</span>
+                                        <div>
+                                            <p class="font-medium text-sm">{{ algorithm.name }}</p>
+                                            <p class="text-xs text-[#6B7280]">{{ algorithm.description }}</p>
+                                        </div>
+                                    </div>
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary-gradient w-full rounded-xl"
+                    :disabled="!canRun()"
+                    :class="{ 'opacity-60 cursor-not-allowed': !canRun() }"
+                >
+                    <span x-show="!processing">🔗 Chạy Pipeline</span>
+                    <span x-show="processing" class="flex items-center gap-2">
+                        <span class="loading loading-spinner loading-sm"></span>
+                        Đang xử lý...
+                    </span>
+                </button>
+
+                <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-100 text-sm text-[#6B7280]">
+                    <p class="font-medium text-[#111827] mb-1">Ví dụ pipeline:</p>
+                    <p>Grayscale → Gaussian Blur → Canny</p>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.detail.target.id === 'pipeline-result' && typeof gsap !== 'undefined') {
+            gsap.from('#pipeline-result', { opacity: 0, y: 12, duration: 0.25, ease: 'power2.out' });
+        }
+    });
+</script>
+{% endblock %}

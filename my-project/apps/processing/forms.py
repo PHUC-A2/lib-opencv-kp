@@ -77,3 +77,35 @@ class ProcessingRunForm(forms.Form):
         if not Algorithm.objects.filter(pk=algorithm_id, is_active=True).exists():
             raise forms.ValidationError("Thuật toán không tồn tại hoặc đã bị tắt.")
         return algorithm_id
+
+
+class PipelineRunForm(forms.Form):
+    # Form chay pipeline nhieu buoc.
+    image_id = forms.IntegerField(
+        label="Ảnh nguồn",
+        error_messages={"required": "Vui lòng chọn ảnh.", "invalid": "Ảnh không hợp lệ."},
+    )
+    algorithm_ids = forms.CharField(
+        label="Danh sách thuật toán",
+        error_messages={"required": "Vui lòng chọn ít nhất 2 thuật toán."},
+    )
+
+    def clean_algorithm_ids(self) -> list[int]:
+        # Parse chuoi id thuat toan theo thu tu pipeline.
+        raw_value = self.cleaned_data.get("algorithm_ids", "").strip()
+        if not raw_value:
+            raise forms.ValidationError("Vui lòng chọn ít nhất 2 thuật toán.")
+
+        try:
+            algorithm_ids = [int(item.strip()) for item in raw_value.split(",") if item.strip()]
+        except ValueError as exc:
+            raise forms.ValidationError("Danh sách thuật toán không hợp lệ.") from exc
+
+        if len(algorithm_ids) < 2:
+            raise forms.ValidationError("Pipeline cần ít nhất 2 thuật toán.")
+
+        active_count = Algorithm.objects.filter(pk__in=algorithm_ids, is_active=True).count()
+        if active_count != len(set(algorithm_ids)):
+            raise forms.ValidationError("Có thuật toán không tồn tại hoặc đã bị tắt.")
+
+        return algorithm_ids

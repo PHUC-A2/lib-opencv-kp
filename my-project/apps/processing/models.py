@@ -4,6 +4,14 @@ from django.utils import timezone
 
 
 class ProcessingJob(models.Model):
+    # Loai job: xu ly don hoac pipeline nhieu buoc.
+    JOB_TYPE_SINGLE = "single"
+    JOB_TYPE_PIPELINE = "pipeline"
+    JOB_TYPE_CHOICES = [
+        (JOB_TYPE_SINGLE, "Xu ly don"),
+        (JOB_TYPE_PIPELINE, "Pipeline"),
+    ]
+
     # Trang thai job xu ly anh.
     STATUS_PENDING = "pending"
     STATUS_PROCESSING = "processing"
@@ -31,12 +39,21 @@ class ProcessingJob(models.Model):
         related_name="processing_jobs",
         verbose_name="Anh nguon",
     )
-    # Thuat toan duoc chon.
+    # Thuat toan duoc chon (null neu la pipeline).
     algorithm = models.ForeignKey(
         "algorithms.Algorithm",
         on_delete=models.PROTECT,
         related_name="processing_jobs",
         verbose_name="Thuat toan",
+        null=True,
+        blank=True,
+    )
+    # Loai job xu ly.
+    job_type = models.CharField(
+        max_length=20,
+        choices=JOB_TYPE_CHOICES,
+        default=JOB_TYPE_SINGLE,
+        verbose_name="Loai job",
     )
     # Trang thai xu ly hien tai.
     status = models.CharField(
@@ -63,11 +80,28 @@ class ProcessingJob(models.Model):
         verbose_name_plural = "Processing Jobs"
 
     def __str__(self) -> str:
-        return f"Job #{self.pk} - {self.algorithm.name} - {self.status}"
+        if self.is_pipeline:
+            return f"Pipeline #{self.pk} - {self.status}"
+        algo_name = self.algorithm.name if self.algorithm else "N/A"
+        return f"Job #{self.pk} - {algo_name} - {self.status}"
 
     @property
     def is_completed(self) -> bool:
         return self.status == self.STATUS_COMPLETED
+
+    @property
+    def is_pipeline(self) -> bool:
+        return self.job_type == self.JOB_TYPE_PIPELINE
+
+    def get_display_algorithms(self) -> str:
+        # Hien thi ten thuat toan tren UI (don hoac chuoi pipeline).
+        if self.is_pipeline:
+            steps = self.pipeline_steps.select_related("algorithm").order_by("step_order")
+            labels = [f"{step.algorithm.icon} {step.algorithm.name}" for step in steps]
+            return " → ".join(labels) if labels else "Pipeline"
+        if self.algorithm:
+            return f"{self.algorithm.icon} {self.algorithm.name}"
+        return "—"
 
 
 class ProcessedImage(models.Model):
@@ -173,3 +207,32 @@ class ProcessingHistory(models.Model):
             self.ACTION_ERROR: "Lỗi",
         }
         return labels.get(self.action, self.action)
+
+
+class PipelineStep(models.Model):
+    # Mot buoc trong pipeline xu ly nhieu thuat toan.
+    job = models.ForeignKey(
+        ProcessingJob,
+        on_delete=models.CASCADE,
+        related_name="pipeline_steps",
+        verbose_name="Processing job",
+    )
+    # Thuat toan cua buoc nay.
+    algorithm = models.ForeignKey(
+        "algorithms.Algorithm",
+        on_delete=models.PROTECT,
+        related_name="pipeline_steps",
+        verbose_name="Thuat toan",
+    )
+    # Thu tu thuc thi (bat dau tu 1).
+    step_order = models.PositiveIntegerField(verbose_name="Thu tu buoc")
+
+    class Meta:
+        db_table = "pipeline_steps"
+        ordering = ["step_order"]
+        verbose_name = "Pipeline Step"
+        verbose_name_plural = "Pipeline Steps"
+        unique_together = [["job", "step_order"]]
+
+    def __str__(self) -> str:
+        return f"Bước {self.step_order}: {self.algorithm.name}"

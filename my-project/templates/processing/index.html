@@ -122,7 +122,7 @@
                                 <div class="flex gap-3">
                                     <img src="{{ job.processed_image.media_url }}" alt="Kết quả" class="w-16 h-16 rounded-lg object-cover">
                                     <div class="min-w-0">
-                                        <p class="font-medium text-sm truncate">{{ job.algorithm.name }}</p>
+                                        <p class="font-medium text-sm truncate">{{ job.get_display_algorithms }}</p>
                                         <p class="text-xs text-[#6B7280] truncate">{{ job.source_image.original_filename }}</p>
                                         <p class="text-xs text-[#9CA3AF] mt-1">{{ job.execution_time_ms }} ms</p>
                                     </div>

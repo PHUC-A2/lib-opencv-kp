@@ -28,6 +28,24 @@ DEFAULT_ALGORITHMS = [
         "description": "Nguồng ảnh nhị phân (đen/trắng)",
         "icon": "🔲",
     },
+    {
+        "code": "median_blur",
+        "name": "Median Blur",
+        "description": "Làm mờ ảnh bằng bộ lọc Median",
+        "icon": "💧",
+    },
+    {
+        "code": "morphology",
+        "name": "Morphology",
+        "description": "Phép toán hình thái học (Morphology Open)",
+        "icon": "🔬",
+    },
+    {
+        "code": "histogram_equalization",
+        "name": "Histogram Equalization",
+        "description": "Cân bằng histogram tăng tương phản",
+        "icon": "📊",
+    },
 ]
 
 

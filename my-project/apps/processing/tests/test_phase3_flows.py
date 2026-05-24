@@ -52,7 +52,7 @@ class Phase3ProcessingFlowTests(TestCase):
         call_command("seed_algorithms")
 
     def test_seed_algorithms_created(self):
-        self.assertEqual(Algorithm.objects.filter(is_active=True).count(), 4)
+        self.assertEqual(Algorithm.objects.filter(is_active=True).count(), len(get_supported_codes()))
         codes = set(Algorithm.objects.values_list("code", flat=True))
         self.assertSetEqual(codes, set(get_supported_codes()))
 

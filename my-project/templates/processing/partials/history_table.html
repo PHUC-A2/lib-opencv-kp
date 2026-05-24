@@ -27,7 +27,10 @@
                             </div>
                         </td>
                         <td>
-                            <span class="text-sm">{{ job.algorithm.icon }} {{ job.algorithm.name }}</span>
+                            {% if job.is_pipeline %}
+                                <span class="badge badge-primary badge-xs rounded-lg mb-1">Pipeline</span>
+                            {% endif %}
+                            <span class="text-sm">{{ job.get_display_algorithms }}</span>
                         </td>
                         <td>
                             {% if job.status == 'completed' %}

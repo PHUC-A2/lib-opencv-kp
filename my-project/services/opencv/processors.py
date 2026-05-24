@@ -45,3 +45,26 @@ def apply_binary_threshold(image: np.ndarray) -> np.ndarray:
     gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY)
     _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
     return _to_bgr_display(binary)
+
+
+def apply_median_blur(image: np.ndarray) -> np.ndarray:
+    # Lam mo bang bo loc median (giam nhieu muoi tieu).
+    source = _ensure_bgr_image(image)
+    return cv2.medianBlur(source, 15)
+
+
+def apply_morphology(image: np.ndarray) -> np.ndarray:
+    # Phep toan hinh thai hoc mo (Morphology Open).
+    source = _ensure_bgr_image(image)
+    gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY)
+    kernel = np.ones((5, 5), np.uint8)
+    opened = cv2.morphologyEx(gray, cv2.MORPH_OPEN, kernel)
+    return _to_bgr_display(opened)
+
+
+def apply_histogram_equalization(image: np.ndarray) -> np.ndarray:
+    # Can bang histogram tang tuong phan anh.
+    source = _ensure_bgr_image(image)
+    gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY)
+    equalized = cv2.equalizeHist(gray)
+    return _to_bgr_display(equalized)
