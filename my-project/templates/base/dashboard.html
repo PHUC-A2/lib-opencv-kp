@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
@@ -10,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -55,13 +57,18 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen bg-[#F9FAFB] text-[#111827]" x-data="{ sidebarOpen: false }">
+    <a href="#page-content" class="skip-link">Chuyển tới nội dung chính</a>
+
+    {% include "partials/processing_skeleton.html" %}
+    {% include "partials/toast_container.html" %}
+
     <div class="flex min-h-screen">
         {% include "partials/sidebar.html" %}
 
         <div class="flex-1 flex flex-col min-w-0 lg:ml-64">
             {% include "partials/topbar.html" %}
 
-            <main class="flex-1 p-4 md:p-6 lg:p-8">
+            <main id="main-content" class="flex-1 p-4 md:p-6 lg:p-8" role="main">
                 {% include "partials/messages.html" %}
 
                 <div id="page-content" class="max-w-7xl mx-auto">
@@ -71,24 +78,7 @@
         </div>
     </div>
 
-    {% block extra_js %}
-    <script>
-        // Gui CSRF token cho moi request HTMX.
-        document.body.addEventListener('htmx:configRequest', function (event) {
-            const csrfToken = document.querySelector('meta[name=csrf-token]');
-            if (csrfToken) {
-                event.detail.headers['X-CSRFToken'] = csrfToken.content;
-            }
-        });
-
-        // Animation fade-in nhe cho noi dung trang theo rul-uiux.md.
-        document.addEventListener('DOMContentLoaded', function () {
-            const pageContent = document.getElementById('page-content');
-            if (pageContent && typeof gsap !== 'undefined') {
-                gsap.from(pageContent, { opacity: 0, y: 12, duration: 0.25, ease: 'power2.out' });
-            }
-        });
-    </script>
-    {% endblock %}
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

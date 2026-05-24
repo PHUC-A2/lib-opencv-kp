@@ -156,14 +156,3 @@
     {% endif %}
 </div>
 {% endblock %}
-
-{% block extra_js %}
-{{ block.super }}
-<script>
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        if (event.detail.target.id === 'pipeline-result' && typeof gsap !== 'undefined') {
-            gsap.from('#pipeline-result', { opacity: 0, y: 12, duration: 0.25, ease: 'power2.out' });
-        }
-    });
-</script>
-{% endblock %}

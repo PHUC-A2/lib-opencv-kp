@@ -46,6 +46,8 @@
                                 <button
                                     type="button"
                                     @click="selectImage({{ image.id }})"
+                                    :aria-pressed="selectedImageId === {{ image.id }}"
+                                    aria-label="Chọn ảnh {{ image.original_filename }}"
                                     class="relative rounded-xl overflow-hidden border-2 transition-all duration-200 text-left"
                                     :class="selectedImageId === {{ image.id }} ? 'border-blue-500 ring-2 ring-blue-200 scale-[1.02]' : 'border-[#E5E7EB] hover:border-blue-300'"
                                 >
@@ -77,6 +79,8 @@
                                 <button
                                     type="button"
                                     @click="selectAlgorithm({{ algorithm.id }})"
+                                    :aria-pressed="selectedAlgorithmId === {{ algorithm.id }}"
+                                    aria-label="Chọn thuật toán {{ algorithm.name }}"
                                     class="w-full p-4 rounded-xl border text-left transition-all duration-200 card-hover"
                                     :class="selectedAlgorithmId === {{ algorithm.id }} ? 'border-blue-500 bg-blue-50/50 shadow-sm' : 'border-[#E5E7EB] bg-[#F9FAFB] hover:bg-white'"
                                 >
@@ -135,16 +139,4 @@
         {% endif %}
     {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_js %}
-{{ block.super }}
-<script>
-    // Animation ket qua xu ly khi HTMX swap.
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        if (event.detail.target.id === 'process-result' && typeof gsap !== 'undefined') {
-            gsap.from('#process-result', { opacity: 0, y: 12, duration: 0.25, ease: 'power2.out' });
-        }
-    });
-</script>
 {% endblock %}

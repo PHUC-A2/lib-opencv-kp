@@ -1,0 +1,66 @@
+{% comment %}
+Before/After slider — Alpine.js + touch + keyboard
+Tham so: before_url, after_url, before_label (optional), after_label (optional)
+{% endcomment %}
+<div
+    x-data="beforeAfterSlider()"
+    class="space-y-3"
+    @mouseup.window="endDrag()"
+    @mousemove.window="onDrag($event)"
+    @touchend.window="endDrag()"
+    @touchmove.window="onDrag($event)"
+>
+    <p class="text-sm text-[#6B7280]">Kéo thanh trượt hoặc dùng phím ← → để so sánh Before / After</p>
+
+    <div
+        x-ref="container"
+        class="before-after-container relative rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#F3F4F6] aspect-video max-h-[520px]"
+        @mousedown.prevent="startDrag($event)"
+        @touchstart.prevent="startDrag($event)"
+        role="img"
+        aria-label="So sánh ảnh trước và sau xử lý"
+    >
+        <img
+            src="{{ after_url }}"
+            alt="{{ after_label|default:'Ảnh sau xử lý' }}"
+            class="absolute inset-0 w-full h-full object-contain pointer-events-none"
+            draggable="false"
+        >
+        <div
+            class="absolute inset-0 overflow-hidden pointer-events-none"
+            :style="`clip-path: inset(0 ${100 - position}% 0 0)`"
+        >
+            <img
+                src="{{ before_url }}"
+                alt="{{ before_label|default:'Ảnh gốc' }}"
+                class="absolute inset-0 w-full h-full object-contain"
+                draggable="false"
+            >
+        </div>
+
+        <div
+            class="before-after-line pointer-events-none"
+            :style="`left: ${position}%`"
+        ></div>
+        <div
+            class="before-after-handle pointer-events-none"
+            :style="`left: ${position}%`"
+        ></div>
+
+        <div class="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">Before</div>
+        <div class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">After</div>
+    </div>
+
+    <input
+        type="range"
+        min="0"
+        max="100"
+        x-model.number="position"
+        @keydown="onKeydown($event)"
+        class="range range-primary w-full"
+        aria-label="Thanh trượt so sánh before after"
+        :aria-valuenow="position"
+        aria-valuemin="0"
+        aria-valuemax="100"
+    >
+</div>
