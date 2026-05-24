@@ -112,7 +112,7 @@ erDiagram
 |------|-------|--------|
 | `users` | 1 | Tài khoản, role `admin`/`user` |
 | `images` | 2 | Metadata ảnh upload (file trên SSD) |
-| `algorithms` | 3 | Cấu hình thuật toán OpenCV |
+| `algorithms` | 3 | Cấu hình thuật toán OpenCV (**72 bản ghi seed**, `code` khớp registry) |
 | `processing_jobs` | 3 | Job xử lý đơn hoặc pipeline |
 | `processed_images` | 3 | Ảnh kết quả (1-1 với job) |
 | `processing_parameters` | 4 | Tham số mặc định từng job |
@@ -136,3 +136,5 @@ media/
 ```
 
 Log file: `logs/app.log` (loguru, rotation 10MB)
+
+Model DNN (tùy chọn): `static/opencv_models/` — YOLOv3-tiny, MobileNet-SSD (xem `download_opencv_models`)

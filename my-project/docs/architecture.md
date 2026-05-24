@@ -72,12 +72,41 @@ sequenceDiagram
 
 ```
 services/opencv/
-├── registry.py      # Map code → processor
-├── opencv_service.py # read/save image
-└── processors.py    # grayscale, blur, canny, ...
+├── algorithm_catalog.py   # 72 thuật toán — metadata (name, description, icon)
+├── registry.py            # Map code → handler, process_image()
+├── opencv_service.py      # Đọc/ghi ảnh từ media
+├── helpers.py             # ensure_bgr, scale, draw_banner, ...
+├── model_loader.py        # YOLO / SSD / DNN từ static/opencv_models/
+├── exceptions.py
+└── processors/            # 12 module theo nhóm thuật toán
+    ├── basic.py           # grayscale, resize, crop, CLAHE, ...
+    ├── filtering.py       # gaussian, median, bilateral, ...
+    ├── edges.py           # canny, sobel, laplacian, ...
+    ├── threshold.py       # binary, otsu, adaptive, ...
+    ├── morphology.py      # erosion, dilation, opening, ...
+    ├── contours.py        # contour, convex hull, shape, ...
+    ├── detection.py       # haar, HOG, MOG2, ...
+    ├── color.py           # RGB split, HSV, K-Means, ...
+    ├── geometric.py       # affine, perspective, rotation, ...
+    ├── advanced.py        # pyramid, template matching, ORB, ...
+    ├── ocr.py             # Tesseract + contour fallback
+    └── dnn.py             # YOLO, SSD, LBPH, embedding
 ```
 
-Registry pattern: `Algorithm.code` trong DB khớp handler trong `registry.py`.
+**Registry pattern:** `Algorithm.code` trong DB phải khớp key trong `processors/__init__.py` → `ALL_PROCESSORS`.
+
+**Seed:** `seed_algorithms` đồng bộ catalog ↔ registry trước khi ghi DB; `init_db` gọi seed sau migrate.
+
+**Fallback khi thiếu phụ thuộc:**
+
+| Nhóm | Thiếu | Fallback |
+|------|-------|----------|
+| OCR | Tesseract binary | Phát hiện vùng chữ bằng contour |
+| YOLO / SSD | Model file | HOG people detector |
+| DNN classification / embedding | Model file | Thống kê blob |
+| LBPH | opencv-contrib | Haar face cascade |
+
+Chi tiết danh sách 72 `code`: [opencv-algorithms.md](opencv-algorithms.md)
 
 ## Bảo mật & phân quyền
 

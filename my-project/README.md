@@ -8,7 +8,7 @@ Hệ thống xử lý ảnh OpenCV end-to-end: upload ảnh, chọn thuật toá
 |-------|-----------|
 | Backend | Django 6, Python 3.13 |
 | Database | MySQL 8 (`utf8mb4`) |
-| Xử lý ảnh | OpenCV, NumPy, Pillow |
+| Xử lý ảnh | OpenCV, NumPy, Pillow, pytesseract (OCR) |
 | Frontend | Tailwind CSS, DaisyUI, HTMX, Alpine.js, GSAP |
 | Logging | loguru + bảng `system_logs` |
 
@@ -21,6 +21,8 @@ python -m venv .venv
 copy .env.example .env
 # Chinh .env (MySQL + ADMIN_*)
 .\.venv\Scripts\python manage.py init_db
+.\.venv\Scripts\python manage.py seed_algorithms
+.\.venv\Scripts\python manage.py download_opencv_models
 .\.venv\Scripts\python manage.py runserver
 ```
 
@@ -70,7 +72,11 @@ my-project/
 │   ├── algorithms/       # Thuật toán OpenCV
 │   ├── processing/       # Jobs, pipeline, history
 │   └── admin_panel/      # Admin + system_logs
-├── services/opencv/      # OpenCV processors
+├── services/opencv/      # Registry + 72 OpenCV processors
+│   ├── algorithm_catalog.py
+│   ├── registry.py
+│   ├── model_loader.py
+│   └── processors/       # 12 nhóm thuật toán
 ├── templates/            # UI Tailwind/DaisyUI
 ├── static/               # CSS/JS (app.js, app.css)
 ├── tests/                # E2E Phase 9
@@ -82,13 +88,19 @@ my-project/
 
 ```powershell
 cd my-project
-.\.venv\Scripts\python manage.py test
+.\.venv\Scripts\python manage.py test --keepdb
+```
+
+Smoke test 72 thuật toán OpenCV:
+
+```powershell
+.\.venv\Scripts\python manage.py test apps.algorithms.tests.test_opencv_registry --keepdb
 ```
 
 Chỉ E2E Phase 9:
 
 ```powershell
-.\.venv\Scripts\python manage.py test tests.test_phase9_e2e
+.\.venv\Scripts\python manage.py test tests.test_phase9_e2e --keepdb
 ```
 
 ## Demo bảo vệ đồ án
@@ -110,11 +122,14 @@ cd my-project
 
 - [ERD — 9 bảng MySQL](docs/db/erd.md)
 - [Sơ đồ kiến trúc](docs/architecture.md)
+- [72 thuật toán OpenCV](docs/opencv-algorithms.md)
 - [Hướng dẫn chạy chi tiết](huong-dan.md)
 
-## Thuật toán OpenCV (7)
+## Thuật toán OpenCV (72)
 
-Grayscale · Gaussian Blur · Canny Edge · Binary Threshold · Median Blur · Morphology · Histogram Equalization
+12 nhóm: cơ bản · lọc · biên · ngưỡng · hình thái · contour · phát hiện · màu · hình học · nâng cao · OCR · DNN/ML.
+
+Đồng bộ DB: `python manage.py seed_algorithms` · Chi tiết mã `code`: [docs/opencv-algorithms.md](docs/opencv-algorithms.md)
 
 Tên hiển thị trên UI: **Tiếng Việt (Tên tiếng Anh)**, ví dụ `Thang xám (Grayscale)`.
 

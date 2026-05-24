@@ -21,7 +21,7 @@ python -m venv .venv
 .\.venv\Scripts\python -m pip install -r requirements/dev.txt
 ```
 
-> Package gồm: Django, OpenCV, Pillow, **loguru** (system logs), MySQL driver, ...
+> Package gồm: Django, OpenCV, Pillow, **pytesseract** (OCR), **loguru** (system logs), MySQL driver, ...
 
 ### 1.2. Cấu hình `.env`
 
@@ -46,7 +46,26 @@ ADMIN_PASSWORD=OpenCV@2026!
 ADMIN_FULL_NAME=Quản trị viên hệ thống
 ```
 
-### 1.3. Tạo database + migrate + admin + seed (lần đầu)
+### 1.3. (Tùy chọn) Tesseract OCR — cho 3 thuật toán OCR
+
+Cần khi chạy `text_detection`, `text_recognition`, `image_to_text` với nhận dạng chữ thật (không chỉ fallback contour):
+
+1. Tải và cài [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) trên Windows.
+2. Thêm thư mục cài (ví dụ `C:\Program Files\Tesseract-OCR`) vào biến môi trường **PATH**.
+3. Package Python `pytesseract` đã có trong `requirements/dev.txt`.
+
+Nếu chưa cài Tesseract, 3 thuật toán OCR vẫn chạy được (phát hiện vùng chữ bằng contour).
+
+### 1.4. (Tùy chọn) Model DNN — YOLO / SSD
+
+```powershell
+cd my-project
+.\.venv\Scripts\python manage.py download_opencv_models
+```
+
+Model được lưu tại `static/opencv_models/`. Thiếu model thì YOLO/SSD tự fallback sang HOG; phân loại DNN fallback thống kê blob.
+
+### 1.5. Tạo database + migrate + admin + seed (lần đầu)
 
 ```powershell
 cd my-project
@@ -94,7 +113,7 @@ Lệnh `init_db` sẽ tự:
 
 1. Chạy `migrate` — tạo tất cả bảng (users, images, processing_jobs, **system_logs**, ...)
 2. Tạo/cập nhật tài khoản admin từ `.env`
-3. Seed 7 thuật toán OpenCV mặc định
+3. Seed **72 thuật toán OpenCV** mặc định (`seed_algorithms`)
 
 ### Bước 4: Chạy server
 
@@ -149,12 +168,21 @@ Dùng khi bạn đổi `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` trong `
 
 ### 3.4. Chỉ seed lại thuật toán (không đụng admin)
 
+Đồng bộ **72 thuật toán** từ catalog sau khi pull code mới:
+
 ```powershell
 cd my-project
 .\.venv\Scripts\python manage.py seed_algorithms
 ```
 
-### 3.5. Chạy server (hàng ngày)
+### 3.5. Tải / cập nhật model DNN (YOLO, SSD)
+
+```powershell
+cd my-project
+.\.venv\Scripts\python manage.py download_opencv_models
+```
+
+### 3.6. Chạy server (hàng ngày)
 
 ```powershell
 cd my-project
@@ -176,9 +204,11 @@ Truy cập: **http://localhost:8000**
 | Khởi tạo DB từ đầu (xóa DB xong) | `.\.venv\Scripts\python manage.py init_db` |
 | Chỉ migrate (cập nhật bảng) | `.\.venv\Scripts\python manage.py migrate` |
 | Cập nhật admin từ `.env` | `.\.venv\Scripts\python manage.py init_db --skip-migrate` |
-| Chỉ seed thuật toán | `.\.venv\Scripts\python manage.py seed_algorithms` |
+| Chỉ seed thuật toán (72) | `.\.venv\Scripts\python manage.py seed_algorithms` |
+| Tải model YOLO/SSD | `.\.venv\Scripts\python manage.py download_opencv_models` |
 | Chạy web | `.\.venv\Scripts\python manage.py runserver` |
-| Chạy test | `.\.venv\Scripts\python manage.py test` |
+| Chạy test | `.\.venv\Scripts\python manage.py test --keepdb` |
+| Test 72 thuật toán OpenCV | `.\.venv\Scripts\python manage.py test apps.algorithms.tests.test_opencv_registry --keepdb` |
 
 **Luồng pull code thường dùng:**
 
@@ -186,6 +216,7 @@ Truy cập: **http://localhost:8000**
 cd my-project
 .\.venv\Scripts\python -m pip install -r requirements/dev.txt
 .\.venv\Scripts\python manage.py migrate
+.\.venv\Scripts\python manage.py seed_algorithms
 .\.venv\Scripts\python manage.py runserver
 ```
 
@@ -220,7 +251,22 @@ cd my-project
 
 **Không kết nối MySQL** — kiểm tra MySQL đang chạy và `DB_*` trong `.env` đúng.
 
+**OCR không đọc được chữ** — cài Tesseract binary và thêm vào PATH; hoặc dùng chế độ fallback contour (vẫn trả ảnh kết quả).
+
+**YOLO/SSD chỉ hiện HOG fallback** — chạy `download_opencv_models`; nếu file `.caffemodel` không tải được, copy thủ công vào `static/opencv_models/`.
+
 **File log hệ thống** — sau khi xử lý ảnh, xem log tại:
 
 - UI admin: `/admin-panel/logs/`
 - File local: `my-project/logs/app.log`
+
+---
+
+## 6. Tài liệu liên quan
+
+| Tài liệu | Nội dung |
+|----------|----------|
+| [README.md](README.md) | Tổng quan dự án, URL, cấu trúc thư mục |
+| [docs/opencv-algorithms.md](docs/opencv-algorithms.md) | Danh sách 72 thuật toán, mã `code`, fallback, test |
+| [docs/architecture.md](docs/architecture.md) | Kiến trúc 3 tầng, luồng xử lý ảnh |
+| [docs/db/erd.md](docs/db/erd.md) | ERD 9 bảng MySQL |
