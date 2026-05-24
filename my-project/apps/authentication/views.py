@@ -1,0 +1,62 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+
+from apps.authentication.forms import LoginForm, RegisterForm
+from apps.authentication.services.authentication_service import AuthenticationService
+
+
+@ensure_csrf_cookie
+@csrf_protect
+def register_view(request: HttpRequest) -> HttpResponse:
+    # Chuyen huong neu da dang nhap.
+    if request.user.is_authenticated:
+        return redirect("processing:home")
+
+    form = RegisterForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        # Goi service de tao tai khoan, khong xu ly logic trong view.
+        AuthenticationService.register_user(form)
+        messages.success(request, "Đăng ký thành công. Vui lòng đăng nhập.")
+        return redirect("authentication:login")
+
+    return render(
+        request,
+        "authentication/register.html",
+        {"form": form},
+    )
+
+
+@ensure_csrf_cookie
+@csrf_protect
+def login_view(request: HttpRequest) -> HttpResponse:
+    # Chuyen huong neu da dang nhap.
+    if request.user.is_authenticated:
+        return redirect("processing:home")
+
+    form = LoginForm(request.POST or None, request=request)
+
+    if request.method == "POST" and form.is_valid():
+        # Goi service de dang nhap va quan ly session.
+        AuthenticationService.login_user(request, form)
+        messages.success(request, f"Xin chào, {form.get_user().username}!")
+        next_url = request.GET.get("next") or reverse("processing:home")
+        return redirect(next_url)
+
+    return render(
+        request,
+        "authentication/login.html",
+        {"form": form},
+    )
+
+
+@login_required
+def logout_view(request: HttpRequest) -> HttpResponse:
+    # Dang xuat va quay ve trang dang nhap.
+    AuthenticationService.logout_user(request)
+    messages.info(request, "Bạn đã đăng xuất thành công.")
+    return redirect("authentication:login")

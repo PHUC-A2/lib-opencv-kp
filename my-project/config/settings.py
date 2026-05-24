@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Dang ky module xac thuc nguoi dung.
+    'apps.authentication.apps.AuthenticationConfig',
     # Dang ky module xu ly anh theo cau truc apps/.
     'apps.processing.apps.ProcessingConfig',
 ]
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Ho tro ngon ngu tieng Viet cho message he thong.
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.csrf',
             ],
         },
     },
@@ -101,16 +106,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "apps.authentication.validators.VietnameseUserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "apps.authentication.validators.VietnameseMinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "apps.authentication.validators.VietnameseCommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "apps.authentication.validators.VietnameseNumericPasswordValidator",
+    },
+    {
+        "NAME": "apps.authentication.validators.VietnamesePasswordComplexityValidator",
     },
 ]
 
@@ -119,6 +128,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = "vi"
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 TIME_ZONE = "Asia/Ho_Chi_Minh"
 
@@ -137,3 +148,27 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = "/media/"
 # Khai bao duong dan luu media tren local.
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Custom user model theo bang users trong pt-db.md.
+AUTH_USER_MODEL = "authentication.User"
+# URL dang nhap mac dinh khi truy cap trang can auth.
+LOGIN_URL = "/auth/dang-nhap/"
+# Chuyen huong sau khi dang nhap thanh cong.
+LOGIN_REDIRECT_URL = "/processing/"
+# Chuyen huong sau khi dang xuat.
+LOGOUT_REDIRECT_URL = "/auth/dang-nhap/"
+
+# Cau hinh CSRF cho moi truong dev local.
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://127.0.0.1:8000,http://localhost:8000",
+    ).split(",")
+    if origin.strip()
+]
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+# Cho phep truy cap HTTP local ma khong bi loi cookie.
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False

@@ -15,17 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+def home_redirect(request):
+    # Chuyen huong trang chu theo trang thai dang nhap.
+    if request.user.is_authenticated:
+        return redirect("processing:home")
+    return redirect("authentication:login")
+
+
 urlpatterns = [
-    # Endpoint kiem tra nhanh de xac nhan project da khoi tao thanh cong.
-    path("", lambda request: HttpResponse("Hello World"), name="home"),
-    # Route vao module processing theo cau truc apps.
+    path("", home_redirect, name="home"),
+    path("auth/", include("apps.authentication.urls")),
     path("processing/", include("apps.processing.urls")),
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 ]
 
 # Chi phuc vu media local khi chay development.
