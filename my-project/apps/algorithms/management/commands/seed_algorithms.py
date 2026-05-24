@@ -2,55 +2,55 @@ from django.core.management.base import BaseCommand
 
 from apps.algorithms.models import Algorithm
 
-# Du lieu seed 4 thuat toan Phase 3.
+# Du lieu seed thuat toan — ten hien thi tieng Viet, ten ky thuat tieng Anh trong ngoac.
 DEFAULT_ALGORITHMS = [
     {
         "code": "grayscale",
-        "name": "Grayscale",
-        "description": "Chuyển ảnh sang thang xám (OpenCV cvtColor)",
+        "name": "Thang xám (Grayscale)",
+        "description": "Chuyển ảnh màu sang thang xám bằng OpenCV cvtColor",
         "icon": "⬛",
     },
     {
         "code": "gaussian_blur",
-        "name": "Gaussian Blur",
+        "name": "Làm mờ Gaussian (Gaussian Blur)",
         "description": "Làm mờ ảnh bằng bộ lọc Gaussian",
         "icon": "🌫️",
     },
     {
         "code": "canny",
-        "name": "Canny Edge",
-        "description": "Phát hiện cạnh ảnh bằng thuật toán Canny",
+        "name": "Phát hiện cạnh (Canny Edge)",
+        "description": "Phát hiện biên ảnh bằng thuật toán Canny",
         "icon": "📐",
     },
     {
         "code": "binary_threshold",
-        "name": "Binary Threshold",
-        "description": "Nguồng ảnh nhị phân (đen/trắng)",
+        "name": "Ngưỡng nhị phân (Binary Threshold)",
+        "description": "Chuyển ảnh sang dạng nhị phân đen/trắng",
         "icon": "🔲",
     },
     {
         "code": "median_blur",
-        "name": "Median Blur",
-        "description": "Làm mờ ảnh bằng bộ lọc Median",
+        "name": "Làm mờ trung vị (Median Blur)",
+        "description": "Làm mờ ảnh bằng bộ lọc Median, giảm nhiễu muối tiêu",
         "icon": "💧",
     },
     {
         "code": "morphology",
-        "name": "Morphology",
-        "description": "Phép toán hình thái học (Morphology Open)",
+        "name": "Hình thái học (Morphology)",
+        "description": "Phép toán hình thái học mở (Morphology Open)",
         "icon": "🔬",
     },
     {
         "code": "histogram_equalization",
-        "name": "Histogram Equalization",
-        "description": "Cân bằng histogram tăng tương phản",
+        "name": "Cân bằng histogram (Histogram Equalization)",
+        "description": "Cân bằng histogram để tăng tương phản ảnh",
         "icon": "📊",
     },
 ]
 
 
 class Command(BaseCommand):
-    help = "Seed du lieu thuat toan OpenCV mac dinh cho Phase 3"
+    help = "Seed du lieu thuat toan OpenCV mac dinh"
 
     def handle(self, *args, **options):
         # Tao hoac cap nhat thuat toan mac dinh.

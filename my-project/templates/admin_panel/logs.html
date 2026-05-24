@@ -1,19 +1,19 @@
 {% extends "base/dashboard.html" %}
 
-{% block title %}{{ page_title }} - Admin{% endblock %}
+{% block title %}{{ page_title }} - Quản trị{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
     {% if slow_logs %}
     <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl animate-stagger-item">
         <div class="card-body">
-            <h2 class="text-lg font-semibold mb-3">🐢 Job chậm nhất (theo execution_time)</h2>
+            <h2 class="text-lg font-semibold mb-3">🐢 Tác vụ chậm nhất (theo thời gian thực thi)</h2>
             <div class="overflow-x-auto">
                 <table class="table table-sm">
                     <thead>
                         <tr class="text-[#6B7280] text-xs">
                             <th>Thời gian</th>
-                            <th>Module</th>
+                            <th>Phân hệ</th>
                             <th>Nội dung</th>
                             <th>Thời gian xử lý</th>
                         </tr>
@@ -55,7 +55,7 @@
             >
                 <div class="form-control xl:col-span-2">
                     <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
-                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Nội dung log, username...">
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Nội dung log, tên đăng nhập...">
                 </div>
                 <div class="form-control">
                     <label class="label" for="id_level"><span class="label-text font-medium">{{ filter_form.level.label }}</span></label>

@@ -10,7 +10,7 @@
                 <div class="avatar placeholder">
                     <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl w-20 h-20 flex items-center justify-center text-2xl font-bold">
                         {% if avatar_display_url %}
-                            <img src="/media/{{ avatar_display_url }}" alt="Avatar" class="rounded-xl w-full h-full object-cover">
+                            <img src="/media/{{ avatar_display_url }}" alt="Ảnh đại diện" class="rounded-xl w-full h-full object-cover">
                         {% elif user.full_name %}
                             {{ user.full_name|first|upper }}
                         {% else %}

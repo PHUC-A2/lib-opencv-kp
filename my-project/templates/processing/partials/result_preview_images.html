@@ -1,0 +1,27 @@
+{% comment %}
+Anh truoc/sau trong card ket qua HTMX — full o aspect-video giong skeleton loading.
+{% endcomment %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div>
+        <p class="text-xs text-[#6B7280] mb-2">Ảnh gốc (Trước)</p>
+        <div class="relative aspect-video rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden">
+            <img
+                src="{{ job.source_image.media_url }}"
+                alt="Ảnh gốc"
+                class="absolute inset-0 w-full h-full object-contain"
+                loading="lazy"
+            >
+        </div>
+    </div>
+    <div>
+        <p class="text-xs text-[#6B7280] mb-2">Kết quả (Sau)</p>
+        <div class="relative aspect-video rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden">
+            <img
+                src="{{ job.processed_image.media_url }}"
+                alt="Ảnh sau xử lý"
+                class="absolute inset-0 w-full h-full object-contain"
+                loading="lazy"
+            >
+        </div>
+    </div>
+</div>

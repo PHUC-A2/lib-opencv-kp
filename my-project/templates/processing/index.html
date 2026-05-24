@@ -19,7 +19,7 @@
             <div class="card-body items-center text-center py-12">
                 <span class="text-5xl">📤</span>
                 <h2 class="text-lg font-semibold mt-4">Chưa có ảnh để xử lý</h2>
-                <p class="text-[#6B7280] mt-2">Hãy upload ảnh trước khi chạy thuật toán OpenCV.</p>
+                <p class="text-[#6B7280] mt-2">Hãy tải ảnh lên trước khi chạy thuật toán OpenCV.</p>
                 <a href="{% url 'images:upload' %}" class="btn btn-primary-gradient rounded-xl mt-4">Tải ảnh lên</a>
             </div>
         </div>
@@ -93,7 +93,7 @@
                                     </div>
                                 </button>
                             {% empty %}
-                                <p class="text-sm text-[#6B7280]">Chưa có thuật toán. Chạy lệnh seed_algorithms.</p>
+                                <p class="text-sm text-[#6B7280]">Chưa có thuật toán. Chạy lệnh tạo dữ liệu thuật toán mặc định.</p>
                             {% endfor %}
                         </div>
                     </div>

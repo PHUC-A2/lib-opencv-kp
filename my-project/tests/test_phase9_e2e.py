@@ -133,7 +133,7 @@ class Phase9E2EFlowTests(TestCase):
         result_url = reverse("processing:result", kwargs={"pk": job.id})
         response = self.user_client.get(result_url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Before")
+        self.assertContains(response, "Trước")
 
         history_url = reverse("processing:history")
         response = self.user_client.get(history_url)
@@ -157,7 +157,7 @@ class Phase9E2EFlowTests(TestCase):
 
         response = self.user_client.get(reverse("processing:result", kwargs={"pk": job.id}))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Pipeline")
+        self.assertContains(response, "Luồng xử lý")
 
     def test_system_logs_created_on_processing(self):
         # Phase 8 — log ghi nhan execution_time.
@@ -171,7 +171,7 @@ class Phase9E2EFlowTests(TestCase):
 
         response = self.admin_client.get(reverse("admin_panel:logs"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Canny")
+        self.assertContains(response, "(Canny Edge)")
 
     def test_url_resolution_map(self):
         # Map URL chinh dung pattern task-list Phase 9.

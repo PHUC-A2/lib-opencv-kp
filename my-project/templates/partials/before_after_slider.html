@@ -1,5 +1,5 @@
 {% comment %}
-Before/After slider — Alpine.js + touch + keyboard
+Thanh trượt so sánh Trước/Sau — Alpine.js + touch + keyboard
 Tham so: before_url, after_url, before_label (optional), after_label (optional)
 {% endcomment %}
 <div
@@ -10,7 +10,7 @@ Tham so: before_url, after_url, before_label (optional), after_label (optional)
     @touchend.window="endDrag()"
     @touchmove.window="onDrag($event)"
 >
-    <p class="text-sm text-[#6B7280]">Kéo thanh trượt hoặc dùng phím ← → để so sánh Before / After</p>
+    <p class="text-sm text-[#6B7280]">Kéo thanh trượt hoặc dùng phím ← → để so sánh Trước / Sau</p>
 
     <div
         x-ref="container"
@@ -47,8 +47,8 @@ Tham so: before_url, after_url, before_label (optional), after_label (optional)
             :style="`left: ${position}%`"
         ></div>
 
-        <div class="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">Before</div>
-        <div class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">After</div>
+        <div class="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">Trước</div>
+        <div class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-lg pointer-events-none">Sau</div>
     </div>
 
     <input
@@ -58,7 +58,7 @@ Tham so: before_url, after_url, before_label (optional), after_label (optional)
         x-model.number="position"
         @keydown="onKeydown($event)"
         class="range range-primary w-full"
-        aria-label="Thanh trượt so sánh before after"
+        aria-label="Thanh trượt so sánh trước và sau"
         :aria-valuenow="position"
         aria-valuemin="0"
         aria-valuemax="100"

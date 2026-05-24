@@ -86,8 +86,8 @@ class Phase3ProcessingFlowTests(TestCase):
 
         response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Before")
-        self.assertContains(response, "After")
+        self.assertContains(response, "Trước")
+        self.assertContains(response, "Sau")
         self.assertContains(response, job.processed_image.media_url)
 
     def test_all_algorithms_process_sample_image(self):
@@ -131,7 +131,7 @@ class Phase3ProcessingFlowTests(TestCase):
         self.client.login(username="admin_viewer", password="Test@1234")
         response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Before")
+        self.assertContains(response, "Trước")
 
     def test_dashboard_shows_job_stats(self):
         image = ImageService.upload_image(self.user, create_test_image("dash.jpg"))

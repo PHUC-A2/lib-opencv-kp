@@ -42,7 +42,7 @@ def get_public_menu_items() -> list[dict]:
             "active_prefix": "/processing/history",
         },
         {
-            "label": "Pipeline",
+            "label": "Luồng xử lý đa bước",
             "icon": "🔗",
             "url_name": "processing:pipeline",
             "active_prefix": "/processing/pipeline",
@@ -54,7 +54,7 @@ def get_admin_menu_items() -> list[dict]:
     # Menu dieu huong cho khu vuc admin dashboard.
     return [
         {
-            "label": "Admin Tổng quan",
+            "label": "Tổng quan quản trị",
             "icon": "🛡️",
             "url_name": "admin_panel:home",
             "active_prefix": "/admin-panel",
@@ -85,13 +85,13 @@ def get_admin_menu_items() -> list[dict]:
             "active_prefix": "/admin-panel/algorithms",
         },
         {
-            "label": "Processing Jobs",
+            "label": "Tác vụ xử lý",
             "icon": "⏱️",
             "url_name": "admin_panel:jobs",
             "active_prefix": "/admin-panel/jobs",
         },
         {
-            "label": "System Logs",
+            "label": "Nhật ký hệ thống",
             "icon": "📋",
             "url_name": "admin_panel:logs",
             "active_prefix": "/admin-panel/logs",

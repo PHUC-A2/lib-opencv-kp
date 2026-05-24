@@ -231,6 +231,54 @@
         };
     };
 
+    function revealProcessingResult(container) {
+        // Ep hien thi ket qua HTMX — tranh bi an boi animate-stagger-item / GSAP.
+        if (!container) return;
+
+        container.style.opacity = '1';
+        container.style.transform = 'none';
+        container.style.visibility = 'visible';
+
+        container.querySelectorAll('.processing-result-card, .card, .animate-stagger-item').forEach(function (el) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.style.visibility = 'visible';
+        });
+    }
+
+    function animateStaggerIn(container) {
+        // Hoat animation cho noi dung HTMX moi inject (partial ket qua xu ly).
+        if (!container) return;
+
+        // Ket qua xu ly anh — chi can hien ngay, khong dung stagger.
+        if (container.id === 'process-result' || container.id === 'pipeline-result') {
+            revealProcessingResult(container);
+            return;
+        }
+
+        const items = container.querySelectorAll('.animate-stagger-item');
+        if (!items.length) {
+            animateSwapTarget(container);
+            return;
+        }
+
+        if (prefersReducedMotion || typeof gsap === 'undefined') {
+            items.forEach(function (el) {
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+            });
+            return;
+        }
+
+        gsap.to(items, {
+            opacity: 1,
+            y: 0,
+            duration: 0.35,
+            stagger: 0.07,
+            ease: 'power2.out',
+        });
+    }
+
     // --- Khoi tao su kien ---
     document.addEventListener('DOMContentLoaded', function () {
         migrateDjangoMessages();
@@ -250,16 +298,28 @@
     });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {
-        animateSwapTarget(event.detail.target);
-        detectHtmxToast(event.detail.target);
+        const target = event.detail.target;
+        revealProcessingResult(
+            target.id === 'process-result' || target.id === 'pipeline-result' ? target : null
+        );
+        animateStaggerIn(target);
+        detectHtmxToast(target);
 
-        if (event.detail.target.id === 'history-table' ||
-            event.detail.target.id === 'admin-users-table' ||
-            event.detail.target.id === 'admin-images-table' ||
-            event.detail.target.id === 'admin-algorithms-table' ||
-            event.detail.target.id === 'admin-jobs-table' ||
-            event.detail.target.id === 'admin-logs-table') {
-            animateSwapTarget(event.detail.target);
+        if (target.id === 'history-table' ||
+            target.id === 'admin-users-table' ||
+            target.id === 'admin-images-table' ||
+            target.id === 'admin-algorithms-table' ||
+            target.id === 'admin-jobs-table' ||
+            target.id === 'admin-logs-table') {
+            animateSwapTarget(target);
+        }
+    });
+
+    // Dam bao hien thi sau khi HTMX settle (phong truong hop afterSwap som).
+    document.body.addEventListener('htmx:afterSettle', function (event) {
+        const target = event.detail.target;
+        if (target && (target.id === 'process-result' || target.id === 'pipeline-result')) {
+            revealProcessingResult(target);
         }
     });
 

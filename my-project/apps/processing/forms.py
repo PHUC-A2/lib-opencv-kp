@@ -102,7 +102,7 @@ class PipelineRunForm(forms.Form):
             raise forms.ValidationError("Danh sách thuật toán không hợp lệ.") from exc
 
         if len(algorithm_ids) < 2:
-            raise forms.ValidationError("Pipeline cần ít nhất 2 thuật toán.")
+            raise forms.ValidationError("Luồng xử lý cần ít nhất 2 thuật toán.")
 
         active_count = Algorithm.objects.filter(pk__in=algorithm_ids, is_active=True).count()
         if active_count != len(set(algorithm_ids)):

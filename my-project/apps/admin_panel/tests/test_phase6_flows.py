@@ -109,7 +109,7 @@ class Phase6AdminPanelTests(TestCase):
         self.client.login(username="admin_phase6", password="Test@1234")
         response = self.client.get(reverse("admin_panel:algorithms"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Grayscale")
+        self.assertContains(response, "(Grayscale)")
 
         algorithm = Algorithm.objects.get(code="grayscale")
         response = self.client.post(
@@ -124,7 +124,7 @@ class Phase6AdminPanelTests(TestCase):
             reverse("admin_panel:algorithm_edit", kwargs={"pk": algorithm.pk}),
             {
                 "code": algorithm.code,
-                "name": "Grayscale Updated",
+                "name": "Thang xám cập nhật (Grayscale Updated)",
                 "description": algorithm.description,
                 "icon": algorithm.icon,
                 "is_active": "on",
@@ -132,7 +132,7 @@ class Phase6AdminPanelTests(TestCase):
         )
         self.assertRedirects(response, reverse("admin_panel:algorithms"))
         algorithm.refresh_from_db()
-        self.assertEqual(algorithm.name, "Grayscale Updated")
+        self.assertEqual(algorithm.name, "Thang xám cập nhật (Grayscale Updated)")
 
     def test_admin_jobs_list(self):
         image = ImageService.upload_image(self.user, create_test_image("job.jpg"))

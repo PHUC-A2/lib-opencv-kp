@@ -7,10 +7,10 @@
                     <th>#</th>
                     <th>Thời gian</th>
                     <th>Mức độ</th>
-                    <th>Module</th>
+                    <th>Phân hệ</th>
                     <th>Nội dung</th>
-                    <th>User</th>
-                    <th>Job</th>
+                    <th>Người dùng</th>
+                    <th>Tác vụ</th>
                     <th>Thời gian xử lý</th>
                 </tr>
             </thead>
@@ -66,7 +66,7 @@
             {% if search or level or module or date_from or date_to %}
                 Không tìm thấy log phù hợp với bộ lọc
             {% else %}
-                Log sẽ được ghi khi xử lý ảnh hoặc pipeline
+                Log sẽ được ghi khi xử lý ảnh hoặc chạy luồng xử lý đa bước
             {% endif %}
         </p>
     </div>

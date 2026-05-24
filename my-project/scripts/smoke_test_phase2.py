@@ -104,7 +104,7 @@ def main() -> int:
         upload_req.add_header("X-CSRFToken", get_csrf_token() or csrf)
         with opener.open(upload_req, timeout=30) as response:
             upload_html = response.read().decode()
-            ok = response.status == 200 and "Upload thành công" in upload_html
+            ok = response.status == 200 and "Tải lên thành công" in upload_html
             results.append(("POST /images/upload/process/", response.status, ok))
     else:
         results.append(("POST /images/upload/process/", "SKIP", False))

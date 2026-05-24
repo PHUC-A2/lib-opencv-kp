@@ -22,7 +22,7 @@ class PipelineService:
     def run_pipeline(user: User, image_id: int, algorithm_ids: list[int]) -> ProcessingJob:
         # Chay chuoi thuat toan OpenCV theo thu tu da chon.
         if len(algorithm_ids) < 2:
-            raise ProcessingServiceError("Pipeline cần ít nhất 2 thuật toán.")
+            raise ProcessingServiceError("Luồng xử lý cần ít nhất 2 thuật toán.")
 
         try:
             source_image = ImageService.get_user_image(user, image_id)
@@ -49,11 +49,11 @@ class PipelineService:
         ProcessingHistoryService.log(
             job,
             ProcessingHistory.ACTION_STARTED,
-            f"Bắt đầu pipeline: {step_labels}",
+            f"Bắt đầu luồng xử lý: {step_labels}",
         )
         SystemLogService.info(
             SystemLog.MODULE_PIPELINE,
-            f"Bắt đầu pipeline: {step_labels}",
+            f"Bắt đầu luồng xử lý: {step_labels}",
             user=user,
             job=job,
         )
@@ -97,11 +97,11 @@ class PipelineService:
             ProcessingHistoryService.log(
                 job,
                 ProcessingHistory.ACTION_FINISHED,
-                f"Pipeline hoàn thành trong {elapsed_ms} ms · {step_labels}",
+                f"Luồng xử lý hoàn thành trong {elapsed_ms} ms · {step_labels}",
             )
             SystemLogService.info(
                 SystemLog.MODULE_PIPELINE,
-                f"Pipeline hoàn thành: {step_labels}",
+                f"Luồng xử lý hoàn thành: {step_labels}",
                 user=user,
                 job=job,
                 execution_time_ms=elapsed_ms,
@@ -122,7 +122,7 @@ class PipelineService:
             raise ProcessingServiceError(str(exc)) from exc
         except Exception as exc:
             job.status = ProcessingJob.STATUS_FAILED
-            job.error_message = "Pipeline xử lý thất bại. Vui lòng thử lại."
+            job.error_message = "Luồng xử lý thất bại. Vui lòng thử lại."
             job.completed_at = timezone.now()
             job.save(update_fields=["status", "error_message", "completed_at", "updated_at"])
             ProcessingHistoryService.log(job, ProcessingHistory.ACTION_ERROR, job.error_message)
@@ -132,6 +132,6 @@ class PipelineService:
                 user=user,
                 job=job,
             )
-            raise ProcessingServiceError("Pipeline xử lý thất bại. Vui lòng thử lại.") from exc
+            raise ProcessingServiceError("Luồng xử lý thất bại. Vui lòng thử lại.") from exc
 
         return job

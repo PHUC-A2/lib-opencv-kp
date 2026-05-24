@@ -8,8 +8,8 @@ class ProcessingJob(models.Model):
     JOB_TYPE_SINGLE = "single"
     JOB_TYPE_PIPELINE = "pipeline"
     JOB_TYPE_CHOICES = [
-        (JOB_TYPE_SINGLE, "Xu ly don"),
-        (JOB_TYPE_PIPELINE, "Pipeline"),
+        (JOB_TYPE_SINGLE, "Xử lý đơn"),
+        (JOB_TYPE_PIPELINE, "Luồng xử lý đa bước"),
     ]
 
     # Trang thai job xu ly anh.
@@ -98,7 +98,7 @@ class ProcessingJob(models.Model):
         if self.is_pipeline:
             steps = self.pipeline_steps.select_related("algorithm").order_by("step_order")
             labels = [f"{step.algorithm.icon} {step.algorithm.name}" for step in steps]
-            return " → ".join(labels) if labels else "Pipeline"
+            return " → ".join(labels) if labels else "Luồng xử lý đa bước"
         if self.algorithm:
             return f"{self.algorithm.icon} {self.algorithm.name}"
         return "—"

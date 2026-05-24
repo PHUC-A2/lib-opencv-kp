@@ -10,10 +10,10 @@ class SystemLog(models.Model):
     LEVEL_ERROR = "error"
 
     LEVEL_CHOICES = [
-        (LEVEL_DEBUG, "Debug"),
-        (LEVEL_INFO, "Info"),
-        (LEVEL_WARNING, "Warning"),
-        (LEVEL_ERROR, "Error"),
+        (LEVEL_DEBUG, "Gỡ lỗi (Debug)"),
+        (LEVEL_INFO, "Thông tin (Info)"),
+        (LEVEL_WARNING, "Cảnh báo (Warning)"),
+        (LEVEL_ERROR, "Lỗi (Error)"),
     ]
 
     # Module phat sinh log.
@@ -26,10 +26,10 @@ class SystemLog(models.Model):
 
     MODULE_CHOICES = [
         (MODULE_PROCESSING, "Xử lý ảnh"),
-        (MODULE_PIPELINE, "Pipeline"),
+        (MODULE_PIPELINE, "Luồng xử lý đa bước"),
         (MODULE_IMAGES, "Ảnh"),
         (MODULE_AUTH, "Xác thực"),
-        (MODULE_ADMIN, "Admin"),
+        (MODULE_ADMIN, "Quản trị"),
         (MODULE_SYSTEM, "Hệ thống"),
     ]
 

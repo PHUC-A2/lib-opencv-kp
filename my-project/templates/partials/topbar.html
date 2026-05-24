@@ -33,7 +33,7 @@
                 <div class="avatar placeholder">
                     <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl w-8 h-8 flex items-center justify-center text-xs font-semibold overflow-hidden">
                         {% if user.avatar_url %}
-                            <img src="/media/{{ user.avatar_url }}" alt="Avatar" class="w-full h-full object-cover">
+                            <img src="/media/{{ user.avatar_url }}" alt="Ảnh đại diện" class="w-full h-full object-cover">
                         {% elif user.full_name %}
                             {{ user.full_name|first|upper }}
                         {% else %}

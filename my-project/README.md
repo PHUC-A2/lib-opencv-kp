@@ -116,6 +116,8 @@ cd my-project
 
 Grayscale · Gaussian Blur · Canny Edge · Binary Threshold · Median Blur · Morphology · Histogram Equalization
 
+Tên hiển thị trên UI: **Tiếng Việt (Tên tiếng Anh)**, ví dụ `Thang xám (Grayscale)`.
+
 ## Database — 9 bảng
 
 `users` · `images` · `algorithms` · `processing_jobs` · `processed_images` · `processing_parameters` · `processing_history` · `pipeline_steps` · `system_logs`

@@ -73,13 +73,13 @@ class Phase5PipelineFlowTests(TestCase):
             HTTP_HX_REQUEST="true",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Pipeline hoàn thành")
+        self.assertContains(response, "Luồng xử lý hoàn thành")
 
     def test_pipeline_page_renders(self):
         ImageService.upload_image(self.user, create_test_image("page.jpg"))
         response = self.client.get(reverse("processing:pipeline"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Chạy Pipeline")
+        self.assertContains(response, "Chạy luồng xử lý")
 
     def test_pipeline_requires_min_two_steps(self):
         image = ImageService.upload_image(self.user, create_test_image())
@@ -114,8 +114,8 @@ class Phase5PipelineFlowTests(TestCase):
 
         response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Pipeline")
-        self.assertContains(response, "Grayscale")
+        self.assertContains(response, "Luồng xử lý")
+        self.assertContains(response, "(Grayscale)")
 
     def test_pipeline_url_resolves(self):
         self.assertEqual(reverse("processing:pipeline"), "/processing/pipeline/")

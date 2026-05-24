@@ -109,7 +109,7 @@ class Phase2ImageFlowTests(TestCase):
 
         response = self._upload_file(uploaded_file, htmx=True)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Upload thành công")
+        self.assertContains(response, "Tải lên thành công")
 
         image = Image.objects.get(user=self.user_a)
         self.assertEqual(image.original_filename, "photo_a.jpg")
@@ -145,7 +145,7 @@ class Phase2ImageFlowTests(TestCase):
             HTTP_HX_REQUEST="true",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Upload thành công 1 ảnh")
+        self.assertContains(response, "Tải lên thành công 1 ảnh")
         self.assertEqual(Image.objects.filter(user=self.user_a).count(), 1)
 
     def test_upload_without_file_returns_error(self):

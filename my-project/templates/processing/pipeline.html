@@ -40,7 +40,7 @@
         <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
             <div class="card-body items-center text-center py-12">
                 <span class="text-5xl">📤</span>
-                <h2 class="text-lg font-semibold mt-4">Chưa có ảnh cho pipeline</h2>
+                <h2 class="text-lg font-semibold mt-4">Chưa có ảnh cho luồng xử lý</h2>
                 <a href="{% url 'images:upload' %}" class="btn btn-primary-gradient rounded-xl mt-4">Tải ảnh lên</a>
             </div>
         </div>
@@ -140,7 +140,7 @@
                     :disabled="!canRun()"
                     :class="{ 'opacity-60 cursor-not-allowed': !canRun() }"
                 >
-                    <span x-show="!processing">🔗 Chạy Pipeline</span>
+                    <span x-show="!processing">🔗 Chạy luồng xử lý</span>
                     <span x-show="processing" class="flex items-center gap-2">
                         <span class="loading loading-spinner loading-sm"></span>
                         Đang xử lý...
@@ -148,8 +148,8 @@
                 </button>
 
                 <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-100 text-sm text-[#6B7280]">
-                    <p class="font-medium text-[#111827] mb-1">Ví dụ pipeline:</p>
-                    <p>Grayscale → Gaussian Blur → Canny</p>
+                    <p class="font-medium text-[#111827] mb-1">Ví dụ luồng xử lý:</p>
+                    <p>Thang xám (Grayscale) → Làm mờ Gaussian (Gaussian Blur) → Phát hiện cạnh (Canny Edge)</p>
                 </div>
             </div>
         </form>

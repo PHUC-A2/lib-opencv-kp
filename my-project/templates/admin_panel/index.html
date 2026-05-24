@@ -1,6 +1,6 @@
 {% extends "base/dashboard.html" %}
 
-{% block title %}{{ page_title }} - Admin{% endblock %}
+{% block title %}{{ page_title }} - Quản trị{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
@@ -30,7 +30,7 @@
         <div class="card-body p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-[#6B7280]">Job đang chạy</p>
+                    <p class="text-sm text-[#6B7280]">Đang xử lý</p>
                     <p class="text-2xl font-bold mt-1 text-[#FACC15]">{{ stats.active_jobs }}</p>
                 </div>
                 <span class="text-2xl">⏳</span>
@@ -41,7 +41,7 @@
         <div class="card-body p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-[#6B7280]">System Logs</p>
+                    <p class="text-sm text-[#6B7280]">Nhật ký hệ thống</p>
                     <p class="text-2xl font-bold mt-1">{{ stats.total_logs }}</p>
                     {% if stats.error_logs %}
                         <p class="text-xs text-[#EF4444] mt-1">{{ stats.error_logs }} lỗi</p>
@@ -72,17 +72,17 @@
                     <a href="{% url 'admin_panel:algorithms' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
                         <span class="text-2xl">🧠</span>
                         <p class="font-medium mt-2 group-hover:text-blue-600">Thuật toán</p>
-                        <p class="text-xs text-[#6B7280] mt-1">CRUD và bật/tắt thuật toán</p>
+                        <p class="text-xs text-[#6B7280] mt-1">Thêm, sửa, xóa và bật/tắt thuật toán</p>
                     </a>
                     <a href="{% url 'admin_panel:jobs' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
                         <span class="text-2xl">⏱️</span>
-                        <p class="font-medium mt-2 group-hover:text-blue-600">Processing Jobs</p>
-                        <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_jobs }} job · {{ stats.failed_jobs }} thất bại</p>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Tác vụ xử lý</p>
+                        <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_jobs }} tác vụ · {{ stats.failed_jobs }} thất bại</p>
                     </a>
                     <a href="{% url 'admin_panel:logs' %}" class="group p-4 rounded-xl border border-[#E5E7EB] hover:border-blue-300 bg-[#F9FAFB] hover:bg-white card-hover transition-all duration-200">
                         <span class="text-2xl">📋</span>
-                        <p class="font-medium mt-2 group-hover:text-blue-600">System Logs</p>
-                        <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_logs }} bản ghi · loguru + DB</p>
+                        <p class="font-medium mt-2 group-hover:text-blue-600">Nhật ký hệ thống</p>
+                        <p class="text-xs text-[#6B7280] mt-1">{{ stats.total_logs }} bản ghi · đồng bộ cơ sở dữ liệu</p>
                     </a>
                 </div>
             </div>
@@ -97,15 +97,15 @@
                     <ul class="space-y-3">
                         {% for job in stats.recent_errors %}
                             <li class="p-3 rounded-xl bg-red-50 border border-red-100">
-                                <p class="text-sm font-medium">Job #{{ job.id }}</p>
+                                <p class="text-sm font-medium">Tác vụ #{{ job.id }}</p>
                                 <p class="text-xs text-[#6B7280] mt-1">{{ job.user.username }} · {{ job.get_display_algorithms }}</p>
                                 <p class="text-xs text-[#EF4444] mt-1 truncate" title="{{ job.error_message }}">{{ job.error_message|default:"Lỗi không xác định" }}</p>
                             </li>
                         {% endfor %}
                     </ul>
-                    <a href="{% url 'admin_panel:jobs' %}?status=failed" class="btn btn-ghost btn-sm rounded-xl w-full mt-4">Xem tất cả job lỗi</a>
+                    <a href="{% url 'admin_panel:jobs' %}?status=failed" class="btn btn-ghost btn-sm rounded-xl w-full mt-4">Xem tất cả tác vụ lỗi</a>
                 {% else %}
-                    <p class="text-sm text-[#6B7280]">Không có job thất bại gần đây ✅</p>
+                    <p class="text-sm text-[#6B7280]">Không có tác vụ thất bại gần đây ✅</p>
                 {% endif %}
             </div>
         </div>

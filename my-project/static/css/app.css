@@ -207,10 +207,33 @@ a:focus:not(:focus-visible) {
     z-index: 5;
 }
 
-/* Stagger animation targets */
+/* Stagger animation targets — chi dung cho trang tai san, KHONG dung cho partial HTMX */
 .animate-stagger-item {
     opacity: 0;
     transform: translateY(12px);
+}
+
+/* Ket qua xu ly anh qua HTMX — luon hien thi ngay, khong bi opacity 0 */
+#process-result,
+#pipeline-result,
+.processing-result-card {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+}
+
+#process-result img,
+#pipeline-result img,
+.processing-result-card img {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Khung anh ket qua — full aspect-video nhu skeleton */
+.processing-result-card .aspect-video img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 /* Responsive — mobile sidebar overlay */

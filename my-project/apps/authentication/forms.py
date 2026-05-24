@@ -38,7 +38,7 @@ class RegisterForm(forms.ModelForm):
             "email": forms.EmailInput(
                 attrs={
                     "class": "input input-bordered w-full",
-                    "placeholder": "Email",
+                    "placeholder": "Địa chỉ email",
                     "autocomplete": "email",
                 }
             ),
@@ -59,7 +59,7 @@ class RegisterForm(forms.ModelForm):
         }
         labels = {
             "username": "Tên đăng nhập",
-            "email": "Email",
+            "email": "Địa chỉ email",
             "full_name": "Họ và tên",
             "password": "Mật khẩu",
         }
@@ -144,7 +144,7 @@ class RegisterForm(forms.ModelForm):
 class LoginForm(forms.Form):
     # Cho phep dang nhap bang username hoac email.
     username = forms.CharField(
-        label="Tên đăng nhập hoặc Email",
+        label="Tên đăng nhập hoặc email",
         max_length=150,
         error_messages={
             "required": "Vui lòng nhập tên đăng nhập hoặc email.",
@@ -255,14 +255,14 @@ class ProfileForm(forms.ModelForm):
             "email": forms.EmailInput(
                 attrs={
                     "class": "input input-bordered w-full rounded-xl",
-                    "placeholder": "Email",
+                    "placeholder": "Địa chỉ email",
                     "autocomplete": "email",
                 }
             ),
         }
         labels = {
             "full_name": "Họ và tên",
-            "email": "Email",
+            "email": "Địa chỉ email",
         }
         error_messages = {
             "full_name": {

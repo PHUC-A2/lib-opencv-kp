@@ -25,7 +25,7 @@ def dashboard_home(request: HttpRequest) -> HttpResponse:
     quick_actions = [
         {
             "title": "Tải ảnh lên",
-            "description": "Upload ảnh để bắt đầu xử lý OpenCV",
+            "description": "Tải ảnh lên để bắt đầu xử lý OpenCV",
             "url_name": "images:upload",
             "icon": "📤",
         },
@@ -37,7 +37,7 @@ def dashboard_home(request: HttpRequest) -> HttpResponse:
         },
         {
             "title": "Thư viện ảnh",
-            "description": "Xem và quản lý ảnh đã upload",
+            "description": "Xem và quản lý ảnh đã tải lên",
             "url_name": "images:gallery",
             "icon": "🖼️",
         },

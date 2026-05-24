@@ -1,6 +1,6 @@
 {% extends "base/dashboard.html" %}
 
-{% block title %}{{ page_title }} - Admin{% endblock %}
+{% block title %}{{ page_title }} - Quản trị{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
@@ -17,7 +17,7 @@
             >
                 <div class="form-control xl:col-span-2">
                     <label class="label" for="id_search"><span class="label-text font-medium">{{ filter_form.search.label }}</span></label>
-                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Username, email, họ tên...">
+                    <input type="search" name="search" id="id_search" value="{{ search }}" class="input input-bordered w-full rounded-xl" placeholder="Tên đăng nhập, email, họ tên...">
                 </div>
                 <div class="form-control">
                     <label class="label" for="id_role"><span class="label-text font-medium">{{ filter_form.role.label }}</span></label>

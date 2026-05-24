@@ -39,7 +39,7 @@ def admin_home(request: HttpRequest) -> HttpResponse:
         request,
         "admin_panel/index.html",
         {
-            "page_title": "Admin Tổng quan",
+            "page_title": "Tổng quan quản trị",
             "page_subtitle": "Quản lý toàn bộ hệ thống xử lý ảnh",
             "stats": stats,
         },
@@ -327,7 +327,7 @@ def admin_jobs_view(request: HttpRequest) -> HttpResponse:
     )
 
     context = {
-        "page_title": "Processing Jobs",
+        "page_title": "Tác vụ xử lý",
         "page_subtitle": f"{jobs.count()} job trong hệ thống",
         "filter_form": filter_form,
         "jobs": jobs,
@@ -379,7 +379,7 @@ def admin_logs_view(request: HttpRequest) -> HttpResponse:
     slow_logs = SystemLogService.get_slow_processing_logs(limit=5)
 
     context = {
-        "page_title": "System Logs",
+        "page_title": "Nhật ký hệ thống",
         "page_subtitle": f"{logs.count()} bản ghi log",
         "filter_form": filter_form,
         "logs": logs,

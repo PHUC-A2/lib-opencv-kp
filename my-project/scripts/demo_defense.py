@@ -126,7 +126,7 @@ def run_offline_demo() -> int:
 
         upload_url = reverse("images:upload_process")
         response = user_client.post(upload_url, {"file": upload_file}, HTTP_HX_REQUEST="true")
-        ok = response.status_code == 200 and "Upload thành công" in response.content.decode()
+        ok = response.status_code == 200 and "Tải lên thành công" in response.content.decode()
         print_result("POST /images/upload/process/", ok)
         results.append(("Upload", ok, ""))
 
@@ -169,7 +169,7 @@ def run_offline_demo() -> int:
         print_step(6, "Trang ket qua — Before/After slider")
         result_url = reverse("processing:result", kwargs={"pk": job.id})
         response = user_client.get(result_url)
-        ok = response.status_code == 200 and "Before" in response.content.decode()
+        ok = response.status_code == 200 and "Trước" in response.content.decode()
         print_result("GET /processing/result/<id>/", ok)
         results.append(("Result page", ok, ""))
 
@@ -190,7 +190,7 @@ def run_offline_demo() -> int:
             {"image_id": image.id, "algorithm_ids": f"{algorithm.id},{blur.id}"},
             HTTP_HX_REQUEST="true",
         )
-        ok = response.status_code == 200 and "Pipeline" in response.content.decode()
+        ok = response.status_code == 200 and "Luồng xử lý" in response.content.decode()
         print_result("POST /processing/pipeline/run/", ok)
         results.append(("Pipeline run", ok, ""))
 
@@ -366,7 +366,7 @@ def run_live_demo() -> int:
         upload_req.add_header("X-CSRFToken", csrf)
         with opener.open(upload_req, timeout=30) as response:
             upload_html = response.read().decode()
-            ok = response.status == 200 and "Upload thành công" in upload_html
+            ok = response.status == 200 and "Tải lên thành công" in upload_html
             print_result("POST /images/upload/process/", ok)
             results.append(("Upload", ok, ""))
     else:
@@ -393,7 +393,7 @@ def run_live_demo() -> int:
     job = ProcessingJob.objects.filter(user=user).order_by("-id").first()
     if job:
         status, body = get(f"{BASE_URL}/processing/result/{job.id}/")
-        ok = status == 200 and "Before" in body
+        ok = status == 200 and "Trước" in body
         print_result(f"GET /processing/result/{job.id}/", ok)
         results.append(("Result", ok, ""))
 
@@ -405,7 +405,7 @@ def run_live_demo() -> int:
         f"{BASE_URL}/processing/pipeline/",
         htmx=True,
     )
-    ok = status == 200 and "Pipeline" in body
+    ok = status == 200 and "Luồng xử lý" in body
     print_result("POST /processing/pipeline/run/", ok)
     results.append(("Pipeline", ok, ""))
 

@@ -71,8 +71,8 @@ class Phase8SystemLogTests(TestCase):
         self.client.login(username="admin_phase8", password="Test@1234")
         response = self.client.get(reverse("admin_panel:logs"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "System Logs")
-        self.assertContains(response, "Grayscale")
+        self.assertContains(response, "Nhật ký hệ thống")
+        self.assertContains(response, "(Grayscale)")
 
     def test_admin_logs_filter_by_level(self):
         image = ImageService.upload_image(self.user, create_test_image("filter.jpg"))
@@ -82,7 +82,7 @@ class Phase8SystemLogTests(TestCase):
         self.client.login(username="admin_phase8", password="Test@1234")
         response = self.client.get(reverse("admin_panel:logs"), {"level": SystemLog.LEVEL_INFO})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Grayscale")
+        self.assertContains(response, "(Grayscale)")
 
     def test_admin_logs_url_resolves(self):
         self.assertEqual(reverse("admin_panel:logs"), "/admin-panel/logs/")

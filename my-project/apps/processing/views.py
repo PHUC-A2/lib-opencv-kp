@@ -67,6 +67,9 @@ def processing_run_view(request: HttpRequest) -> HttpResponse:
             status=400,
         )
 
+    # Tai lai job kem anh ket qua de partial hien thi dung URL media.
+    job = ProcessingService.get_user_job(request.user, job.pk)
+
     return render(
         request,
         "processing/partials/process_result.html",
@@ -160,7 +163,7 @@ def processing_pipeline_view(request: HttpRequest) -> HttpResponse:
         request,
         "processing/pipeline.html",
         {
-            "page_title": "Pipeline xử lý",
+            "page_title": "Luồng xử lý đa bước",
             "page_subtitle": "Chọn nhiều thuật toán và chạy theo chuỗi",
             "user_images": user_images,
             "algorithms": algorithms,
@@ -197,6 +200,9 @@ def processing_pipeline_run_view(request: HttpRequest) -> HttpResponse:
             {"message": str(exc)},
             status=400,
         )
+
+    # Tai lai job kem anh ket qua de partial hien thi dung URL media.
+    job = ProcessingService.get_user_job(request.user, job.pk)
 
     return render(
         request,

@@ -20,7 +20,7 @@ class AdminUserFilterForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": INPUT_CLASS,
-                "placeholder": "Username, email, họ tên...",
+                "placeholder": "Tên đăng nhập, email, họ tên...",
             }
         ),
     )
@@ -100,7 +100,7 @@ class AdminAlgorithmForm(forms.ModelForm):
             "code": "Mã thuật toán",
             "name": "Tên hiển thị",
             "description": "Mô tả",
-            "icon": "Icon",
+            "icon": "Biểu tượng",
             "is_active": "Đang hoạt động",
         }
         widgets = {
@@ -113,7 +113,7 @@ class AdminAlgorithmForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={
                     "class": INPUT_CLASS,
-                    "placeholder": "Tên thuật toán",
+                    "placeholder": "vd: Thang xám (Grayscale)",
                 }
             ),
             "description": forms.Textarea(
@@ -164,7 +164,7 @@ class AdminJobFilterForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": INPUT_CLASS,
-                "placeholder": "Tên ảnh, username, email...",
+                "placeholder": "Tên ảnh, tên đăng nhập, email...",
             }
         ),
     )
@@ -187,7 +187,7 @@ class AdminJobFilterForm(forms.Form):
         choices=[
             ("", "Tất cả loại"),
             (ProcessingJob.JOB_TYPE_SINGLE, "Xử lý đơn"),
-            (ProcessingJob.JOB_TYPE_PIPELINE, "Pipeline"),
+            (ProcessingJob.JOB_TYPE_PIPELINE, "Luồng xử lý đa bước"),
         ],
         widget=forms.Select(attrs={"class": SELECT_CLASS}),
     )
@@ -220,7 +220,7 @@ class AdminLogFilterForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": INPUT_CLASS,
-                "placeholder": "Nội dung log, username, job id...",
+                "placeholder": "Nội dung log, tên đăng nhập, mã job...",
             }
         ),
     )
@@ -231,9 +231,9 @@ class AdminLogFilterForm(forms.Form):
         widget=forms.Select(attrs={"class": SELECT_CLASS}),
     )
     module = forms.ChoiceField(
-        label="Module",
+        label="Phân hệ",
         required=False,
-        choices=[("", "Tất cả module")] + SystemLog.MODULE_CHOICES,
+        choices=[("", "Tất cả phân hệ")] + SystemLog.MODULE_CHOICES,
         widget=forms.Select(attrs={"class": SELECT_CLASS}),
     )
     date_from = forms.DateField(

@@ -68,7 +68,7 @@ class Phase4HistoryFlowTests(TestCase):
         response = self.client.get(reverse("processing:history"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "listed.jpg")
-        self.assertContains(response, "Grayscale")
+        self.assertContains(response, "(Grayscale)")
 
     def test_history_filter_by_algorithm(self):
         image = ImageService.upload_image(self.user, create_test_image("filter.jpg"))
@@ -84,7 +84,7 @@ class Phase4HistoryFlowTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gaussian Blur")
-        self.assertNotContains(response, ">Grayscale<")
+        self.assertNotContains(response, ">Thang xám (Grayscale)<")
 
     def test_history_link_to_result(self):
         image = ImageService.upload_image(self.user, create_test_image("link.jpg"))
