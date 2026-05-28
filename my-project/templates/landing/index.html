@@ -6,31 +6,31 @@
 <div class="space-y-6">
     {% include "partials/guest_preview_banner.html" %}
 
-    <div x-show="guestSection === 'overview'" x-cloak>
+    <div x-show="guestSection === 'overview'">
         {% include "landing/sections/overview.html" %}
     </div>
 
-    <div x-show="guestSection === 'profile'" x-cloak>
+    <div x-show="guestSection === 'profile'" style="display: none;">
         {% include "landing/sections/profile.html" %}
     </div>
 
-    <div x-show="guestSection === 'upload'" x-cloak>
+    <div x-show="guestSection === 'upload'" style="display: none;">
         {% include "landing/sections/upload.html" %}
     </div>
 
-    <div x-show="guestSection === 'gallery'" x-cloak>
+    <div x-show="guestSection === 'gallery'" style="display: none;">
         {% include "landing/sections/gallery.html" %}
     </div>
 
-    <div x-show="guestSection === 'processing'" x-cloak>
+    <div x-show="guestSection === 'processing'" style="display: none;">
         {% include "landing/sections/processing.html" %}
     </div>
 
-    <div x-show="guestSection === 'history'" x-cloak>
+    <div x-show="guestSection === 'history'" style="display: none;">
         {% include "landing/sections/history.html" %}
     </div>
 
-    <div x-show="guestSection === 'pipeline'" x-cloak>
+    <div x-show="guestSection === 'pipeline'" style="display: none;">
         {% include "landing/sections/pipeline.html" %}
     </div>
 </div>

@@ -1,10 +1,10 @@
 /* Phase 7 — UI/UX polish theo design system SaaS AI tool */
 
-/* Skip link — accessibility keyboard */
+/* Skip link — accessibility keyboard (an khoi man hinh, chi hien khi focus) */
 .skip-link {
-    position: absolute;
-    top: -100%;
+    position: fixed;
     left: 1rem;
+    top: 1rem;
     z-index: 100;
     padding: 0.75rem 1rem;
     background: #111827;
@@ -12,11 +12,13 @@
     border-radius: 0.75rem;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: top 0.2s ease;
+    text-decoration: none;
+    transform: translateY(-220%);
+    transition: transform 0.2s ease, outline 0.2s ease;
 }
 
 .skip-link:focus {
-    top: 1rem;
+    transform: translateY(0);
     outline: 2px solid #3B82F6;
     outline-offset: 2px;
 }
@@ -207,10 +209,43 @@ a:focus:not(:focus-visible) {
     z-index: 5;
 }
 
-/* Stagger animation targets — chi dung cho trang tai san, KHONG dung cho partial HTMX */
+/* Stagger animation — GSAP set trang thai dau; khong an noi dung neu JS loi */
 .animate-stagger-item {
-    opacity: 0;
-    transform: translateY(12px);
+    will-change: opacity, transform;
+}
+
+/* Fallback hien thi anh khi Tailwind utility chua load */
+.card figure.aspect-square,
+.card figure.aspect-video {
+    overflow: hidden;
+    background: #F3F4F6;
+}
+
+.card figure.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.card figure.aspect-video {
+    aspect-ratio: 16 / 9;
+}
+
+.card figure img,
+.before-after-container img {
+    display: block;
+    max-width: 100%;
+}
+
+.card figure.aspect-square img,
+.card figure.aspect-video img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.before-after-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 /* Ket qua xu ly anh qua HTMX — luon hien thi ngay, khong bi opacity 0 */
@@ -269,20 +304,28 @@ a:focus:not(:focus-visible) {
 }
 
 /* Nut hien/an mat khau — auth forms */
+.password-field-wrap {
+    position: relative;
+}
+
 .password-field-input {
+    min-height: 3rem;
+    padding-right: 2.75rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .password-toggle-btn {
     position: absolute;
-    right: 0.35rem;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 0.5rem;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    height: 2.25rem;
+    transform: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 2.25rem;
-    height: 2.25rem;
     border-radius: 0.625rem;
     color: #6B7280;
     background: transparent;
@@ -297,7 +340,7 @@ a:focus:not(:focus-visible) {
 }
 
 .password-toggle-btn:active {
-    transform: translateY(-50%) scale(0.94);
+    transform: scale(0.94);
 }
 
 .password-toggle-btn:focus-visible {

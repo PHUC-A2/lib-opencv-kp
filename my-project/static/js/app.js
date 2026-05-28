@@ -152,12 +152,17 @@
     }
 
     // --- GSAP page animations ---
+    function revealStaggerItems() {
+        document.querySelectorAll('.animate-stagger-item').forEach(function (el) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.style.visibility = 'visible';
+        });
+    }
+
     function animatePageEntrance() {
         if (prefersReducedMotion || typeof gsap === 'undefined') {
-            document.querySelectorAll('.animate-stagger-item').forEach(function (el) {
-                el.style.opacity = '1';
-                el.style.transform = 'none';
-            });
+            revealStaggerItems();
             return;
         }
 
@@ -168,9 +173,9 @@
 
         const staggerItems = document.querySelectorAll('.animate-stagger-item');
         if (staggerItems.length) {
-            gsap.to(staggerItems, {
-                opacity: 1,
-                y: 0,
+            gsap.from(staggerItems, {
+                opacity: 0,
+                y: 12,
                 duration: 0.35,
                 stagger: 0.07,
                 ease: 'power2.out',
@@ -281,9 +286,9 @@
             return;
         }
 
-        gsap.to(items, {
-            opacity: 1,
-            y: 0,
+        gsap.from(items, {
+            opacity: 0,
+            y: 12,
             duration: 0.35,
             stagger: 0.07,
             ease: 'power2.out',
@@ -312,6 +317,8 @@
         migrateDjangoMessages();
         animatePageEntrance();
         refreshLucideIcons();
+        // Fallback: tranh card/anh bi opacity 0 neu GSAP/CDN loi.
+        setTimeout(revealStaggerItems, 2500);
     });
 
     document.body.addEventListener('htmx:beforeRequest', function (event) {

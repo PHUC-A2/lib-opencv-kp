@@ -10,8 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{% static 'css/app.css' %}?v=5">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}?v=7">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         [x-cloak] { display: none !important; }
@@ -19,6 +30,9 @@
             background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
             border: none;
             color: #FFFFFF;
+        }
+        .btn-primary-gradient:hover {
+            opacity: 0.92;
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -35,7 +49,7 @@
     </div>
 
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-    <script src="{% static 'js/app.js' %}?v=6"></script>
+    <script src="{% static 'js/app.js' %}?v=7"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
