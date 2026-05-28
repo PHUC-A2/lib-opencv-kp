@@ -80,6 +80,10 @@ class Phase5PipelineFlowTests(TestCase):
         response = self.client.get(reverse("processing:pipeline"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Chạy luồng xử lý")
+        self.assertContains(response, 'id="pipeline-algorithm-search"')
+        self.assertContains(response, "Tìm nhanh theo tên, mã hoặc mô tả")
+        self.assertContains(response, "processingPipeline(")
+        self.assertContains(response, "isAlgorithmVisible(")
 
     def test_pipeline_requires_min_two_steps(self):
         image = ImageService.upload_image(self.user, create_test_image())

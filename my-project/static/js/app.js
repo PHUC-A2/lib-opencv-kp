@@ -202,23 +202,11 @@
         }
     }
 
-    // --- Trang xu ly anh — chon anh + thuat toan ---
-    window.processingHome = function (algorithmCatalog) {
+    // --- Loc thuat toan nhanh (dung chung trang xu ly + pipeline) ---
+    function algorithmSearchMixin(algorithmCatalog) {
         return {
-            selectedImageId: null,
-            selectedAlgorithmId: null,
-            processing: false,
             algorithmSearch: '',
             algorithmCatalog: algorithmCatalog || [],
-            selectImage(id) {
-                this.selectedImageId = id;
-            },
-            selectAlgorithm(id) {
-                this.selectedAlgorithmId = id;
-            },
-            canProcess() {
-                return this.selectedImageId && this.selectedAlgorithmId && !this.processing;
-            },
             get filteredAlgorithmIds() {
                 const q = this.algorithmSearch.trim().toLowerCase();
                 if (!q) {
@@ -245,6 +233,82 @@
                 this.algorithmSearch = '';
             },
         };
+    }
+
+    // --- Trang xu ly anh — chon anh + thuat toan ---
+    window.processingHome = function (algorithmCatalog) {
+        return Object.assign({
+            selectedImageId: null,
+            selectedAlgorithmId: null,
+            processing: false,
+            selectImage(id) {
+                this.selectedImageId = id;
+            },
+            selectAlgorithm(id) {
+                this.selectedAlgorithmId = id;
+            },
+            canProcess() {
+                return this.selectedImageId && this.selectedAlgorithmId && !this.processing;
+            },
+        }, algorithmSearchMixin(algorithmCatalog));
+    };
+
+    // --- Trang pipeline — chon nhieu thuat toan theo thu tu ---
+    window.processingPipeline = function (algorithmCatalog) {
+        return Object.assign({
+            selectedImageId: null,
+            selectedSteps: [],
+            processing: false,
+            algorithmIconMap: {
+                grayscale: 'contrast',
+                gaussian_blur: 'cloud',
+                canny: 'ruler',
+                binary_threshold: 'square',
+                median_blur: 'droplets',
+                morphology: 'scan-search',
+                histogram_equalization: 'bar-chart-2',
+            },
+            selectImage(id) {
+                this.selectedImageId = id;
+            },
+            refreshIcons() {
+                this.$nextTick(function () {
+                    if (window.refreshLucideIcons) {
+                        window.refreshLucideIcons(this.$el);
+                    }
+                }.bind(this));
+            },
+            addStep(algo) {
+                if (!this.selectedSteps.find(function (s) { return s.id === algo.id; })) {
+                    this.selectedSteps.push(Object.assign({}, algo));
+                    this.refreshIcons();
+                }
+            },
+            removeStep(index) {
+                this.selectedSteps.splice(index, 1);
+                this.refreshIcons();
+            },
+            moveUp(index) {
+                if (index > 0) {
+                    const item = this.selectedSteps.splice(index, 1)[0];
+                    this.selectedSteps.splice(index - 1, 0, item);
+                    this.refreshIcons();
+                }
+            },
+            moveDown(index) {
+                if (index < this.selectedSteps.length - 1) {
+                    const item = this.selectedSteps.splice(index, 1)[0];
+                    this.selectedSteps.splice(index + 1, 0, item);
+                    this.refreshIcons();
+                }
+            },
+            get algorithmIds() {
+                return this.selectedSteps.map(function (s) { return s.id; }).join(',');
+            },
+            canRun() {
+                return this.selectedImageId && this.selectedSteps.length >= 2 && !this.processing;
+            },
+        }, algorithmSearchMixin(algorithmCatalog));
     };
 
     // --- Before / After slider (Alpine.js component) ---

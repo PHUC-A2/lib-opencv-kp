@@ -4,56 +4,11 @@
 
 {% block content %}
 <div
-    x-data="{
-        selectedImageId: null,
-        selectedSteps: [],
-        processing: false,
-        algorithmIconMap: {
-            grayscale: 'contrast',
-            gaussian_blur: 'cloud',
-            canny: 'ruler',
-            binary_threshold: 'square',
-            median_blur: 'droplets',
-            morphology: 'scan-search',
-            histogram_equalization: 'bar-chart-2',
-        },
-        selectImage(id) { this.selectedImageId = id; },
-        refreshIcons() {
-            this.$nextTick(() => {
-                if (window.refreshLucideIcons) window.refreshLucideIcons(this.$el);
-            });
-        },
-        addStep(algo) {
-            if (!this.selectedSteps.find(s => s.id === algo.id)) {
-                this.selectedSteps.push({...algo});
-                this.refreshIcons();
-            }
-        },
-        removeStep(index) {
-            this.selectedSteps.splice(index, 1);
-            this.refreshIcons();
-        },
-        moveUp(index) {
-            if (index > 0) {
-                const item = this.selectedSteps.splice(index, 1)[0];
-                this.selectedSteps.splice(index - 1, 0, item);
-                this.refreshIcons();
-            }
-        },
-        moveDown(index) {
-            if (index < this.selectedSteps.length - 1) {
-                const item = this.selectedSteps.splice(index, 1)[0];
-                this.selectedSteps.splice(index + 1, 0, item);
-                this.refreshIcons();
-            }
-        },
-        get algorithmIds() {
-            return this.selectedSteps.map(s => s.id).join(',');
-        },
-        canRun() {
-            return this.selectedImageId && this.selectedSteps.length >= 2 && !this.processing;
-        }
-    }"
+    x-data="processingPipeline([
+        {% for algorithm in algorithms %}
+        { id: {{ algorithm.id }}, name: '{{ algorithm.name|escapejs }}', code: '{{ algorithm.code|escapejs }}', description: '{{ algorithm.description|escapejs }}' }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ])"
     x-init="refreshIcons()"
     class="space-y-6"
 >
@@ -139,12 +94,45 @@
 
             <div class="space-y-4">
                 <div class="card bg-white border border-[#E5E7EB] shadow-sm rounded-xl">
-                    <div class="card-body">
-                        <h2 class="text-lg font-semibold mb-4">3. Thêm thuật toán</h2>
-                        <div class="space-y-2 max-h-[420px] overflow-y-auto">
+                    <div class="card-body flex flex-col min-h-0 pb-4">
+                        <h2 class="text-lg font-semibold mb-4 shrink-0">3. Thêm thuật toán</h2>
+
+                        <div class="relative mb-3 shrink-0">
+                            <label class="sr-only" for="pipeline-algorithm-search">Tìm kiếm thuật toán</label>
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+                                {% include "partials/icon.html" with name="search" size="sm" %}
+                            </span>
+                            <input
+                                type="search"
+                                id="pipeline-algorithm-search"
+                                x-model="algorithmSearch"
+                                class="input input-bordered w-full rounded-xl pl-10 pr-10"
+                                placeholder="Tìm nhanh theo tên, mã hoặc mô tả..."
+                                autocomplete="off"
+                            >
+                            <button
+                                type="button"
+                                x-show="algorithmSearch"
+                                x-cloak
+                                @click="clearAlgorithmSearch()"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
+                                aria-label="Xóa tìm kiếm"
+                            >×</button>
+                        </div>
+
+                        <p
+                            x-show="algorithmSearch.trim()"
+                            x-cloak
+                            class="text-xs text-[#6B7280] mb-2 shrink-0"
+                            x-text="'Tìm thấy ' + filteredAlgorithmIds.length + ' thuật toán'"
+                        ></p>
+
+                        <div class="space-y-2 max-h-[420px] overflow-y-auto overscroll-contain pr-1 -mr-1">
                             {% for algorithm in algorithms %}
                                 <button
                                     type="button"
+                                    x-show="isAlgorithmVisible({{ algorithm.id }})"
+                                    x-cloak
                                     @click="addStep({ id: {{ algorithm.id }}, name: '{{ algorithm.name|escapejs }}', code: '{{ algorithm.code }}' })"
                                     class="w-full p-3 rounded-xl border border-[#E5E7EB] bg-white hover:border-blue-300 hover:bg-blue-50/30 text-left transition-all card-hover"
                                 >
@@ -157,6 +145,14 @@
                                     </div>
                                 </button>
                             {% endfor %}
+
+                            <p
+                                x-show="algorithmSearch.trim() && !hasAlgorithmSearchResult"
+                                x-cloak
+                                class="text-sm text-[#6B7280] text-center py-6"
+                            >
+                                Không tìm thấy thuật toán phù hợp với "<span x-text="algorithmSearch"></span>".
+                            </p>
                         </div>
                     </div>
                 </div>
