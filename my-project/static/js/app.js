@@ -203,31 +203,51 @@
     }
 
     // --- Loc thuat toan nhanh (dung chung trang xu ly + pipeline) ---
-    function algorithmSearchMixin(algorithmCatalog) {
+    function algorithmSearchMixin() {
         return {
             algorithmSearch: '',
-            algorithmCatalog: algorithmCatalog || [],
-            get filteredAlgorithmIds() {
-                const q = this.algorithmSearch.trim().toLowerCase();
-                if (!q) {
-                    return this.algorithmCatalog.map(function (item) {
-                        return item.id;
-                    });
+            algorithmCatalog: [],
+            initAlgorithmCatalog(scriptId) {
+                const node = document.getElementById(scriptId);
+                if (!node) {
+                    this.algorithmCatalog = [];
+                    return;
                 }
-                return this.algorithmCatalog
-                    .filter(function (item) {
-                        const haystack = (item.name + ' ' + item.code + ' ' + item.description).toLowerCase();
-                        return haystack.indexOf(q) !== -1;
-                    })
-                    .map(function (item) {
-                        return item.id;
-                    });
+                try {
+                    this.algorithmCatalog = JSON.parse(node.textContent);
+                } catch (error) {
+                    this.algorithmCatalog = [];
+                }
+            },
+            getSearchQuery() {
+                return (this.algorithmSearch || '').trim().toLowerCase();
             },
             isAlgorithmVisible(id) {
-                return this.filteredAlgorithmIds.indexOf(id) !== -1;
+                const q = this.getSearchQuery();
+                if (!q) {
+                    return true;
+                }
+                const item = this.algorithmCatalog.find(function (entry) {
+                    return entry.id === id;
+                });
+                if (!item) {
+                    return false;
+                }
+                const haystack = (item.name + ' ' + item.code + ' ' + item.description).toLowerCase();
+                return haystack.indexOf(q) !== -1;
             },
-            get hasAlgorithmSearchResult() {
-                return this.filteredAlgorithmIds.length > 0;
+            countVisibleAlgorithms() {
+                const q = this.getSearchQuery();
+                if (!q) {
+                    return this.algorithmCatalog.length;
+                }
+                return this.algorithmCatalog.filter(function (item) {
+                    const haystack = (item.name + ' ' + item.code + ' ' + item.description).toLowerCase();
+                    return haystack.indexOf(q) !== -1;
+                }).length;
+            },
+            hasAlgorithmSearchResult() {
+                return this.countVisibleAlgorithms() > 0;
             },
             clearAlgorithmSearch() {
                 this.algorithmSearch = '';
@@ -236,7 +256,7 @@
     }
 
     // --- Trang xu ly anh — chon anh + thuat toan ---
-    window.processingHome = function (algorithmCatalog) {
+    window.processingHome = function () {
         return Object.assign({
             selectedImageId: null,
             selectedAlgorithmId: null,
@@ -250,11 +270,11 @@
             canProcess() {
                 return this.selectedImageId && this.selectedAlgorithmId && !this.processing;
             },
-        }, algorithmSearchMixin(algorithmCatalog));
+        }, algorithmSearchMixin());
     };
 
     // --- Trang pipeline — chon nhieu thuat toan theo thu tu ---
-    window.processingPipeline = function (algorithmCatalog) {
+    window.processingPipeline = function () {
         return Object.assign({
             selectedImageId: null,
             selectedSteps: [],
@@ -308,7 +328,7 @@
             canRun() {
                 return this.selectedImageId && this.selectedSteps.length >= 2 && !this.processing;
             },
-        }, algorithmSearchMixin(algorithmCatalog));
+        }, algorithmSearchMixin());
     };
 
     // --- Before / After slider (Alpine.js component) ---

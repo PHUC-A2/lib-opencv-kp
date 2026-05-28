@@ -85,7 +85,9 @@ class Phase3ProcessingFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'id="algorithm-search"')
         self.assertContains(response, "Tìm nhanh theo tên, mã hoặc mô tả")
-        self.assertContains(response, "processingHome(")
+        self.assertContains(response, 'id="algorithm-catalog-data"')
+        self.assertContains(response, 'x-data="processingHome()"')
+        self.assertContains(response, "initAlgorithmCatalog('algorithm-catalog-data')")
         self.assertContains(response, "isAlgorithmVisible(")
 
     def test_processing_result_page_before_after(self):

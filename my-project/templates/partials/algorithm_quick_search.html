@@ -1,0 +1,31 @@
+{% comment %}
+Thanh tim kiem nhanh thuat toan — dung chung trang xu ly va pipeline.
+Tham so: input_id (bat buoc)
+{% endcomment %}
+<div class="relative mb-3 shrink-0">
+    <label class="sr-only" for="{{ input_id }}">Tìm kiếm thuật toán</label>
+    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
+        {% include "partials/icon.html" with name="search" size="sm" %}
+    </span>
+    <input
+        type="search"
+        id="{{ input_id }}"
+        x-model="algorithmSearch"
+        class="input input-bordered w-full rounded-xl pl-10 pr-10"
+        placeholder="Tìm nhanh theo tên, mã hoặc mô tả..."
+        autocomplete="off"
+    >
+    <button
+        type="button"
+        x-show="algorithmSearch"
+        @click="clearAlgorithmSearch()"
+        class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
+        aria-label="Xóa tìm kiếm"
+    >×</button>
+</div>
+
+<p
+    x-show="algorithmSearch.trim()"
+    class="text-xs text-[#6B7280] mb-2 shrink-0"
+    x-text="'Tìm thấy ' + countVisibleAlgorithms() + ' thuật toán'"
+></p>

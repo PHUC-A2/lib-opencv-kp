@@ -14,6 +14,19 @@ from apps.processing.services.pipeline_service import PipelineService
 from apps.processing.services.processing_service import ProcessingService, ProcessingServiceError
 
 
+def _build_algorithm_catalog(algorithms) -> list[dict]:
+    # Chuan hoa du lieu thuat toan cho json_script + Alpine.js loc client-side.
+    return [
+        {
+            "id": algorithm.id,
+            "name": algorithm.name,
+            "code": algorithm.code,
+            "description": algorithm.description,
+        }
+        for algorithm in algorithms
+    ]
+
+
 @login_required
 def processing_home(request: HttpRequest) -> HttpResponse:
     # Trang chon anh + thuat toan de xu ly OpenCV.
@@ -32,6 +45,7 @@ def processing_home(request: HttpRequest) -> HttpResponse:
             "page_subtitle": "Chọn ảnh và thuật toán OpenCV",
             "user_images": user_images,
             "algorithms": algorithms,
+            "algorithms_catalog": _build_algorithm_catalog(algorithms),
             "recent_jobs": recent_jobs,
             "form": ProcessingRunForm(),
         },
@@ -197,6 +211,7 @@ def processing_pipeline_view(request: HttpRequest) -> HttpResponse:
             "page_subtitle": "Chọn nhiều thuật toán và chạy theo chuỗi",
             "user_images": user_images,
             "algorithms": algorithms,
+            "algorithms_catalog": _build_algorithm_catalog(algorithms),
         },
     )
 

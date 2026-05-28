@@ -3,12 +3,10 @@
 {% block title %}{{ page_title }} - OpenCV{% endblock %}
 
 {% block content %}
+{{ algorithms_catalog|json_script:"algorithm-catalog-data" }}
 <div
-    x-data="processingHome([
-        {% for algorithm in algorithms %}
-        { id: {{ algorithm.id }}, name: '{{ algorithm.name|escapejs }}', code: '{{ algorithm.code|escapejs }}', description: '{{ algorithm.description|escapejs }}' }{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ])"
+    x-data="processingHome()"
+    x-init="initAlgorithmCatalog('algorithm-catalog-data')"
     class="space-y-6"
 >
     {% if not user_images %}
@@ -72,42 +70,13 @@
                     <div class="card-body flex flex-col min-h-0 pb-4">
                         <h2 class="text-lg font-semibold mb-4 shrink-0">2. Chọn thuật toán</h2>
 
-                        <div class="relative mb-3 shrink-0">
-                            <label class="sr-only" for="algorithm-search">Tìm kiếm thuật toán</label>
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none">
-                                {% include "partials/icon.html" with name="search" size="sm" %}
-                            </span>
-                            <input
-                                type="search"
-                                id="algorithm-search"
-                                x-model="algorithmSearch"
-                                class="input input-bordered w-full rounded-xl pl-10 pr-10"
-                                placeholder="Tìm nhanh theo tên, mã hoặc mô tả..."
-                                autocomplete="off"
-                            >
-                            <button
-                                type="button"
-                                x-show="algorithmSearch"
-                                x-cloak
-                                @click="clearAlgorithmSearch()"
-                                class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
-                                aria-label="Xóa tìm kiếm"
-                            >×</button>
-                        </div>
-
-                        <p
-                            x-show="algorithmSearch.trim()"
-                            x-cloak
-                            class="text-xs text-[#6B7280] mb-2 shrink-0"
-                            x-text="'Tìm thấy ' + filteredAlgorithmIds.length + ' thuật toán'"
-                        ></p>
+                        {% include "partials/algorithm_quick_search.html" with input_id="algorithm-search" %}
 
                         <div class="space-y-3 max-h-[min(28rem,calc(100dvh-20rem))] overflow-y-auto overscroll-contain pr-1 -mr-1">
                             {% for algorithm in algorithms %}
                                 <button
                                     type="button"
                                     x-show="isAlgorithmVisible({{ algorithm.id }})"
-                                    x-cloak
                                     @click="selectAlgorithm({{ algorithm.id }})"
                                     :aria-pressed="selectedAlgorithmId === {{ algorithm.id }}"
                                     aria-label="Chọn thuật toán {{ algorithm.name }}"
@@ -127,8 +96,7 @@
                             {% endfor %}
 
                             <p
-                                x-show="algorithmSearch.trim() && !hasAlgorithmSearchResult"
-                                x-cloak
+                                x-show="algorithmSearch.trim() && !hasAlgorithmSearchResult()"
                                 class="text-sm text-[#6B7280] text-center py-6"
                             >
                                 Không tìm thấy thuật toán phù hợp với "<span x-text="algorithmSearch"></span>".

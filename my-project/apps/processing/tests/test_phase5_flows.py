@@ -82,7 +82,9 @@ class Phase5PipelineFlowTests(TestCase):
         self.assertContains(response, "Chạy luồng xử lý")
         self.assertContains(response, 'id="pipeline-algorithm-search"')
         self.assertContains(response, "Tìm nhanh theo tên, mã hoặc mô tả")
-        self.assertContains(response, "processingPipeline(")
+        self.assertContains(response, 'id="algorithm-catalog-data"')
+        self.assertContains(response, 'x-data="processingPipeline()"')
+        self.assertContains(response, "initAlgorithmCatalog('algorithm-catalog-data')")
         self.assertContains(response, "isAlgorithmVisible(")
 
     def test_pipeline_requires_min_two_steps(self):
