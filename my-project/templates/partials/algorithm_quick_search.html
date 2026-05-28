@@ -11,17 +11,10 @@ Tham so: input_id (bat buoc)
         type="search"
         id="{{ input_id }}"
         x-model="algorithmSearch"
-        class="input input-bordered w-full rounded-xl pl-10 pr-10"
+        class="input input-bordered w-full rounded-xl pl-10"
         placeholder="Tìm nhanh theo tên, mã hoặc mô tả..."
         autocomplete="off"
     >
-    <button
-        type="button"
-        x-show="algorithmSearch"
-        @click="clearAlgorithmSearch()"
-        class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs btn-circle"
-        aria-label="Xóa tìm kiếm"
-    >×</button>
 </div>
 
 <p
