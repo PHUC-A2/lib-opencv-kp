@@ -1,10 +1,13 @@
 {% comment %}
-Anh truoc/sau trong card ket qua HTMX — full o aspect-video giong skeleton loading.
+Anh truoc/sau trong card ket qua HTMX — ty le khung theo kich thuoc thuc te tung anh.
 {% endcomment %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
     <div>
         <p class="text-xs text-[#6B7280] mb-2">Ảnh gốc (Trước)</p>
-        <div class="relative aspect-video rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden">
+        <div
+            class="relative rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden max-h-[320px]{% if not job.source_image.width or not job.source_image.height %} aspect-video{% endif %}"
+            {% if job.source_image.width and job.source_image.height %}style="aspect-ratio: {{ job.source_image.width }} / {{ job.source_image.height }};"{% endif %}
+        >
             <img
                 src="{{ job.source_image.media_url }}"
                 alt="Ảnh gốc"
@@ -15,7 +18,10 @@ Anh truoc/sau trong card ket qua HTMX — full o aspect-video giong skeleton loa
     </div>
     <div>
         <p class="text-xs text-[#6B7280] mb-2">Kết quả (Sau)</p>
-        <div class="relative aspect-video rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden">
+        <div
+            class="relative rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] overflow-hidden max-h-[320px]{% if not job.processed_image.width or not job.processed_image.height %} aspect-video{% endif %}"
+            {% if job.processed_image.width and job.processed_image.height %}style="aspect-ratio: {{ job.processed_image.width }} / {{ job.processed_image.height }};"{% endif %}
+        >
             <img
                 src="{{ job.processed_image.media_url }}"
                 alt="Ảnh sau xử lý"

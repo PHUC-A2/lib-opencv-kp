@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            {% include "partials/before_after_slider.html" with before_url=job.source_image.media_url after_url=job.processed_image.media_url %}
+            {% include "partials/before_after_slider.html" with before_url=job.source_image.media_url after_url=job.processed_image.media_url before_width=job.source_image.width before_height=job.source_image.height after_width=job.processed_image.width after_height=job.processed_image.height %}
         </div>
     </div>
 

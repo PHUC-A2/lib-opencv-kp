@@ -91,6 +91,31 @@ class Phase3ProcessingFlowTests(TestCase):
         self.assertContains(response, job.processed_image.media_url)
         self.assertContains(response, reverse("processing:download", kwargs={"pk": job.id}))
 
+    def test_crop_result_uses_side_by_side_when_dimensions_change(self):
+        # Thuật toán crop thay đổi kích thuoc — khong dung slider chong lop.
+        image = ImageService.upload_image(self.user, create_test_image("crop_result.jpg"))
+        algorithm = Algorithm.objects.get(code="crop")
+        job = ProcessingService.run_processing(self.user, image.id, algorithm.id)
+
+        response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(job.source_image.width, job.processed_image.width)
+        self.assertContains(response, "hiển thị song song")
+        self.assertNotContains(response, 'x-data="beforeAfterSlider()"')
+
+    def test_grayscale_result_uses_overlay_slider_when_same_dimensions(self):
+        # Thuật toán giu nguyen kich thuoc — van dung thanh truot chong lop.
+        image = ImageService.upload_image(self.user, create_test_image("gray_result.jpg"))
+        algorithm = Algorithm.objects.get(code="grayscale")
+        job = ProcessingService.run_processing(self.user, image.id, algorithm.id)
+
+        response = self.client.get(reverse("processing:result", kwargs={"pk": job.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(job.source_image.width, job.processed_image.width)
+        self.assertEqual(job.source_image.height, job.processed_image.height)
+        self.assertContains(response, 'x-data="beforeAfterSlider()"')
+        self.assertContains(response, "Kéo thanh trượt")
+
     def test_download_processed_image(self):
         image = ImageService.upload_image(self.user, create_test_image("download_test.jpg"))
         algorithm = Algorithm.objects.get(code="grayscale")
