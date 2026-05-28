@@ -270,6 +270,13 @@
             canProcess() {
                 return this.selectedImageId && this.selectedAlgorithmId && !this.processing;
             },
+            refreshIcons() {
+                this.$nextTick(function () {
+                    if (window.refreshLucideIcons) {
+                        window.refreshLucideIcons(this.$el);
+                    }
+                }.bind(this));
+            },
         }, algorithmSearchMixin());
     };
 
@@ -434,71 +441,96 @@
         return match ? decodeURIComponent(match[1]) : '';
     }
 
-    document.body.addEventListener('htmx:configRequest', function (event) {
-        var token = getCsrfToken();
-        if (token) {
-            event.detail.headers['X-CSRFToken'] = token;
-        }
-    });
-
     // --- Khoi tao su kien ---
-    document.addEventListener('DOMContentLoaded', function () {
+    function initPageUi() {
         migrateDjangoMessages();
         animatePageEntrance();
         refreshLucideIcons();
         // Fallback: tranh card/anh bi opacity 0 neu GSAP/CDN loi.
         setTimeout(revealStaggerItems, 2500);
+    }
+
+    function bindBodyEvents() {
+        if (!document.body) {
+            return;
+        }
+
+        document.body.addEventListener('htmx:configRequest', function (event) {
+            var token = getCsrfToken();
+            if (token) {
+                event.detail.headers['X-CSRFToken'] = token;
+            }
+        });
+
+        document.body.addEventListener('htmx:beforeRequest', function (event) {
+            startProgress();
+            const target = event.detail.target;
+            if (target && (target.id === 'process-result' || target.id === 'pipeline-result')) {
+                showProcessingSkeleton(target.id);
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            finishProgress();
+
+            // Thong bao khi xoa anh admin thanh cong.
+            var trigger = event.detail.xhr && event.detail.xhr.getResponseHeader('HX-Trigger');
+            if (trigger && trigger.indexOf('adminImageDeleted') !== -1 && event.detail.successful) {
+                showToast('Đã xóa ảnh khỏi hệ thống.', 'success');
+            }
+            if (trigger && trigger.indexOf('adminUserDeleted') !== -1 && event.detail.successful) {
+                showToast('Đã xóa tài khoản người dùng.', 'success');
+            }
+        });
+
+        document.body.addEventListener('htmx:afterSwap', function (event) {
+            const target = event.detail.target;
+            revealProcessingResult(
+                target.id === 'process-result' || target.id === 'pipeline-result' ? target : null
+            );
+            animateStaggerIn(target);
+            detectHtmxToast(target);
+            refreshLucideIcons(target);
+
+            if (target.id === 'history-table' ||
+                target.id === 'admin-users-table' ||
+                target.id === 'admin-images-table' ||
+                target.id === 'admin-algorithms-table' ||
+                target.id === 'admin-jobs-table' ||
+                target.id === 'admin-logs-table') {
+                animateSwapTarget(target);
+            }
+        });
+
+        // Dam bao hien thi sau khi HTMX settle (phong truong hop afterSwap som).
+        document.body.addEventListener('htmx:afterSettle', function (event) {
+            const target = event.detail.target;
+            if (target && (target.id === 'process-result' || target.id === 'pipeline-result')) {
+                revealProcessingResult(target);
+            }
+        });
+
+        document.body.addEventListener('htmx:responseError', function () {
+            showToast('Yêu cầu thất bại. Vui lòng thử lại.', 'error');
+        });
+    }
+
+    function bootApp() {
+        bindBodyEvents();
+        initPageUi();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootApp);
+    } else {
+        bootApp();
+    }
+
+    document.addEventListener('alpine:initialized', function () {
+        refreshLucideIcons();
     });
 
-    document.body.addEventListener('htmx:beforeRequest', function (event) {
-        startProgress();
-        const target = event.detail.target;
-        if (target && (target.id === 'process-result' || target.id === 'pipeline-result')) {
-            showProcessingSkeleton(target.id);
-        }
-    });
-
-    document.body.addEventListener('htmx:afterRequest', function (event) {
-        finishProgress();
-
-        // Thong bao khi xoa anh admin thanh cong.
-        var trigger = event.detail.xhr && event.detail.xhr.getResponseHeader('HX-Trigger');
-        if (trigger && trigger.indexOf('adminImageDeleted') !== -1 && event.detail.successful) {
-            showToast('Đã xóa ảnh khỏi hệ thống.', 'success');
-        }
-        if (trigger && trigger.indexOf('adminUserDeleted') !== -1 && event.detail.successful) {
-            showToast('Đã xóa tài khoản người dùng.', 'success');
-        }
-    });
-
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        const target = event.detail.target;
-        revealProcessingResult(
-            target.id === 'process-result' || target.id === 'pipeline-result' ? target : null
-        );
-        animateStaggerIn(target);
-        detectHtmxToast(target);
-        refreshLucideIcons(target);
-
-        if (target.id === 'history-table' ||
-            target.id === 'admin-users-table' ||
-            target.id === 'admin-images-table' ||
-            target.id === 'admin-algorithms-table' ||
-            target.id === 'admin-jobs-table' ||
-            target.id === 'admin-logs-table') {
-            animateSwapTarget(target);
-        }
-    });
-
-    // Dam bao hien thi sau khi HTMX settle (phong truong hop afterSwap som).
-    document.body.addEventListener('htmx:afterSettle', function (event) {
-        const target = event.detail.target;
-        if (target && (target.id === 'process-result' || target.id === 'pipeline-result')) {
-            revealProcessingResult(target);
-        }
-    });
-
-    document.body.addEventListener('htmx:responseError', function (event) {
-        showToast('Yêu cầu thất bại. Vui lòng thử lại.', 'error');
+    window.addEventListener('load', function () {
+        refreshLucideIcons();
     });
 })();

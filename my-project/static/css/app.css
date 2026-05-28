@@ -280,25 +280,33 @@ a:focus:not(:focus-visible) {
 }
 
 .icon-inline.icon-sm,
-.icon-sm.icon-inline {
+.icon-sm.icon-inline,
+svg.icon-inline.icon-sm,
+svg.icon-sm.icon-inline {
     width: 16px;
     height: 16px;
 }
 
 .icon-inline.icon-md,
-.icon-md.icon-inline {
+.icon-md.icon-inline,
+svg.icon-inline.icon-md,
+svg.icon-md.icon-inline {
     width: 20px;
     height: 20px;
 }
 
 .icon-inline.icon-lg,
-.icon-lg.icon-inline {
+.icon-lg.icon-inline,
+svg.icon-inline.icon-lg,
+svg.icon-lg.icon-inline {
     width: 24px;
     height: 24px;
 }
 
 .icon-inline.icon-xl,
-.icon-xl.icon-inline {
+.icon-xl.icon-inline,
+svg.icon-inline.icon-xl,
+svg.icon-xl.icon-inline {
     width: 48px;
     height: 48px;
 }

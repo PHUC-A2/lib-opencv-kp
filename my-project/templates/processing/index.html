@@ -6,7 +6,7 @@
 {{ algorithms_catalog|json_script:"algorithm-catalog-data" }}
 <div
     x-data="processingHome()"
-    x-init="initAlgorithmCatalog('algorithm-catalog-data')"
+    x-init="initAlgorithmCatalog('algorithm-catalog-data'); refreshIcons()"
     class="space-y-6"
 >
     {% if not user_images %}
