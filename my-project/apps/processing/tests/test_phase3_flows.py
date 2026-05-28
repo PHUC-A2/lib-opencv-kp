@@ -79,6 +79,15 @@ class Phase3ProcessingFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Xử lý thành công")
 
+    def test_processing_home_has_algorithm_quick_search(self):
+        ImageService.upload_image(self.user, create_test_image("search_home.jpg"))
+        response = self.client.get(reverse("processing:home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="algorithm-search"')
+        self.assertContains(response, "Tìm nhanh theo tên, mã hoặc mô tả")
+        self.assertContains(response, "processingHome(")
+        self.assertContains(response, "isAlgorithmVisible(")
+
     def test_processing_result_page_before_after(self):
         image = ImageService.upload_image(self.user, create_test_image("result.jpg"))
         algorithm = Algorithm.objects.get(code="canny")

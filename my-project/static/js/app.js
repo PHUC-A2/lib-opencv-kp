@@ -202,6 +202,51 @@
         }
     }
 
+    // --- Trang xu ly anh — chon anh + thuat toan ---
+    window.processingHome = function (algorithmCatalog) {
+        return {
+            selectedImageId: null,
+            selectedAlgorithmId: null,
+            processing: false,
+            algorithmSearch: '',
+            algorithmCatalog: algorithmCatalog || [],
+            selectImage(id) {
+                this.selectedImageId = id;
+            },
+            selectAlgorithm(id) {
+                this.selectedAlgorithmId = id;
+            },
+            canProcess() {
+                return this.selectedImageId && this.selectedAlgorithmId && !this.processing;
+            },
+            get filteredAlgorithmIds() {
+                const q = this.algorithmSearch.trim().toLowerCase();
+                if (!q) {
+                    return this.algorithmCatalog.map(function (item) {
+                        return item.id;
+                    });
+                }
+                return this.algorithmCatalog
+                    .filter(function (item) {
+                        const haystack = (item.name + ' ' + item.code + ' ' + item.description).toLowerCase();
+                        return haystack.indexOf(q) !== -1;
+                    })
+                    .map(function (item) {
+                        return item.id;
+                    });
+            },
+            isAlgorithmVisible(id) {
+                return this.filteredAlgorithmIds.indexOf(id) !== -1;
+            },
+            get hasAlgorithmSearchResult() {
+                return this.filteredAlgorithmIds.length > 0;
+            },
+            clearAlgorithmSearch() {
+                this.algorithmSearch = '';
+            },
+        };
+    };
+
     // --- Before / After slider (Alpine.js component) ---
     window.beforeAfterSlider = function () {
         return {
